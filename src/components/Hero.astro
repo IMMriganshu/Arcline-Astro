@@ -1,0 +1,241 @@
+---
+---
+
+<section id="hero" class="home-hero">
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <div class="home-hero__wrapper">
+      <!-- Title with continuous looping video-through-text mask effect -->
+      <div class="home-hero__title-wrapper" id="hero-title-wrapper">
+        <div class="home-hero__video-bg" aria-hidden="true">
+          <video
+            id="hero-title-video"
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="auto"
+            class="home-hero__video"
+          >
+            <source src="/videos/title-video.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        <div class="home-hero__title-block">
+          <h1 class="home-hero__title font-urbanist" aria-label="Arcline">
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="1">A</span></span>
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="2">r</span></span>
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="3">c</span></span>
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="4">l</span></span>
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="5">i</span></span>
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="6">n</span></span>
+            <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="7">e</span></span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Banner Architectural Image under the big title -->
+      <div class="home-hero__banner" id="hero-banner" data-hero-animate>
+        <div class="home-hero__banner-inner">
+          <img
+            id="hero-banner-img"
+            src="/images/home-hero-image.webp"
+            alt="Contemporary architectural interior showcase with floating staircase"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="home-hero__banner-image"
+          />
+        </div>
+      </div>
+
+      <!-- Vertical Scroll Indicator Line After Hero Image Box (Matching User Screenshot) -->
+      <div class="home-hero__scroll-indicator" aria-hidden="true" data-animate="fade-up-sm">
+        <div class="home-hero__scroll-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-hero {
+    padding-top: 130px;
+    padding-bottom: 24px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bg-page, #FCFCFC);
+  }
+
+  .home-hero__wrapper {
+    flex-direction: column;
+    display: flex;
+  }
+
+  .home-hero__title-wrapper {
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  .home-hero__video-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .home-hero__video {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .home-hero__title-block {
+    background-color: var(--bg-page, #FCFCFC);
+    color: #000000;
+    mix-blend-mode: lighten;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    position: relative;
+    z-index: 1;
+    padding: 10px 0;
+    user-select: none;
+  }
+
+  .home-hero__title {
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0;
+    font-size: clamp(80px, 19vw, 290px);
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    display: flex;
+  }
+
+  @media screen and (min-width: 1280px) {
+    .home-hero__title {
+      font-size: 340px;
+    }
+    .home-hero__title-wrapper {
+      margin-bottom: 60px;
+    }
+  }
+
+  @media screen and (min-width: 1440px) {
+    .home-hero__title {
+      font-size: 390px;
+    }
+  }
+
+  .home-hero__letter-block {
+    overflow: hidden;
+    display: inline-flex;
+  }
+
+  .home-hero__letter {
+    display: inline-block;
+    will-change: transform;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+
+  .home-hero__banner {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .home-hero__banner-inner {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-hero__banner-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 1s ease-out;
+  }
+
+  .home-hero__banner:hover .home-hero__banner-image {
+    transform: scale(1.03);
+  }
+
+  /* Vertical Scroll Indicator Line */
+  .home-hero__scroll-indicator {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+    margin-bottom: 4px;
+  }
+
+  .home-hero__scroll-line {
+    width: 1px;
+    height: 48px;
+    background-color: rgba(0, 0, 0, 0.12);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-hero__scroll-line::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--accent-gold, #C5A880);
+    animation: scrollLinePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLinePulse {
+    0% {
+      transform: translateY(-100%);
+    }
+    50%, 100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @media screen and (max-width: 991px) {
+    .home-hero {
+      padding-top: 90px;
+      padding-bottom: 8px;
+    }
+    .home-hero__title-wrapper {
+      margin-bottom: 24px;
+    }
+    .home-hero__title {
+      font-size: 19vw;
+    }
+    .home-hero__banner {
+      border-radius: 18px;
+    }
+    .home-hero__scroll-indicator {
+      margin-top: 20px;
+      margin-bottom: 0px;
+    }
+    .home-hero__scroll-line {
+      height: 40px;
+    }
+  }
+</style>
+
+<script>
+  // Ensure the title video plays continuously in a loop across all browsers
+  const vid = document.getElementById('hero-title-video') as HTMLVideoElement | null;
+  if (vid) {
+    vid.muted = true;
+    const playVideo = () => {
+      vid.play().catch(() => {});
+    };
+    playVideo();
+    document.addEventListener('click', playVideo, { once: true });
+    document.addEventListener('touchstart', playVideo, { once: true });
+  }
+</script>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionLabel from "../components/SectionLabel.astro";
+import ServicesSection from "../components/ServicesSection.astro";
+import ProjectCTA from "../components/ProjectCTA.astro";
+---
+
+<BaseLayout
+  title="Services — Arcline Architecture & Design"
+  description="Explore our specialized architectural, interior design, landscape, and renovation services."
+>
+  <div class="pt-32 pb-8 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <div class="mb-4">
+      <SectionLabel text="OUR CAPABILITIES" />
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#030303] mb-6 max-w-4xl">
+      Comprehensive Architectural & Environmental Design Services
+    </h1>
+
+    <p class="text-lg text-neutral-600 max-w-2xl leading-relaxed mb-12">
+      From initial site feasibility and zoning permits to bespoke millwork design and construction oversight, we provide end-to-end expertise.
+    </p>
+  </div>
+
+  <ServicesSection />
+  <ProjectCTA />
+</BaseLayout>

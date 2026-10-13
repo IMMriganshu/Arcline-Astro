@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import AboutSection from "../components/AboutSection.astro";
+import ServicesSection from "../components/ServicesSection.astro";
+import PortfolioSection from "../components/PortfolioSection.astro";
+import VideoShowcase from "../components/VideoShowcase.astro";
+import TestimonialSection from "../components/TestimonialSection.astro";
+import BlogSection from "../components/BlogSection.astro";
+import ProjectCTA from "../components/ProjectCTA.astro";
+---
+
+<BaseLayout
+  title="Arcline — Architecture & Design Agency"
+  description="We're a distinguished architectural agency located in Canada. We create meaningful spaces that stand the test of time."
+>
+  <!-- Hero Section with Masked Typography -->
+  <Hero />
+
+  <!-- About Section with Asymmetric Grid -->
+  <AboutSection />
+
+  <!-- Our Selected Services with Large Numerals -->
+  <ServicesSection />
+
+  <!-- Portfolio Section with Oversized Recent Works Typography -->
+  <PortfolioSection />
+
+  <!-- Large Architectural Video Showcase -->
+  <VideoShowcase />
+
+  <!-- Interactive Client Testimonials Carousel -->
+  <TestimonialSection />
+
+  <!-- Articles & Blog Editorial Grid -->
+  <BlogSection />
+
+  <!-- Dark Cinematic Project CTA -->
+  <ProjectCTA />
+</BaseLayout>

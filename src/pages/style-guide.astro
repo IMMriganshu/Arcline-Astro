@@ -1,0 +1,85 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionLabel from "../components/SectionLabel.astro";
+import Button from "../components/Button.astro";
+---
+
+<BaseLayout
+  title="Style Guide & Utility Specifications — Arcline"
+  description="Design tokens, typography scales, palettes, and brand guidelines for Arcline Architecture."
+>
+  <div class="pt-32 pb-24 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <div class="mb-4">
+      <SectionLabel text="DESIGN SYSTEM" />
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-[#030303] mb-6">
+      Style Guide & Brand System
+    </h1>
+
+    <p class="text-lg text-neutral-600 max-w-2xl leading-relaxed mb-16">
+      The visual language of Arcline is rooted in architectural minimalism, high typographic fidelity, and tactile restraint.
+    </p>
+
+    <!-- Colors -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-[#030303] mb-6">Color Palette</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+        <div class="p-6 rounded-2xl bg-[#030303] text-white">
+          <p class="font-bold">Dark Primary</p>
+          <p class="text-xs text-neutral-400 mt-2 font-mono">#030303</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-[#FCFCFC] border border-black/10 text-black">
+          <p class="font-bold">Warm Background</p>
+          <p class="text-xs text-neutral-500 mt-2 font-mono">#FCFCFC</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-[#C5A880] text-white">
+          <p class="font-bold">Accent Gold</p>
+          <p class="text-xs text-white/80 mt-2 font-mono">#C5A880</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-[#737373] text-white">
+          <p class="font-bold">Muted Secondary</p>
+          <p class="text-xs text-white/80 mt-2 font-mono">#737373</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typography -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-[#030303] mb-6">Type Scale (Urbanist)</h2>
+      <div class="space-y-6 border-t border-black/10 pt-6">
+        <div>
+          <span class="text-xs text-neutral-400 font-mono">Display Massive</span>
+          <p class="text-5xl sm:text-7xl font-extrabold text-[#030303]">Arcline Architecture</p>
+        </div>
+        <div>
+          <span class="text-xs text-neutral-400 font-mono">Heading 1</span>
+          <p class="text-4xl font-bold text-[#030303]">Selected Works & Built Forms</p>
+        </div>
+        <div>
+          <span class="text-xs text-neutral-400 font-mono">Body Paragraph</span>
+          <p class="text-base text-[#737373] max-w-2xl">
+            Architecture Agency embodies a combination of exceptional design, innovation, and commitment to creating meaningful spaces that agency goes beyond stand of time.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-[#030303] mb-6">Interactive Elements</h2>
+      <div class="flex flex-wrap gap-4 items-center">
+        <Button variant="black" showIcon={true}>Primary Action</Button>
+        <Button variant="outline" showIcon={true} iconType="arrow-right">Secondary Action</Button>
+      </div>
+    </div>
+
+    <!-- License & Changelog Section Anchor -->
+    <div id="license" class="pt-8 border-t border-black/10">
+      <h2 class="text-2xl font-bold text-[#030303] mb-3">License & Changelog</h2>
+      <p class="text-sm text-neutral-600 max-w-2xl leading-relaxed">
+        Arcline Template v1.0.0 — Crafted for architecture studios, interior specialists, and urban planning firms. Recreated faithfully in Astro with GSAP and modern browser technologies.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

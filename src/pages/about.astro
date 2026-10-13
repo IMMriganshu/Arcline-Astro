@@ -1,0 +1,85 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionLabel from "../components/SectionLabel.astro";
+import Button from "../components/Button.astro";
+import ProjectCTA from "../components/ProjectCTA.astro";
+
+const teamMembers = [
+  {
+    name: "Alexander Vance",
+    role: "Principal Architect & Founder",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
+  },
+  {
+    name: "Clara Dupont",
+    role: "Lead Interior Designer",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85",
+  },
+  {
+    name: "Marcus Sterling",
+    role: "Director of Urban Systems",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85",
+  },
+];
+---
+
+<BaseLayout
+  title="About Arcline — Distinguished Canadian Architectural Studio"
+  description="Discover the history, philosophy, and team behind Arcline Architecture in Canada."
+>
+  <div class="pt-32 pb-20 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <!-- Breadcrumb / Header -->
+    <div class="mb-4">
+      <SectionLabel text="ABOUT OUR PRACTICE" />
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#030303] mb-8 max-w-4xl">
+      Shaping Environments Through Thoughtful Craft & Innovation
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
+      <div class="lg:col-span-7">
+        <p class="text-xl sm:text-2xl text-neutral-800 leading-relaxed font-light">
+          Founded in Montreal in 2010, Arcline has evolved into a nationally recognized architectural practice. We reject superficial trends in favor of timeless tactile geometry, ecological stewardship, and human-centered daylight analysis.
+        </p>
+      </div>
+      <div class="lg:col-span-5 space-y-4 text-neutral-600 leading-relaxed text-sm sm:text-base">
+        <p>
+          Every commission is approached as a site-specific dialogue between geology, light, and occupant ritual. Our multidisciplinary studio unifies architecture, interior spatial planning, landscape integration, and structural feasibility.
+        </p>
+        <div>
+          <Button href="#contact" variant="black" showIcon={true}>
+            Work With Us
+          </Button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Section -->
+    <div id="team" class="pt-12 border-t border-black/10">
+      <div class="mb-8">
+        <SectionLabel text="LEADERSHIP" />
+        <h2 class="text-3xl font-bold text-[#030303] mt-2">Partners & Principals</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {teamMembers.map((member) => (
+          <div class="group">
+            <div class="overflow-hidden rounded-2xl aspect-[3/4] mb-4 bg-neutral-100 border border-black/5">
+              <img
+                src={member.image}
+                alt={member.name}
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+            <h3 class="text-xl font-bold text-[#030303]">{member.name}</h3>
+            <p class="text-sm text-neutral-500">{member.role}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <ProjectCTA />
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+interface Props {
+  text: string;
+  theme?: "light" | "dark";
+  class?: string;
+}
+
+const { text, theme = "light", class: className = "" } = Astro.props;
+const isDark = theme === "dark";
+---
+
+<div class={`inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.2em] uppercase select-none ${className}`}>
+  <!-- Gold accent dash line -->
+  <span class="w-4 h-[2px] bg-[#C5A880] rounded-full inline-block" aria-hidden="true"></span>
+  <span class={isDark ? "text-[#C5A880]" : "text-[#737373]"}>
+    {text}
+  </span>
+</div>

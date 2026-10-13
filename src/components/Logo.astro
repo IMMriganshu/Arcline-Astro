@@ -1,0 +1,37 @@
+---
+interface Props {
+  variant?: "dark" | "light";
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+
+const { variant = "dark", size = "md", class: className = "" } = Astro.props;
+
+const isLight = variant === "light";
+const textColor = isLight ? "text-white" : "text-[#030303]";
+const barBg = isLight ? "bg-white" : "bg-[#030303]";
+
+const iconSizes = {
+  sm: "h-5 w-5",
+  md: "h-6 w-6",
+  lg: "h-8 w-8",
+};
+
+const textSizes = {
+  sm: "text-lg",
+  md: "text-xl",
+  lg: "text-2xl",
+};
+---
+
+<a href="/" class={`inline-flex items-center gap-2.5 group select-none ${className}`}>
+  <!-- Arcline 3-bar architectural graphic icon -->
+  <div class={`flex items-end gap-1 ${iconSizes[size]}`} aria-hidden="true">
+    <span class={`w-1.5 h-3.5 rounded-full transition-transform duration-300 group-hover:scale-y-110 ${barBg}`}></span>
+    <span class={`w-1.5 h-5.5 rounded-full transition-transform duration-300 group-hover:scale-y-90 ${barBg}`}></span>
+    <span class={`w-1.5 h-4.5 rounded-full transition-transform duration-300 group-hover:scale-y-125 ${barBg}`}></span>
+  </div>
+  <span class={`font-bold tracking-tight ${textColor} ${textSizes[size]}`}>
+    Arcline
+  </span>
+</a>

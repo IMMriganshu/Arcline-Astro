@@ -1,0 +1,238 @@
+---
+import Logo from "./Logo.astro";
+import Button from "./Button.astro";
+import { navItems, homeDropdownItems, pagesDropdownData } from "../data/siteData";
+---
+
+<header id="site-header" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 py-4 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <!-- Brand Logo -->
+    <Logo variant="dark" size="md" />
+
+    <!-- Desktop Navigation Pill -->
+    <nav class="hidden md:flex items-center gap-1 bg-[#FCFCFC]/85 backdrop-blur-md px-4 py-2 rounded-full border border-black/8 shadow-xs">
+      <!-- Home Dropdown -->
+      <div class="relative dropdown-container group">
+        <button
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 transition-colors cursor-pointer rounded-full"
+          aria-expanded="false"
+          aria-haspopup="true"
+        >
+          <span>Home</span>
+          <svg class="w-3.5 h-3.5 text-black/50 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Dropdown Card -->
+        <div class="dropdown-menu absolute top-full left-0 pt-2 w-44 z-50">
+          <div class="bg-white rounded-2xl p-2 shadow-xl border border-black/8 backdrop-blur-lg">
+            {homeDropdownItems.map((item) => (
+              <a
+                href={item.href}
+                class="block px-3.5 py-2 text-sm text-[#030303] hover:bg-neutral-100 rounded-xl transition-colors font-medium"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <a
+        href="/#about"
+        class="px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 transition-colors rounded-full"
+      >
+        About
+      </a>
+
+      <!-- Services -->
+      <a
+        href="/#services"
+        class="px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 transition-colors rounded-full"
+      >
+        Services
+      </a>
+
+      <!-- Pages Mega Dropdown -->
+      <div class="relative dropdown-container group">
+        <button
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 transition-colors cursor-pointer rounded-full"
+          aria-expanded="false"
+          aria-haspopup="true"
+        >
+          <span>Pages</span>
+          <svg class="w-3.5 h-3.5 text-black/50 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- 2-Column Mega Dropdown matching Recording 00:05 -->
+        <div class="dropdown-menu absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[340px] z-50">
+          <div class="bg-white rounded-2xl p-5 shadow-2xl border border-black/8 grid grid-cols-2 gap-4">
+            <!-- Left Col: Pages -->
+            <div>
+              <p class="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-2.5 px-2">
+                Pages
+              </p>
+              <div class="space-y-0.5">
+                {pagesDropdownData.pages.map((link) => (
+                  <a
+                    href={link.href}
+                    class="block px-2 py-1.5 text-xs text-[#030303] hover:text-black hover:bg-neutral-100 rounded-lg transition-colors font-medium"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Right Col: Utility Pages -->
+            <div class="border-l border-neutral-100 pl-4">
+              <p class="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-2.5 px-2">
+                Utility Pages
+              </p>
+              <div class="space-y-0.5">
+                {pagesDropdownData.utilityPages.map((link) => (
+                  <a
+                    href={link.href}
+                    class="block px-2 py-1.5 text-xs text-[#030303] hover:text-black hover:bg-neutral-100 rounded-lg transition-colors font-medium"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blog -->
+      <a
+        href="/#blog"
+        class="px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 transition-colors rounded-full"
+      >
+        Blog
+      </a>
+    </nav>
+
+    <!-- Right: Contact Us Button & Mobile Hamburger -->
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:block">
+        <Button href="#contact" id="header-contact-btn" variant="black" showIcon={true}>
+          Contact Us
+        </Button>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button
+        id="mobile-menu-toggle"
+        type="button"
+        class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white border border-black/10 text-black shadow-xs cursor-pointer"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+      >
+        <svg id="hamburger-icon" class="w-5 h-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+        <svg id="close-icon" class="w-5 h-5 hidden transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div
+    id="mobile-nav"
+    class="md:hidden hidden mt-3 mx-2 bg-white rounded-2xl p-5 shadow-2xl border border-black/8 transition-all"
+  >
+    <div class="flex flex-col space-y-2">
+      <a href="/" class="px-3 py-2 text-base font-semibold text-black hover:bg-neutral-50 rounded-xl">
+        Home
+      </a>
+      <a href="/#about" class="px-3 py-2 text-base font-semibold text-black hover:bg-neutral-50 rounded-xl mobile-nav-link">
+        About
+      </a>
+      <a href="/#services" class="px-3 py-2 text-base font-semibold text-black hover:bg-neutral-50 rounded-xl mobile-nav-link">
+        Services
+      </a>
+      <a href="/#portfolio" class="px-3 py-2 text-base font-semibold text-black hover:bg-neutral-50 rounded-xl mobile-nav-link">
+        Portfolio
+      </a>
+      <a href="/#blog" class="px-3 py-2 text-base font-semibold text-black hover:bg-neutral-50 rounded-xl mobile-nav-link">
+        Blog
+      </a>
+
+      <!-- Sub-pages accordion inside mobile drawer -->
+      <div class="pt-2 border-t border-neutral-100">
+        <p class="text-xs uppercase font-semibold text-neutral-400 px-3 mb-1">Explore Pages</p>
+        <div class="grid grid-cols-2 gap-1 text-sm font-medium text-neutral-700">
+          <a href="/projects" class="px-3 py-1.5 hover:text-black">Projects</a>
+          <a href="/style-guide" class="px-3 py-1.5 hover:text-black">Style Guide</a>
+          <a href="/about" class="px-3 py-1.5 hover:text-black">Team</a>
+          <a href="/style-guide#license" class="px-3 py-1.5 hover:text-black">License</a>
+        </div>
+      </div>
+
+      <div class="pt-3">
+        <Button href="#contact" variant="black" showIcon={true} class="w-full justify-center">
+          Contact Us
+        </Button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu interaction
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+  const closeIcon = document.getElementById('close-icon');
+  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+  if (toggleBtn && mobileNav && hamburgerIcon && closeIcon) {
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = mobileNav.classList.contains('hidden');
+      if (isHidden) {
+        mobileNav.classList.remove('hidden');
+        hamburgerIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        mobileNav.classList.add('hidden');
+        hamburgerIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    mobileLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.add('hidden');
+        hamburgerIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Header scroll appearance
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    if (!header) return;
+    if (window.scrollY > 40) {
+      header.classList.add('bg-[#FCFCFC]/80', 'backdrop-blur-md', 'shadow-xs');
+      header.classList.remove('py-4');
+      header.classList.add('py-2.5');
+    } else {
+      header.classList.remove('bg-[#FCFCFC]/80', 'backdrop-blur-md', 'shadow-xs');
+      header.classList.remove('py-2.5');
+      header.classList.add('py-4');
+    }
+  });
+</script>

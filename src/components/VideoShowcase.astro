@@ -1,0 +1,89 @@
+---
+---
+
+<section class="py-8 md:py-16 relative">
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <!-- Large Rounded Feature Architecture Showcase (Recording 00:42-00:45) -->
+    <div data-animate="scale-in" class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-black/5 aspect-[16/9] md:aspect-[21/9] group bg-neutral-900">
+      <img
+        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2100&q=85"
+        alt="Illuminated contemporary architectural villa with swimming pool at twilight"
+        class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+        loading="lazy"
+      />
+
+      <!-- Dark overlay gradient -->
+      <div class="absolute inset-0 bg-black/25 transition-colors group-hover:bg-black/35"></div>
+
+      <!-- Centered Play Button (Frosted Glass with Triangle Arrow) -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <button
+          id="play-tour-btn"
+          type="button"
+          class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/25 hover:bg-white/40 text-white backdrop-blur-md border border-white/40 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 cursor-pointer"
+          aria-label="Play architectural project video showcase"
+        >
+          <!-- Play icon triangle -->
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 translate-x-0.5 fill-current" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Showcase Modal Dialog -->
+  <div
+    id="video-modal"
+    class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8"
+  >
+    <div class="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+      <!-- Close button -->
+      <button
+        id="close-video-modal"
+        type="button"
+        class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+        aria-label="Close video"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="aspect-video w-full bg-neutral-950 flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-4 text-[#C5A880]">
+          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">Arcline Architectural Cinema Tour</h3>
+        <p class="text-neutral-400 max-w-md text-sm">
+          A high-definition visual walkthrough of our flagship residences, showcasing fluid indoor-outdoor transitions and bespoke material craft.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const playBtn = document.getElementById('play-tour-btn');
+  const videoModal = document.getElementById('video-modal');
+  const closeModalBtn = document.getElementById('close-video-modal');
+
+  playBtn?.addEventListener('click', () => {
+    videoModal?.classList.remove('hidden');
+    videoModal?.classList.add('flex');
+  });
+
+  closeModalBtn?.addEventListener('click', () => {
+    videoModal?.classList.add('hidden');
+    videoModal?.classList.remove('flex');
+  });
+
+  videoModal?.addEventListener('click', (e) => {
+    if (e.target === videoModal) {
+      videoModal.classList.add('hidden');
+      videoModal.classList.remove('flex');
+    }
+  });
+</script>

@@ -1,0 +1,422 @@
+---
+import SectionLabel from "./SectionLabel.astro";
+import { portfolioProjects } from "../data/siteData";
+---
+
+<section class="recent-works" id="portfolio">
+  <!-- Container with Badge Header -->
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-4 md:pt-12 pb-2 md:pb-4">
+    <div class="recent-works__badge">
+      <SectionLabel text="OUR PORTFOLIO" />
+    </div>
+  </div>
+
+  <div class="recent-works__wrapper" data-recent-works>
+    <div class="recent-works__sticky" data-rw-sticky>
+      <!-- Title text layer -->
+      <div class="recent-works__title-area" data-rw-titles>
+        <div class="recent-works__line-one">
+          <h2 class="recent-works__title">Recent</h2>
+        </div>
+        <div class="recent-works__line-two">
+          <h2 class="recent-works__title recent-works__title--tablet">Works</h2>
+          <div class="recent-works__text-left" data-rw-left>
+            <h2 class="recent-works__title">Wo</h2>
+          </div>
+          <div class="recent-works__text-right" data-rw-right>
+            <h2 class="recent-works__title">rks</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects area layer (Appears inside "Recent Works" and expands on scroll) -->
+      <div class="recent-works__projects-area" data-rw-projects>
+        {portfolioProjects.map((project, idx) => (
+          <div
+            class="recent-works__project-item"
+            data-rw-item={idx}
+            style={`z-index: ${idx + 1};`}
+          >
+            <a href="/projects" class="recent-works__project-image-link">
+              <img
+                src={project.image}
+                alt={project.title}
+                loading="eager"
+                decoding="async"
+                class="recent-works__project-image"
+              />
+            </a>
+            <div class="recent-works__project-meta">
+              <span class="recent-works__project-number" aria-hidden="true">
+                {project.number}
+              </span>
+              <a href="/projects" class="recent-works__project-name">
+                {project.title}
+                <div class="recent-works__project-name-border"></div>
+              </a>
+              <a href="/projects" class="recent-works__project-category">
+                {project.category}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .recent-works {
+    position: relative;
+    background-color: var(--bg-page, #FCFCFC);
+  }
+
+  .recent-works__badge {
+    margin-bottom: 24px;
+  }
+
+  .recent-works__wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .recent-works__sticky {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .recent-works__title-area {
+    text-align: center;
+    width: 100%;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .recent-works__title {
+    text-align: center;
+    margin: 0;
+    font-size: 200px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: 'Urbanist', sans-serif;
+    letter-spacing: -0.04em;
+    color: var(--text-primary, #030303);
+  }
+
+  .recent-works__title--tablet {
+    display: none;
+  }
+
+  .recent-works__line-two {
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    display: flex;
+  }
+
+  .recent-works__text-left,
+  .recent-works__text-right {
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .recent-works__projects-area {
+    width: 20%;
+    opacity: 0;
+    z-index: 5;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 1320px;
+  }
+
+  .recent-works__project-item {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(-30px);
+    background-color: var(--bg-page, #FCFCFC);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .recent-works__project-item:first-child {
+    opacity: 1;
+    transform: translateY(0px);
+    position: relative;
+  }
+
+  .recent-works__project-image-link {
+    border-radius: 24px;
+    display: block;
+    overflow: hidden;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+  }
+
+  .recent-works__project-image {
+    aspect-ratio: 2.2;
+    object-fit: cover;
+    width: 100%;
+    display: block;
+  }
+
+  .recent-works__project-meta {
+    border-top: none;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+  }
+
+  .recent-works__project-number {
+    letter-spacing: 0.1em;
+    color: var(--accent-gold, #C5A880);
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    font-family: monospace;
+  }
+
+  .recent-works__project-name {
+    color: inherit;
+    flex-direction: column;
+    flex: 1;
+    text-decoration: none;
+    display: inline-flex;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .recent-works__project-name-border {
+    transform-origin: 0;
+    width: 100%;
+    height: 1px;
+    transition: transform 0.25s ease;
+    background-color: currentColor;
+    margin-top: 3px;
+    transform: scaleX(0);
+  }
+
+  .recent-works__project-name:hover .recent-works__project-name-border {
+    transform: scaleX(1);
+  }
+
+  .recent-works__project-category {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: inherit;
+    opacity: 0.55;
+    transition: color 0.2s, opacity 0.2s;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .recent-works__project-category:hover {
+    color: var(--accent-gold, #C5A880);
+    opacity: 1;
+  }
+
+  @media screen and (min-width: 1280px) {
+    .recent-works__title {
+      font-size: 275px;
+    }
+  }
+
+  @media screen and (min-width: 1440px) {
+    .recent-works__title {
+      font-size: 350px;
+    }
+    .recent-works__line-two {
+      gap: 345px;
+    }
+  }
+
+  @media screen and (max-width: 991px) {
+    .recent-works {
+      padding: 36px 0;
+    }
+    .recent-works__wrapper {
+      min-height: auto;
+      padding-left: 24px;
+      padding-right: 24px;
+      max-width: 1440px;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+    .recent-works__sticky {
+      min-height: auto;
+      height: auto;
+      display: block;
+      position: static;
+      overflow: visible;
+    }
+    .recent-works__title {
+      font-size: 130px;
+    }
+    .recent-works__title-area {
+      opacity: 1 !important;
+    }
+    .recent-works__title--tablet {
+      display: block;
+    }
+    .recent-works__text-left,
+    .recent-works__text-right {
+      display: none;
+    }
+    .recent-works__line-two {
+      flex-direction: column;
+      gap: 0;
+    }
+    .recent-works__projects-area {
+      flex-direction: column;
+      gap: 32px;
+      margin-top: 28px;
+      display: flex;
+      position: static;
+      transform: none;
+      opacity: 1 !important;
+      width: 100% !important;
+      box-sizing: border-box;
+    }
+    .recent-works__project-item,
+    .recent-works__project-item:first-child {
+      position: static;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .recent-works {
+      padding: 24px 0;
+    }
+    .recent-works__wrapper {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .recent-works__title {
+      font-size: 20vw;
+    }
+    .recent-works__project-image {
+      aspect-ratio: 16/10;
+    }
+    .recent-works__project-image-link {
+      border-radius: 18px;
+    }
+    .recent-works__project-meta {
+      gap: 12px;
+      font-size: 16px;
+      padding-top: 14px;
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  function initRecentWorks() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const wrapper = document.querySelector<HTMLElement>('[data-recent-works]');
+    if (!wrapper) return;
+
+    const titleArea = wrapper.querySelector<HTMLElement>('[data-rw-titles]');
+    const leftText = wrapper.querySelector<HTMLElement>('[data-rw-left]');
+    const rightText = wrapper.querySelector<HTMLElement>('[data-rw-right]');
+    const projectsArea = wrapper.querySelector<HTMLElement>('[data-rw-projects]');
+    const items = wrapper.querySelectorAll<HTMLElement>('[data-rw-item]');
+
+    ScrollTrigger.matchMedia({
+      // Desktop and tablet (>= 992px)
+      "(min-width: 992px)": function() {
+        gsap.set(leftText, { xPercent: 25 });
+        gsap.set(rightText, { xPercent: -25 });
+        gsap.set(projectsArea, { opacity: 0, width: "20%" });
+        gsap.set(titleArea, { opacity: 1 });
+
+        items.forEach((item, idx) => {
+          if (idx > 0) {
+            gsap.set(item, { opacity: 0, y: -30 });
+          } else {
+            gsap.set(item, { opacity: 1, y: 0 });
+          }
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: wrapper,
+            start: "top top",
+            end: "+=320%",
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          }
+        });
+
+        // Phase 1: Slit appears: "Wo" moves left, "rks" moves right, projectsArea fades in
+        tl.to(leftText, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0);
+        tl.to(rightText, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0);
+        tl.to(projectsArea, { opacity: 1, ease: "power1.inOut", duration: 0.8 }, 0);
+
+        // Phase 2: Width expands from 20% to 100%
+        tl.to(projectsArea, { width: "100%", ease: "power1.inOut", duration: 1.6 }, 0.6);
+
+        // Phase 3: Background titles fade out
+        tl.to(titleArea, { opacity: 0, ease: "power1.inOut", duration: 1 }, 1.0);
+
+        // Pause on Project 1
+        tl.to({}, { duration: 0.6 });
+
+        // Phase 4: Project 2 (Green Residence) slides in
+        tl.to(items[1], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+        tl.to({}, { duration: 0.6 });
+
+        // Phase 5: Project 3 (Heritage Museum) slides in
+        tl.to(items[2], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+        tl.to({}, { duration: 0.6 });
+
+        // Phase 6: Project 4 (Housing Complex) slides in
+        tl.to(items[3], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+        tl.to({}, { duration: 0.6 });
+      },
+
+      // Mobile / tablet portrait (< 992px): clear GSAP props so clean vertical stack takes over
+      "(max-width: 991px)": function() {
+        gsap.set([leftText, rightText, projectsArea, titleArea], { clearProps: "all" });
+        items.forEach((item) => {
+          gsap.set(item, { clearProps: "all" });
+        });
+      }
+    });
+
+    // Sync with smooth scroll & refresh ScrollTrigger after DOM images load
+    window.addEventListener('scroll', () => ScrollTrigger.update(), { passive: true });
+    window.addEventListener('load', () => {
+      ScrollTrigger.refresh();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRecentWorks);
+  } else {
+    initRecentWorks();
+  }
+</script>

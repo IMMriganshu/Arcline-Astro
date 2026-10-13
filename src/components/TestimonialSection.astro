@@ -1,0 +1,158 @@
+---
+import SectionLabel from "./SectionLabel.astro";
+import { testimonialsData } from "../data/siteData";
+---
+
+<section id="testimonials" class="py-10 md:py-24 relative">
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <!-- Header -->
+    <div class="mb-8 md:mb-16">
+      <div class="mb-3" data-animate="fade-up-sm">
+        <SectionLabel text="TESTIMONIAL" />
+      </div>
+      <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#030303]">
+        What Our Clients Say
+      </h2>
+    </div>
+
+    <!-- Testimonial Interactive Showcase (Matching Recording 00:46-00:52) -->
+    <div data-animate="fade-up" class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <!-- Left Column: Rating, Quotes, Client Name, and Navigation -->
+      <div class="lg:col-span-7 flex flex-col justify-between">
+        <div>
+          <!-- 5 Gold Stars Rating -->
+          <div class="flex items-center gap-1 text-[#D4AF37] mb-6" aria-label="5 out of 5 stars">
+            {Array.from({ length: 5 }).map(() => (
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+
+          <!-- Stylized Quotation Mark -->
+          <span class="text-5xl font-serif text-[#C5A880] block mb-2 leading-none" aria-hidden="true">
+            “
+          </span>
+
+          <!-- Testimonial Slides Grid (Naturally sized to tallest slide, preventing any overlap) -->
+          <div class="grid grid-cols-1 mb-8">
+            {testimonialsData.map((t, idx) => (
+              <div
+                class={`testimonial-slide col-start-1 row-start-1 flex flex-col justify-between transition-all duration-500 ease-out ${
+                  idx === 0
+                    ? 'opacity-100 translate-y-0 pointer-events-auto z-10'
+                    : 'opacity-0 translate-y-4 pointer-events-none z-0'
+                }`}
+                data-index={idx}
+              >
+                <!-- Quote text with relaxed line-height -->
+                <blockquote class="text-lg sm:text-xl md:text-2xl font-normal text-[#030303] leading-relaxed mb-6">
+                  "{t.quote}"
+                </blockquote>
+
+                <!-- Client Author Information directly anchored below quote -->
+                <div class="pt-2">
+                  <h3 class="text-xl font-bold text-[#030303]">{t.author}</h3>
+                  <p class="text-sm text-[#737373] mt-0.5">{t.role} at {t.company}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Controls & Slide Counter (Matching Recording 00:48) -->
+        <div class="flex items-center gap-6 pt-6 sm:pt-8 border-t border-black/10">
+          <!-- Slide Counter -->
+          <span id="testimonial-counter" class="text-sm font-mono tracking-widest text-[#737373]">
+            01 / 03
+          </span>
+
+          <!-- Navigation Buttons -->
+          <div class="flex items-center gap-3">
+            <button
+              id="testimonial-prev"
+              type="button"
+              class="w-11 h-11 rounded-full border border-black/15 bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition-all cursor-pointer shadow-xs active:scale-95"
+              aria-label="Previous testimonial"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              id="testimonial-next"
+              type="button"
+              class="w-11 h-11 rounded-full border border-black/15 bg-white text-black flex items-center justify-center hover:bg-[#C5A880] hover:border-[#C5A880] hover:text-white transition-all cursor-pointer shadow-xs active:scale-95"
+              aria-label="Next testimonial"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Client Portrait Photo with Smooth Crossfade -->
+      <div class="lg:col-span-5">
+        <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-black/5 aspect-[4/5] bg-neutral-100">
+          {testimonialsData.map((t, idx) => (
+            <img
+              src={t.avatar}
+              alt={`Portrait of ${t.author}`}
+              class={`testimonial-avatar absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+              data-index={idx}
+              loading="lazy"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let currentIndex = 0;
+  const slides = document.querySelectorAll<HTMLElement>('.testimonial-slide');
+  const avatars = document.querySelectorAll<HTMLElement>('.testimonial-avatar');
+  const counter = document.getElementById('testimonial-counter');
+  const prevBtn = document.getElementById('testimonial-prev');
+  const nextBtn = document.getElementById('testimonial-next');
+  const total = slides.length;
+
+  function setTestimonial(index: number) {
+    if (index < 0) index = total - 1;
+    if (index >= total) index = 0;
+    currentIndex = index;
+
+    // Update Counter
+    if (counter) {
+      counter.textContent = `0${currentIndex + 1} / 0${total}`;
+    }
+
+    // Update Slides (Quote + Author together)
+    slides.forEach((slide, idx) => {
+      if (idx === currentIndex) {
+        slide.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none', 'z-0');
+        slide.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto', 'z-10');
+      } else {
+        slide.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto', 'z-10');
+        slide.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none', 'z-0');
+      }
+    });
+
+    // Update Avatars
+    avatars.forEach((av, idx) => {
+      if (idx === currentIndex) {
+        av.classList.remove('opacity-0', 'z-0');
+        av.classList.add('opacity-100', 'z-10');
+      } else {
+        av.classList.remove('opacity-100', 'z-10');
+        av.classList.add('opacity-0', 'z-0');
+      }
+    });
+  }
+
+  prevBtn?.addEventListener('click', () => setTestimonial(currentIndex - 1));
+  nextBtn?.addEventListener('click', () => setTestimonial(currentIndex + 1));
+</script>

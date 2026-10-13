@@ -1,0 +1,6 @@
+{
+  "name": "Arcbes — Architecture & Design Agency",
+  "description": "High-fidelity editorial architecture agency showcase built with Astro, GSAP, and ScrollTrigger.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

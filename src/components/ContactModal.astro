@@ -1,0 +1,152 @@
+---
+import Button from "./Button.astro";
+import SectionLabel from "./SectionLabel.astro";
+---
+
+<div
+  id="contact-modal"
+  class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="contact-modal-title"
+>
+  <div class="relative w-full max-w-xl bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-black/10 overflow-hidden">
+    <!-- Close Button -->
+    <button
+      id="close-contact-modal"
+      type="button"
+      class="absolute top-5 right-5 w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 flex items-center justify-center transition-colors cursor-pointer"
+      aria-label="Close dialog"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div class="mb-6">
+      <SectionLabel text="START A CONVERSATION" />
+      <h3 id="contact-modal-title" class="text-2xl sm:text-3xl font-bold text-[#030303] mt-2">
+        Let's Build Something Exceptional
+      </h3>
+      <p class="text-sm text-[#737373] mt-1">
+        Share your vision with Arcline Architecture. We typically respond within 24 hours.
+      </p>
+    </div>
+
+    <!-- Contact Form -->
+    <form id="contact-form" class="space-y-4">
+      <div>
+        <label for="contact-name" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+          Full Name
+        </label>
+        <input
+          type="text"
+          id="contact-name"
+          name="name"
+          required
+          placeholder="e.g. Eleanor Vance"
+          class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-black focus:ring-1 focus:ring-black text-sm"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="contact-email" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="contact-email"
+            name="email"
+            required
+            placeholder="e.g. eleanor@studio.com"
+            class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-black focus:ring-1 focus:ring-black text-sm"
+          />
+        </div>
+
+        <div>
+          <label for="contact-service" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+            Service Required
+          </label>
+          <select
+            id="contact-service"
+            name="service"
+            class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-black focus:ring-1 focus:ring-black text-sm bg-white"
+          >
+            <option value="Home Decoration">Home Decoration</option>
+            <option value="Interior Design">Interior Design</option>
+            <option value="Landscape Design">Landscape Design</option>
+            <option value="Renovation Planning">Renovation Planning</option>
+            <option value="Commercial Architecture">Commercial Architecture</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="contact-message" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1">
+          Project Brief
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="3"
+          required
+          placeholder="Tell us about the project location, timeline, and spatial intentions..."
+          class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:outline-hidden focus:border-black focus:ring-1 focus:ring-black text-sm resize-none"
+        ></textarea>
+      </div>
+
+      <div id="contact-success" class="hidden p-3 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-medium">
+        Thank you! Your project inquiry has been received. An Arcline partner will reach out shortly.
+      </div>
+
+      <div class="pt-2">
+        <button
+          type="submit"
+          class="w-full btn-pill-black justify-center py-3 text-sm cursor-pointer"
+        >
+          Submit Architectural Inquiry
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const contactModal = document.getElementById('contact-modal');
+  const closeModalBtn = document.getElementById('close-contact-modal');
+  const contactForm = document.getElementById('contact-form');
+  const contactSuccess = document.getElementById('contact-success');
+
+  // Trigger modal on any contact link with #contact
+  document.querySelectorAll('a[href="#contact"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      contactModal?.classList.remove('hidden');
+      contactModal?.classList.add('flex');
+    });
+  });
+
+  closeModalBtn?.addEventListener('click', () => {
+    contactModal?.classList.add('hidden');
+    contactModal?.classList.remove('flex');
+  });
+
+  contactModal?.addEventListener('click', (e) => {
+    if (e.target === contactModal) {
+      contactModal.classList.add('hidden');
+      contactModal.classList.remove('flex');
+    }
+  });
+
+  contactForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    contactSuccess?.classList.remove('hidden');
+    setTimeout(() => {
+      contactForm.reset();
+      contactSuccess?.classList.add('hidden');
+      contactModal?.classList.add('hidden');
+      contactModal?.classList.remove('flex');
+    }, 2000);
+  });
+</script>
