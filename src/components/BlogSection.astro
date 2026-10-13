@@ -4,33 +4,36 @@ import Button from "./Button.astro";
 import { blogArticles } from "../data/siteData";
 ---
 
-<section id="blog" class="py-10 md:py-24 relative">
+<section id="blog" class="py-16 md:py-28 relative bg-[#fff]">
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-16">
-      <div>
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12 md:mb-20">
+      <div class="max-w-3xl">
         <div class="mb-3" data-animate="fade-up-sm">
-          <SectionLabel text="ARTICLES & BLOG" />
+          <SectionLabel text="B2B CONTENT HUB: PATIENT GROWER" />
         </div>
-        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#030303]">
-          Our Articles & Blog
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#050505] mb-6 leading-tight">
+          Marketing Intelligence & AI Search Strategy for Practice Owners
         </h2>
+        <p data-animate="fade-up" class="text-neutral-600 text-base sm:text-lg leading-relaxed">
+          We don't write generic blog posts. Patient Grower is our dedicated B2B publication delivering actionable growth insights, GEO/AEO search breakdowns, and high-ticket patient acquisition strategies specifically written for surgeons and practice directors.
+        </p>
       </div>
 
       <div data-animate="fade-up-sm">
         <Button href="/blog" variant="black" showIcon={true} iconType="arrow-right">
-          See All Articles
+          Explore Patient Grower
         </Button>
       </div>
     </div>
 
-    <!-- 2-Column Editorial Grid (Matching Recording 00:53-00:58) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+    <!-- 3-Column Editorial Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {blogArticles.map((article, idx) => (
         <article data-animate="fade-up" data-animate-delay={String(idx + 1)} class="group flex flex-col justify-between">
           <div>
             <!-- Image with zoom hover effect -->
-            <div class="overflow-hidden rounded-2xl md:rounded-3xl shadow-md border border-black/5 aspect-[16/10] mb-6 bg-neutral-100">
+            <div class="overflow-hidden rounded-2xl shadow-sm border border-black/5 aspect-[16/10] mb-6 bg-neutral-100">
               <img
                 src={article.image}
                 alt={article.title}
@@ -39,26 +42,31 @@ import { blogArticles } from "../data/siteData";
               />
             </div>
 
-            <!-- Clean unboxed metadata with bullet separators -->
+            <!-- Metadata -->
             <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider text-[#737373] uppercase mb-3">
-              <span class="text-[#C5A880]">{article.category}</span>
-              <span aria-hidden="true" class="text-neutral-300">•</span>
-              <span>{article.date}</span>
+              <span class="text-[#C49F58] bg-[#C49F58]/10 px-2.5 py-1 rounded-md border border-[#C49F58]/30">{article.category}</span>
               <span aria-hidden="true" class="text-neutral-300">•</span>
               <span>{article.readTime}</span>
             </div>
 
             <!-- Title with hover color change -->
-            <h3 class="text-2xl sm:text-3xl font-bold text-[#030303] group-hover:text-black leading-snug mb-3 transition-colors">
+            <h3 class="text-xl sm:text-2xl font-bold text-[#050505] group-hover:text-[#C49F58] leading-snug mb-3 transition-colors">
               <a href={`/blog#${article.slug}`} class="hover:underline underline-offset-4 decoration-neutral-300">
                 {article.title}
               </a>
             </h3>
 
             <!-- Excerpt -->
-            <p class="text-sm sm:text-base text-[#737373] leading-relaxed">
+            <p class="text-sm sm:text-base text-neutral-600 leading-relaxed mb-6">
               {article.excerpt}
             </p>
+          </div>
+
+          <div class="pt-4 border-t border-neutral-200 flex items-center justify-between text-sm font-semibold text-[#050505] group-hover:text-[#C49F58] transition-colors">
+            <span>Read Article</span>
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
           </div>
         </article>
       ))}

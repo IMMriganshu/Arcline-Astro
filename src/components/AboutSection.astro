@@ -3,72 +3,68 @@ import SectionLabel from "./SectionLabel.astro";
 import Button from "./Button.astro";
 ---
 
-<section id="about" class="pt-6 pb-12 md:pt-16 md:pb-28 relative overflow-hidden">
+<section id="about" class="pt-6 pb-12 md:pt-12 md:pb-20 relative overflow-hidden bg-white">
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-    <!-- Block 1: Main Introduction (Recording 00:11-00:14) -->
-    <div class="mb-10 md:mb-28">
-      <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text="ABOUT US" />
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
-        <!-- Left: Major Statement Heading -->
-        <div class="lg:col-span-7">
-          <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-[#030303] leading-[1.12]">
-            We're a Distinguished Architectural Agency Located in Canada
-          </h2>
-        </div>
-
-        <!-- Right: Supporting Narrative & Action -->
-        <div class="lg:col-span-5 flex flex-col justify-between pt-2">
-          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-[#737373] leading-relaxed mb-6 md:mb-8">
-            Architecture Agency embodies a combination of exceptional design, innovation, and commitment to creating meaningful spaces that agency goes beyond stand of time.
-          </p>
-          <div data-animate="fade-up-sm" data-animate-delay="2">
-            <Button href="#services" variant="black" showIcon={true}>
-              Explore Now
-            </Button>
-          </div>
-        </div>
-      </div>
+    <!-- About Us Section with 10-Year Practice Case Study -->
+    <div class="mb-3" data-animate="fade-up-sm">
+      <SectionLabel text="ABOUT US" />
     </div>
 
-    <!-- Block 2: Agency Heritage & Asymmetric Media Grid (Recording 00:14-00:18) -->
-    <div class="pt-2 md:pt-8">
-      <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text="ABOUT US" />
-      </div>
+    <!-- Large Editorial Narrative Statement -->
+    <div class="max-w-4xl mb-8 md:mb-10">
+      <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#030303] leading-[1.15] mb-4">
+        380% Retainer Growth over 10 Years
+      </h2>
+      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl md:text-2xl font-medium text-neutral-800 leading-relaxed mb-3">
+        How Dr. Ryan Diepenbrock (Diepenbrock Facial Cosmetic Surgery — Fort Wayne, IN) Scaled to Regional Market Dominance Across a Decade of Digital Shift.
+      </p>
+      <p data-animate="fade-up-sm" data-animate-delay="2" class="text-base sm:text-lg text-neutral-600 leading-relaxed">
+        In an industry where practices fire marketing agencies every 6 to 12 months, Dr. Diepenbrock has trusted our search and patient acquisition architecture for a decade. By evolving renewedlook.com from basic local search in 2016 to modern AI Search (AEO) and high-converting procedure hubs today, his monthly reinvestment grew nearly 4x—driven entirely by compounding patient consult revenue.
+      </p>
+    </div>
 
-      <!-- Large Editorial Narrative Statement -->
-      <div class="max-w-4xl mb-8 md:mb-16">
-        <p data-animate="fade-up" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium text-[#030303] leading-snug">
-          In 2010, a group of forward architects founded Arcline Architecture with a simple goal: to turn bold visions into reality. We're known for more than just structures we create experiences.
-        </p>
-      </div>
-
-      <!-- Asymmetric Dual Photo Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end">
-        <!-- Photo Left: Warm Luxury Residence at Twilight -->
-        <div class="lg:col-span-7" data-animate="scale-in">
-          <div class="overflow-hidden rounded-2xl md:rounded-3xl shadow-lg border border-black/5 aspect-[4/3] group">
-            <img
-              src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85"
-              alt="Two-story luxury modern architectural residence with warm ambient lights at dusk"
-              class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
+    <!-- 2-Column Layout: Left = Eyeball Image, Right = Growth Timeline Block -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <!-- Left Column: Clean Eyeball Image -->
+      <div class="lg:col-span-7 flex" data-animate="scale-in">
+        <div class="overflow-hidden rounded-2xl md:rounded-3xl shadow-lg border border-black/5 w-full h-full min-h-[320px] group bg-neutral-950 flex">
+          <img
+            src="/images/Eyeball BC.webp"
+            alt="Specialized bionic eyeball digital aesthetic for plastic and facial cosmetic surgeons"
+            class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            loading="lazy"
+          />
         </div>
+      </div>
 
-        <!-- Photo Right: Contemporary Living Pavilion -->
-        <div class="lg:col-span-5" data-animate="scale-in" data-animate-delay="2">
-          <div class="overflow-hidden rounded-2xl md:rounded-3xl shadow-lg border border-black/5 aspect-[16/11] group">
-            <img
-              src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85"
-              alt="Modern living room interior with double height ceiling, glass partitions, and sculptural stairs"
-              class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-              loading="lazy"
-            />
+      <!-- Right Column: Growth Timeline & Retainer Expansion Block (replacing second image) -->
+      <div class="lg:col-span-5 flex" data-animate="scale-in" data-animate-delay="2">
+        <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-lg w-full flex flex-col justify-between">
+          <div class="mb-3">
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-[#050505] mb-1">
+              Growth Timeline & Retainer Expansion
+            </h3>
+            <p class="text-[#050505]/70 text-xs sm:text-sm">
+              A decade-long trajectory of expanding partnership and compounding patient consult revenue.
+            </p>
+          </div>
+          <div class="space-y-2">
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2016 • $1,000/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">Foundational Local Search & Core Pages</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2018 • $1,500/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">Procedure Page Architecture & Gallery UX</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2021 • $3,000/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">Map Pack Dominance & Mobile Conversion</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2024 • $3,800/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">AI Search, GEO/AEO Authority & Entity Building</span>
+            </div>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { portfolioProjects } from "../data/siteData";
   <!-- Container with Badge Header -->
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-4 md:pt-12 pb-2 md:pb-4">
     <div class="recent-works__badge">
-      <SectionLabel text="OUR PORTFOLIO" />
+      <SectionLabel text="THE 10-YEAR CASE STUDY TIMELINE" />
     </div>
   </div>
 
@@ -16,20 +16,20 @@ import { portfolioProjects } from "../data/siteData";
       <!-- Title text layer -->
       <div class="recent-works__title-area" data-rw-titles>
         <div class="recent-works__line-one">
-          <h2 class="recent-works__title">Recent</h2>
+          <h2 class="recent-works__title">Case Study</h2>
         </div>
         <div class="recent-works__line-two">
-          <h2 class="recent-works__title recent-works__title--tablet">Works</h2>
+          <h2 class="recent-works__title recent-works__title--tablet">Timeline</h2>
           <div class="recent-works__text-left" data-rw-left>
-            <h2 class="recent-works__title">Wo</h2>
+            <h2 class="recent-works__title">Ti</h2>
           </div>
           <div class="recent-works__text-right" data-rw-right>
-            <h2 class="recent-works__title">rks</h2>
+            <h2 class="recent-works__title">meline</h2>
           </div>
         </div>
       </div>
 
-      <!-- Projects area layer (Appears inside "Recent Works" and expands on scroll) -->
+      <!-- Projects area layer (Appears inside and expands on scroll) -->
       <div class="recent-works__projects-area" data-rw-projects>
         {portfolioProjects.map((project, idx) => (
           <div
@@ -46,14 +46,19 @@ import { portfolioProjects } from "../data/siteData";
                 class="recent-works__project-image"
               />
             </a>
-            <div class="recent-works__project-meta">
-              <span class="recent-works__project-number" aria-hidden="true">
-                {project.number}
-              </span>
-              <a href="/projects" class="recent-works__project-name">
-                {project.title}
-                <div class="recent-works__project-name-border"></div>
-              </a>
+            <div class="recent-works__project-meta flex flex-col md:flex-row md:items-start justify-between gap-4" data-rw-meta={idx}>
+              <div class="flex items-start gap-4 flex-1">
+                <span class="recent-works__project-number pt-1" aria-hidden="true">
+                  {project.number}
+                </span>
+                <div>
+                  <a href="/projects" class="recent-works__project-name">
+                    {project.title}
+                    <div class="recent-works__project-name-border"></div>
+                  </a>
+                  <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-2xl font-normal leading-relaxed">{project.description}</p>
+                </div>
+              </div>
               <a href="/projects" class="recent-works__project-category">
                 {project.category}
               </a>
@@ -342,6 +347,7 @@ import { portfolioProjects } from "../data/siteData";
     const rightText = wrapper.querySelector<HTMLElement>('[data-rw-right]');
     const projectsArea = wrapper.querySelector<HTMLElement>('[data-rw-projects]');
     const items = wrapper.querySelectorAll<HTMLElement>('[data-rw-item]');
+    const metas = wrapper.querySelectorAll<HTMLElement>('[data-rw-meta]');
 
     ScrollTrigger.matchMedia({
       // Desktop and tablet (>= 992px)
@@ -358,6 +364,10 @@ import { portfolioProjects } from "../data/siteData";
             gsap.set(item, { opacity: 1, y: 0 });
           }
         });
+
+        if (metas[0]) {
+          gsap.set(metas[0], { opacity: 0, y: 15, maxHeight: 0, paddingTop: 0, paddingBottom: 0, overflow: 'hidden' });
+        }
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -379,21 +389,24 @@ import { portfolioProjects } from "../data/siteData";
         // Phase 2: Width expands from 20% to 100%
         tl.to(projectsArea, { width: "100%", ease: "power1.inOut", duration: 1.6 }, 0.6);
 
-        // Phase 3: Background titles fade out
+        // Phase 3: Background titles fade out and show item 0 content once image is fully enlarged
         tl.to(titleArea, { opacity: 0, ease: "power1.inOut", duration: 1 }, 1.0);
+        if (metas[0]) {
+          tl.to(metas[0], { opacity: 1, y: 0, maxHeight: 180, paddingTop: 20, paddingBottom: 0, ease: "power1.out", duration: 0.8 }, 1.4);
+        }
 
         // Pause on Project 1
         tl.to({}, { duration: 0.6 });
 
-        // Phase 4: Project 2 (Green Residence) slides in
+        // Phase 4: Project 2 slides in
         tl.to(items[1], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
         tl.to({}, { duration: 0.6 });
 
-        // Phase 5: Project 3 (Heritage Museum) slides in
+        // Phase 5: Project 3 slides in
         tl.to(items[2], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
         tl.to({}, { duration: 0.6 });
 
-        // Phase 6: Project 4 (Housing Complex) slides in
+        // Phase 6: Project 4 slides in
         tl.to(items[3], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
         tl.to({}, { duration: 0.6 });
       },
@@ -404,6 +417,9 @@ import { portfolioProjects } from "../data/siteData";
         items.forEach((item) => {
           gsap.set(item, { clearProps: "all" });
         });
+        if (metas[0]) {
+          gsap.set(metas[0], { clearProps: "all" });
+        }
       }
     });
 

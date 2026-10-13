@@ -3,80 +3,75 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionLabel from "../components/SectionLabel.astro";
 import Button from "../components/Button.astro";
 import ProjectCTA from "../components/ProjectCTA.astro";
-
-const teamMembers = [
-  {
-    name: "Alexander Vance",
-    role: "Principal Architect & Founder",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
-  },
-  {
-    name: "Clara Dupont",
-    role: "Lead Interior Designer",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85",
-  },
-  {
-    name: "Marcus Sterling",
-    role: "Director of Urban Systems",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85",
-  },
-];
 ---
 
 <BaseLayout
-  title="About Arcline — Distinguished Canadian Architectural Studio"
-  description="Discover the history, philosophy, and team behind Arcline Architecture in Canada."
+  title="About Us & 10-Year Practice Case Study — Specialized Patient Acquisition"
+  description="How Dr. Ryan Diepenbrock scaled to regional market dominance across a decade of digital shift."
 >
-  <div class="pt-32 pb-20 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+  <div class="pt-24 pb-16 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <!-- Breadcrumb / Header -->
-    <div class="mb-4">
-      <SectionLabel text="ABOUT OUR PRACTICE" />
+    <div class="mb-3">
+      <SectionLabel text="ABOUT US" />
     </div>
 
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#030303] mb-8 max-w-4xl">
-      Shaping Environments Through Thoughtful Craft & Innovation
-    </h1>
+    <!-- Large Editorial Narrative Statement -->
+    <div class="max-w-4xl mb-10 md:mb-12">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#030303] leading-tight mb-5">
+        380% Retainer Growth over 10 Years
+      </h1>
+      <p class="text-xl sm:text-2xl font-medium text-neutral-800 leading-relaxed mb-4">
+        How Dr. Ryan Diepenbrock (Diepenbrock Facial Cosmetic Surgery — Fort Wayne, IN) Scaled to Regional Market Dominance Across a Decade of Digital Shift.
+      </p>
+      <p class="text-base sm:text-lg text-neutral-600 leading-relaxed">
+        In an industry where practices fire marketing agencies every 6 to 12 months, Dr. Diepenbrock has trusted our search and patient acquisition architecture for a decade. By evolving renewedlook.com from basic local search in 2016 to modern AI Search (AEO) and high-converting procedure hubs today, his monthly reinvestment grew nearly 4x—driven entirely by compounding patient consult revenue.
+      </p>
+    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
-      <div class="lg:col-span-7">
-        <p class="text-xl sm:text-2xl text-neutral-800 leading-relaxed font-light">
-          Founded in Montreal in 2010, Arcline has evolved into a nationally recognized architectural practice. We reject superficial trends in favor of timeless tactile geometry, ecological stewardship, and human-centered daylight analysis.
-        </p>
-      </div>
-      <div class="lg:col-span-5 space-y-4 text-neutral-600 leading-relaxed text-sm sm:text-base">
-        <p>
-          Every commission is approached as a site-specific dialogue between geology, light, and occupant ritual. Our multidisciplinary studio unifies architecture, interior spatial planning, landscape integration, and structural feasibility.
-        </p>
-        <div>
-          <Button href="#contact" variant="black" showIcon={true}>
-            Work With Us
-          </Button>
+    <!-- 2-Column Layout: Left = Eyeball Image, Right = Growth Timeline Block -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch mb-16">
+      <!-- Left Column: Clean Eyeball Image -->
+      <div class="lg:col-span-7 flex">
+        <div class="overflow-hidden rounded-2xl md:rounded-3xl shadow-lg border border-black/5 w-full h-full min-h-[320px] group bg-neutral-950 flex">
+          <img
+            src="/images/Eyeball BC.webp"
+            alt="Specialized bionic eyeball digital aesthetic for plastic and facial cosmetic surgeons"
+            class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            loading="lazy"
+          />
         </div>
       </div>
-    </div>
 
-    <!-- Team Section -->
-    <div id="team" class="pt-12 border-t border-black/10">
-      <div class="mb-8">
-        <SectionLabel text="LEADERSHIP" />
-        <h2 class="text-3xl font-bold text-[#030303] mt-2">Partners & Principals</h2>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {teamMembers.map((member) => (
-          <div class="group">
-            <div class="overflow-hidden rounded-2xl aspect-[3/4] mb-4 bg-neutral-100 border border-black/5">
-              <img
-                src={member.image}
-                alt={member.name}
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
-              />
-            </div>
-            <h3 class="text-xl font-bold text-[#030303]">{member.name}</h3>
-            <p class="text-sm text-neutral-500">{member.role}</p>
+      <!-- Right Column: Growth Timeline & Retainer Expansion Block (replacing second image) -->
+      <div class="lg:col-span-5 flex">
+        <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-lg w-full flex flex-col justify-between">
+          <div class="mb-3">
+            <h3 class="text-base sm:text-lg font-bold text-black mb-1">
+              Growth Timeline & Retainer Expansion
+            </h3>
+            <p class="text-neutral-600 text-xs sm:text-sm">
+              A decade-long trajectory of expanding partnership and compounding patient consult revenue.
+            </p>
           </div>
-        ))}
+          <div class="space-y-2">
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2016 • $1,000/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">Foundational Local Search & Core Pages</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2018 • $1,500/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">Procedure Page Architecture & Gallery UX</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2021 • $3,000/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">Map Pack Dominance & Mobile Conversion</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 w-fit">2024 • $3,800/mo</span>
+              <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">AI Search, GEO/AEO Authority & Entity Building</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

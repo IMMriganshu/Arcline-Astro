@@ -3,18 +3,19 @@ interface Props {
   variant?: "dark" | "light";
   size?: "sm" | "md" | "lg";
   class?: string;
+  tagline?: string;
 }
 
-const { variant = "dark", size = "md", class: className = "" } = Astro.props;
+const { variant = "dark", size = "md", class: className = "", tagline } = Astro.props;
 
 const isLight = variant === "light";
 const textColor = isLight ? "text-white" : "text-[#030303]";
 const barBg = isLight ? "bg-white" : "bg-[#030303]";
 
 const iconSizes = {
-  sm: "h-5 w-5",
-  md: "h-6 w-6",
-  lg: "h-8 w-8",
+  sm: "h-6 w-6",
+  md: "h-8 w-8",
+  lg: "h-10 w-10",
 };
 
 const textSizes = {
@@ -24,14 +25,15 @@ const textSizes = {
 };
 ---
 
-<a href="/" class={`inline-flex items-center gap-2.5 group select-none ${className}`}>
-  <!-- Arcline 3-bar architectural graphic icon -->
-  <div class={`flex items-end gap-1 ${iconSizes[size]}`} aria-hidden="true">
-    <span class={`w-1.5 h-3.5 rounded-full transition-transform duration-300 group-hover:scale-y-110 ${barBg}`}></span>
-    <span class={`w-1.5 h-5.5 rounded-full transition-transform duration-300 group-hover:scale-y-90 ${barBg}`}></span>
-    <span class={`w-1.5 h-4.5 rounded-full transition-transform duration-300 group-hover:scale-y-125 ${barBg}`}></span>
+<a href="/" class={`inline-flex items-center gap-3 group select-none ${className}`}>
+  <!-- New logo -->
+  <div class={iconSizes[size]}>
+    <img src="/images/seelutions-favicon.png" alt="Seelutions Logo" class="w-full h-full object-contain" />
   </div>
-  <span class={`font-bold tracking-tight ${textColor} ${textSizes[size]}`}>
-    Arcline
-  </span>
+  <div class="flex flex-col">
+    <span class={`font-bold tracking-tight ${textColor} ${textSizes[size]}`}>
+      Seelutions
+    </span>
+    {tagline && <span class="text-[10px] font-medium text-neutral-500 uppercase tracking-wide -mt-0.5">{tagline}</span>}
+  </div>
 </a>
