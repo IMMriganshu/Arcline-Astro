@@ -66,8 +66,8 @@ export default function AdminDashboard() {
         if (json.data) {
           const effectiveHook =
             dedicatedHook ||
-            localData?.siteConfig?.vercelDeployHookUrl ||
             json.data.siteConfig?.vercelDeployHookUrl ||
+            localData?.siteConfig?.vercelDeployHookUrl ||
             '';
 
           const merged = {
