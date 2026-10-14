@@ -121,17 +121,36 @@ export function getSiteConfig() {
  */
 export function saveServerCmsData(data: CmsData): boolean {
   try {
-    const targetPath = isServerless ? path.resolve('/tmp', 'cmsContent.json') : CMS_FILE_PATH;
-    const dir = path.dirname(targetPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
     const updated = {
       ...data,
       lastPublishedAt: new Date().toISOString(),
       version: (data.version || 1) + 1,
     };
-    fs.writeFileSync(targetPath, JSON.stringify(updated, null, 2), 'utf-8');
+
+    // Try writing to primary source path if writable
+    try {
+      const primaryPath = path.resolve(process.cwd(), 'src/data/cmsContent.json');
+      const dir = path.dirname(primaryPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(primaryPath, JSON.stringify(updated, null, 2), 'utf-8');
+    } catch {
+      // Ignore if read-only filesystem
+    }
+
+    // Also write to serverless /tmp path
+    try {
+      const tmpPath = path.resolve('/tmp', 'cmsContent.json');
+      const tmpDir = path.dirname(tmpPath);
+      if (!fs.existsSync(tmpDir)) {
+        fs.mkdirSync(tmpDir, { recursive: true });
+      }
+      fs.writeFileSync(tmpPath, JSON.stringify(updated, null, 2), 'utf-8');
+    } catch {
+      // Ignore
+    }
+
     return true;
   } catch (err) {
     console.error('Error saving CMS file to disk:', err);

@@ -42,24 +42,40 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
     }
 
-    // Fetch initial CMS content
+    let localData: CmsData | null = null;
+    try {
+      const local = localStorage.getItem('arcline_cms_content_v1');
+      if (local) {
+        localData = JSON.parse(local);
+        if (localData) {
+          setCmsData(localData);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load local CMS data', e);
+    }
+
+    // Fetch initial CMS content from API
     fetch('/api/cms')
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
-          setCmsData(json.data);
-        } else {
-          // Check local storage fallback
-          const local = localStorage.getItem('arcline_cms_content_v1');
-          if (local) {
-            setCmsData(JSON.parse(local));
-          }
+          // If localData has a webhook URL that API doesn't, keep localData's siteConfig
+          const merged = {
+            ...json.data,
+            siteConfig: {
+              ...json.data.siteConfig,
+              vercelDeployHookUrl:
+                localData?.siteConfig?.vercelDeployHookUrl || json.data.siteConfig?.vercelDeployHookUrl || '',
+            },
+          };
+          setCmsData(merged);
+          localStorage.setItem('arcline_cms_content_v1', JSON.stringify(merged));
         }
       })
       .catch(() => {
-        const local = localStorage.getItem('arcline_cms_content_v1');
-        if (local) {
-          setCmsData(JSON.parse(local));
+        if (localData) {
+          setCmsData(localData);
         }
       });
   }, []);
