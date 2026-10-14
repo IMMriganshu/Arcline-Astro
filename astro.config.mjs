@@ -8,7 +8,7 @@ const isVercel = process.env.VERCEL === '1' || !!process.env.VERCEL;
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: 'server',
   adapter: isVercel ? vercel() : node({ mode: 'standalone' }),
   integrations: [react()],
   server: {

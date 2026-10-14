@@ -11,4 +11,4 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = getFirestore(app, 'ai-studio-arcbesarchitectu-e848cfe6-483d-46f7-8ddc-25160dc1e05c');
