@@ -42,12 +42,16 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
     }
 
+    const dedicatedHook = localStorage.getItem('arcline_vercel_hook');
     let localData: CmsData | null = null;
     try {
       const local = localStorage.getItem('arcline_cms_content_v1');
       if (local) {
         localData = JSON.parse(local);
         if (localData) {
+          if (dedicatedHook && localData.siteConfig) {
+            localData.siteConfig.vercelDeployHookUrl = dedicatedHook;
+          }
           setCmsData(localData);
         }
       }
@@ -60,17 +64,24 @@ export default function AdminDashboard() {
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
-          // If localData has a webhook URL that API doesn't, keep localData's siteConfig
+          const effectiveHook =
+            dedicatedHook ||
+            localData?.siteConfig?.vercelDeployHookUrl ||
+            json.data.siteConfig?.vercelDeployHookUrl ||
+            '';
+
           const merged = {
             ...json.data,
             siteConfig: {
               ...json.data.siteConfig,
-              vercelDeployHookUrl:
-                localData?.siteConfig?.vercelDeployHookUrl || json.data.siteConfig?.vercelDeployHookUrl || '',
+              vercelDeployHookUrl: effectiveHook,
             },
           };
           setCmsData(merged);
           localStorage.setItem('arcline_cms_content_v1', JSON.stringify(merged));
+          if (effectiveHook) {
+            localStorage.setItem('arcline_vercel_hook', effectiveHook);
+          }
         }
       })
       .catch(() => {
@@ -114,6 +125,9 @@ export default function AdminDashboard() {
 
       // Save to localStorage
       localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updated));
+      if (updated.siteConfig?.vercelDeployHookUrl) {
+        localStorage.setItem('arcline_vercel_hook', updated.siteConfig.vercelDeployHookUrl);
+      }
       window.dispatchEvent(new CustomEvent('cms:updated', { detail: updated }));
 
       // Save to API
