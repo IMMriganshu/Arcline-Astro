@@ -14,6 +14,7 @@
   "dependencies": {
     "@astrojs/node": "^11.1.7",
     "@astrojs/react": "^7.0.1",
+    "@astrojs/vercel": "^11.0.14",
     "@tailwindcss/vite": "^4.3.3",
     "@types/gsap": "^3.0.0",
     "@types/react": "^19.3.0",

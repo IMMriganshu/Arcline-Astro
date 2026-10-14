@@ -1,152 +1,91 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import SectionLabel from "../../components/SectionLabel.astro";
 import Button from "../../components/Button.astro";
-import ProjectCTA from "../../components/ProjectCTA.astro";
 import { getArticles, getArticleBySlug, defaultArticles } from "../../lib/cms";
-import type { ArticleRecord } from "../../lib/types";
+
+export const prerender = true;
 
 export async function getStaticPaths() {
-  const { articles } = await getArticles();
-  const list = articles.length > 0 ? articles : defaultArticles;
-
-  return list.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
+  const articles = getArticles();
+  const list = articles && articles.length > 0 ? articles : defaultArticles;
+  return list.map((art) => ({
+    params: { slug: art.slug },
+    props: { article: art },
   }));
 }
 
-interface Props {
-  article?: ArticleRecord;
-}
-
 const { slug } = Astro.params;
-let article = Astro.props.article;
-
-if (!article && slug) {
-  article = (await getArticleBySlug(slug)) || undefined;
-}
+const articleProp = Astro.props.article;
+const article = articleProp || (slug ? getArticleBySlug(slug) : null) || defaultArticles[0];
 
 if (!article) {
-  return Astro.redirect('/404');
+  return Astro.redirect("/404");
 }
-
-// Format date
-const publishDate = article.published_at
-  ? new Date(article.published_at).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  : 'Recently published';
-
-// Format content lines into readable paragraphs/headings if plain markdown
-const formattedParagraphs = article.content.split('\n\n');
 ---
 
 <BaseLayout
-  title={`${article.seo_title || article.title} — Arcline Perspectives`}
-  description={article.seo_description || article.excerpt}
+  title={`${article.title} — Arcline Editorial`}
+  description={article.excerpt}
 >
-  <article class="pt-28 md:pt-36 pb-20 bg-white">
-    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-      <!-- Back Link & Category -->
-      <div class="flex items-center justify-between mb-8 pb-4 border-b border-black/8">
-        <a
-          href="/blog"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-600 hover:text-black transition-colors"
-        >
-          <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-          Back to Patient Grower
-        </a>
+  <article class="pt-32 pb-24 bg-[#030712] text-white min-h-screen">
+    <div class="max-w-[840px] mx-auto px-4 sm:px-6">
+      <!-- Back Link -->
+      <a
+        href="/#blog"
+        class="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors mb-8"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Back to Patient Grower Editorial</span>
+      </a>
 
-        <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
-          <span class="text-[#C49F58] bg-[#C49F58]/10 px-2.5 py-1 rounded-md border border-[#C49F58]/30">
+      <!-- Header Info -->
+      <header class="mb-10">
+        <div class="flex items-center gap-3 text-xs text-neutral-400 mb-4">
+          <span class="px-2.5 py-1 rounded-full bg-cyan-950 border border-cyan-800/40 text-cyan-300 font-semibold text-[11px]">
             {article.category}
           </span>
-          <span>•</span>
-          <span>{publishDate}</span>
+          <span>·</span>
+          <span>{article.date}</span>
+          <span>·</span>
+          <span>{article.readTime}</span>
         </div>
-      </div>
 
-      <!-- Main Editorial Header -->
-      <div class="max-w-4xl mx-auto mb-10 text-center">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#030303] leading-[1.15] mb-6">
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-urbanist leading-[1.15] mb-6">
           {article.title}
         </h1>
 
-        <p class="text-lg sm:text-xl text-neutral-600 leading-relaxed max-w-3xl mx-auto mb-8 font-medium">
+        <p class="text-lg text-neutral-300 leading-relaxed font-light">
           {article.excerpt}
         </p>
+      </header>
 
-        <!-- Author Byline -->
-        <div class="flex items-center justify-center gap-3 text-sm text-neutral-700">
-          <div class="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center font-bold text-xs uppercase">
-            {article.author_name.slice(0, 2)}
-          </div>
-          <span class="font-semibold">{article.author_name}</span>
-          <span class="text-neutral-400">•</span>
-          <span class="text-neutral-500">Verified Medical Practice Insight</span>
-        </div>
-      </div>
-
-      <!-- Hero Image -->
-      <div class="max-w-5xl mx-auto mb-14 overflow-hidden rounded-2xl md:rounded-3xl border border-black/5 shadow-xl aspect-[16/9] bg-neutral-900">
-        <img
-          src={article.cover_image}
-          alt={article.cover_image_alt || article.title}
-          class="w-full h-full object-cover"
-          loading="eager"
-        />
-      </div>
-
-      <!-- Article Reading Body -->
-      <div class="max-w-3xl mx-auto prose prose-lg prose-neutral prose-headings:font-bold prose-headings:text-[#030303] prose-p:text-neutral-700 prose-p:leading-relaxed prose-li:text-neutral-700">
-        {formattedParagraphs.map((block) => {
-          if (block.startsWith('## ')) {
-            return <h2 class="text-2xl sm:text-3xl font-bold mt-10 mb-4 text-[#030303] tracking-tight">{block.replace('## ', '')}</h2>;
-          }
-          if (block.startsWith('### ')) {
-            return <h3 class="text-xl sm:text-2xl font-bold mt-8 mb-3 text-[#030303] tracking-tight">{block.replace('### ', '')}</h3>;
-          }
-          if (block.startsWith('# ')) {
-            return <h2 class="text-2xl sm:text-3xl font-bold mt-10 mb-4 text-[#030303] tracking-tight">{block.replace('# ', '')}</h2>;
-          }
-          if (block.startsWith('- ')) {
-            const items = block.split('\n').map((i) => i.replace('- ', ''));
-            return (
-              <ul class="my-6 space-y-2 list-disc list-inside">
-                {items.map((it) => <li>{it}</li>)}
-              </ul>
-            );
-          }
-          return <p class="text-base sm:text-lg text-neutral-700 leading-relaxed mb-6">{block}</p>;
-        })}
-      </div>
-
-      <!-- Tags & Share Bridge -->
-      {article.tags && article.tags.length > 0 && (
-        <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-black/8 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mr-2">Topics:</span>
-            {article.tags.map((tag) => (
-              <span class="text-xs font-medium px-3 py-1 bg-neutral-100 rounded-full text-neutral-700">
-                #{tag}
-              </span>
-            ))}
-          </div>
-          <a
-            href="#contact"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-[#8DC541] hover:underline"
-          >
-            Schedule a confidential practice audit &rarr;
-          </a>
+      <!-- Featured Image -->
+      {article.image && (
+        <div class="rounded-2xl overflow-hidden mb-12 border border-white/10 shadow-2xl aspect-[16/9] bg-neutral-900">
+          <img
+            src={article.image}
+            alt={article.title}
+            class="w-full h-full object-cover"
+          />
         </div>
       )}
+
+      <!-- Body Content -->
+      <div class="prose prose-invert prose-cyan max-w-none text-neutral-200 leading-relaxed space-y-6 text-base" set:html={article.content}>
+      </div>
+
+      <!-- Footer CTA -->
+      <div class="mt-16 p-8 rounded-2xl bg-neutral-900/80 border border-white/10 text-center relative overflow-hidden">
+        <div class="relative z-10 max-w-md mx-auto">
+          <h3 class="text-xl font-bold font-urbanist text-white mb-2">Ready to dominate search in your metropolitan market?</h3>
+          <p class="text-xs text-neutral-400 mb-6">We partner exclusively with one board-certified plastic surgical practice per metropolitan territory.</p>
+          <Button href="/#contact" variant="black" showIcon={true} class="justify-center">
+            Request Practice Territory Audit
+          </Button>
+        </div>
+      </div>
     </div>
   </article>
-
-  <ProjectCTA />
 </BaseLayout>

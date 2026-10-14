@@ -6,6 +6,8 @@ import path from 'node:path';
 const CMS_STORAGE_KEY = 'arcline_cms_content_v1';
 const CMS_FILE_PATH = path.resolve(process.cwd(), 'src/data/cmsContent.json');
 
+export const defaultArticles = defaultCmsContent.articles;
+
 /**
  * Server-side helper to read persistent CMS data from disk or fallback to default
  */
@@ -20,6 +22,64 @@ export function getServerCmsData(): CmsData {
     console.error('Error reading CMS file from disk:', err);
   }
   return defaultCmsContent;
+}
+
+/**
+ * Universal helper to get CMS data in either server or client context
+ */
+export function getCmsData(): CmsData {
+  if (typeof window === 'undefined') {
+    return getServerCmsData();
+  }
+  return getClientCmsData();
+}
+
+/**
+ * Get all blog articles
+ */
+export function getArticles() {
+  const data = getCmsData();
+  return data.articles && data.articles.length > 0 ? data.articles : defaultArticles;
+}
+
+/**
+ * Find an article by its slug
+ */
+export function getArticleBySlug(slug: string) {
+  const articles = getArticles();
+  return articles.find((a) => a.slug === slug);
+}
+
+/**
+ * Get all services
+ */
+export function getServices() {
+  const data = getCmsData();
+  return data.services || defaultCmsContent.services;
+}
+
+/**
+ * Get all case study projects
+ */
+export function getProjects() {
+  const data = getCmsData();
+  return data.projects || defaultCmsContent.projects;
+}
+
+/**
+ * Get all surgeon testimonials
+ */
+export function getTestimonials() {
+  const data = getCmsData();
+  return data.testimonials || defaultCmsContent.testimonials;
+}
+
+/**
+ * Get site configuration
+ */
+export function getSiteConfig() {
+  const data = getCmsData();
+  return data.siteConfig || defaultCmsContent.siteConfig;
 }
 
 /**
