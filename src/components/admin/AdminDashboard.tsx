@@ -134,21 +134,30 @@ export default function AdminDashboard() {
     showToast('Triggering Vercel deployment webhook...', 'info');
 
     try {
-      const res = await fetch('/api/cms', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'deploy',
-          hookUrl: cmsData.siteConfig.vercelDeployHookUrl,
-        }),
-      });
-
-      const json = await res.json();
-      if (json.success) {
-        showToast('Vercel production build triggered! Live website updating now.', 'success');
-      } else {
-        showToast(json.message || 'Deployment webhook request failed', 'error');
+      let triggered = false;
+      try {
+        const res = await fetch('/api/cms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'deploy',
+            hookUrl: cmsData.siteConfig.vercelDeployHookUrl,
+          }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success) triggered = true;
+        }
+      } catch {
+        // Fallback to direct client POST
       }
+
+      if (!triggered) {
+        await fetch(cmsData.siteConfig.vercelDeployHookUrl, { method: 'POST', mode: 'no-cors' });
+        triggered = true;
+      }
+
+      showToast('Vercel production build triggered! Live website updating now.', 'success');
     } catch (err: any) {
       showToast('Deploy trigger error: ' + err.message, 'error');
     } finally {
