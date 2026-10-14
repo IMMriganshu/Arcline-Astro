@@ -28,7 +28,7 @@ import { blogArticles } from "../data/siteData";
     </div>
 
     <!-- 3-Column Editorial Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {blogArticles.map((article, idx) => (
         <article data-animate="fade-up" data-animate-delay={String(idx + 1)} class="group flex flex-col justify-between">
           <div>
