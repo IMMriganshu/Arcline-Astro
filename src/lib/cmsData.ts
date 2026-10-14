@@ -2,9 +2,9 @@ import { getServerCmsData } from './cms';
 import { defaultCmsContent } from '../data/defaultCmsContent';
 import type { CmsData } from './types';
 
-export function getSiteContent(): CmsData {
+export async function getSiteContent(): Promise<CmsData> {
   try {
-    return getServerCmsData();
+    return await getServerCmsData();
   } catch {
     return defaultCmsContent;
   }

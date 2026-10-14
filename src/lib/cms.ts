@@ -1,13 +1,11 @@
 import type { CmsData } from './types';
 import { defaultCmsContent } from '../data/defaultCmsContent';
-import fs from 'node:fs';
-import path from 'node:path';
+import { db } from './firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const CMS_STORAGE_KEY = 'arcline_cms_content_v1';
-const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
-const CMS_FILE_PATH = isServerless
-  ? path.resolve('/tmp', 'cmsContent.json')
-  : path.resolve(process.cwd(), 'src/data/cmsContent.json');
+const CMS_DOC_ID = 'main';
+const CMS_COLLECTION = 'cms_content';
 
 export const defaultArticles = defaultCmsContent.articles;
 
@@ -37,23 +35,18 @@ function isObject(item: any): boolean {
 }
 
 /**
- * Server-side helper to read persistent CMS data from disk or fallback to default
+ * Server-side helper to read persistent CMS data from Firestore
  */
-export function getServerCmsData(): CmsData {
+export async function getServerCmsData(): Promise<CmsData> {
   try {
-    if (fs.existsSync(CMS_FILE_PATH)) {
-      const fileData = fs.readFileSync(CMS_FILE_PATH, 'utf-8');
-      const parsed = JSON.parse(fileData);
-      return deepMerge(defaultCmsContent, parsed);
-    }
-    const localPath = path.resolve(process.cwd(), 'src/data/cmsContent.json');
-    if (fs.existsSync(localPath)) {
-      const fileData = fs.readFileSync(localPath, 'utf-8');
-      const parsed = JSON.parse(fileData);
-      return deepMerge(defaultCmsContent, parsed);
+    const docRef = doc(db, CMS_COLLECTION, CMS_DOC_ID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return deepMerge(defaultCmsContent, docSnap.data() as CmsData);
     }
   } catch (err) {
-    console.error('Error reading CMS file from disk:', err);
+    console.error('Error reading CMS data from Firestore:', err);
   }
   return defaultCmsContent;
 }
@@ -61,9 +54,9 @@ export function getServerCmsData(): CmsData {
 /**
  * Universal helper to get CMS data in either server or client context
  */
-export function getCmsData(): CmsData {
+export async function getCmsData(): Promise<CmsData> {
   if (typeof window === 'undefined') {
-    return getServerCmsData();
+    return await getServerCmsData();
   }
   return getClientCmsData();
 }
@@ -71,92 +64,70 @@ export function getCmsData(): CmsData {
 /**
  * Get all blog articles
  */
-export function getArticles() {
-  const data = getCmsData();
+export async function getArticles() {
+  const data = await getCmsData();
   return data.articles && data.articles.length > 0 ? data.articles : defaultArticles;
 }
 
 /**
  * Find an article by its slug
  */
-export function getArticleBySlug(slug: string) {
-  const articles = getArticles();
+export async function getArticleBySlug(slug: string) {
+  const articles = await getArticles();
   return articles.find((a) => a.slug === slug);
 }
 
 /**
  * Get all services
  */
-export function getServices() {
-  const data = getCmsData();
+export async function getServices() {
+  const data = await getCmsData();
   return data.services || defaultCmsContent.services;
 }
 
 /**
  * Get all case study projects
  */
-export function getProjects() {
-  const data = getCmsData();
+export async function getProjects() {
+  const data = await getCmsData();
   return data.projects || defaultCmsContent.projects;
 }
 
 /**
  * Get all surgeon testimonials
  */
-export function getTestimonials() {
-  const data = getCmsData();
+export async function getTestimonials() {
+  const data = await getCmsData();
   return data.testimonials || defaultCmsContent.testimonials;
 }
 
 /**
  * Get site configuration
  */
-export function getSiteConfig() {
-  const data = getCmsData();
+export async function getSiteConfig() {
+  const data = await getCmsData();
   return data.siteConfig || defaultCmsContent.siteConfig;
 }
 
 /**
- * Server-side helper to persist CMS data to disk
+ * Server-side helper to persist CMS data to Firestore
  */
-export function saveServerCmsData(data: CmsData): boolean {
+export async function saveServerCmsData(data: CmsData): Promise<boolean> {
   try {
     const updated = {
       ...data,
       lastPublishedAt: new Date().toISOString(),
       version: (data.version || 1) + 1,
     };
-
-    // Try writing to primary source path if writable
-    try {
-      const primaryPath = path.resolve(process.cwd(), 'src/data/cmsContent.json');
-      const dir = path.dirname(primaryPath);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-      fs.writeFileSync(primaryPath, JSON.stringify(updated, null, 2), 'utf-8');
-    } catch {
-      // Ignore if read-only filesystem
-    }
-
-    // Also write to serverless /tmp path
-    try {
-      const tmpPath = path.resolve('/tmp', 'cmsContent.json');
-      const tmpDir = path.dirname(tmpPath);
-      if (!fs.existsSync(tmpDir)) {
-        fs.mkdirSync(tmpDir, { recursive: true });
-      }
-      fs.writeFileSync(tmpPath, JSON.stringify(updated, null, 2), 'utf-8');
-    } catch {
-      // Ignore
-    }
-
+    
+    await setDoc(doc(db, CMS_COLLECTION, CMS_DOC_ID), updated);
     return true;
   } catch (err) {
-    console.error('Error saving CMS file to disk:', err);
+    console.error('Error saving CMS data to Firestore:', err);
     return false;
   }
 }
+
 
 /**
  * Client-side helper to get CMS data from localStorage or fallback

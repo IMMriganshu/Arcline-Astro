@@ -2,7 +2,7 @@
 import Button from "./Button.astro";
 import { getSiteContent } from "../lib/cmsData";
 
-const content = getSiteContent();
+const content = await getSiteContent();
 const hero = content.hero;
 ---
 

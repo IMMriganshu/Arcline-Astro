@@ -24,18 +24,19 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    let saved = false;
-    try {
-      saved = saveServerCmsData(body);
-    } catch (e) {
-      console.warn('Filesystem write not supported in current environment (Vercel serverless):', e);
+    const saved = await saveServerCmsData(body);
+    if (!saved) {
+      return new Response(JSON.stringify({ success: false, error: 'Failed to write CMS content to Firestore' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: saved ? 'Content saved to disk' : 'Content accepted (session/client storage active)',
-        data: body,
+        message: 'Content published and saved successfully',
+        data: await getServerCmsData(),
       }),
       {
         status: 200,

@@ -2,7 +2,7 @@
 import SectionLabel from "./SectionLabel.astro";
 import { getProjects } from "../lib/cms";
 
-const portfolioProjects = getProjects();
+const portfolioProjects = await getProjects();
 ---
 
 <section class="recent-works" id="portfolio">

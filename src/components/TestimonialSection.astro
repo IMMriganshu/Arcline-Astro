@@ -2,7 +2,7 @@
 import SectionLabel from "./SectionLabel.astro";
 import { getTestimonials } from "../lib/cms";
 
-const testimonialsData = getTestimonials();
+const testimonialsData = await getTestimonials();
 ---
 
 <section id="testimonials" class="py-10 md:py-24 relative">

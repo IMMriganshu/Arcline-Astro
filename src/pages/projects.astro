@@ -4,7 +4,7 @@ import SectionLabel from "../components/SectionLabel.astro";
 import { getProjects } from "../lib/cms";
 import ProjectCTA from "../components/ProjectCTA.astro";
 
-const portfolioProjects = getProjects();
+const portfolioProjects = await getProjects();
 ---
 
 <BaseLayout

@@ -4,7 +4,7 @@ import SectionLabel from "./SectionLabel.astro";
 import { pagesDropdownData } from "../data/siteData";
 import { getSiteConfig } from "../lib/cms";
 
-const siteConfig = getSiteConfig();
+const siteConfig = await getSiteConfig();
 ---
 
 <footer id="contact" class="bg-[#050505] text-white pt-20 pb-8">

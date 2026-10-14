@@ -3,7 +3,7 @@ import SectionLabel from "./SectionLabel.astro";
 import Button from "./Button.astro";
 import { getServices } from "../lib/cms";
 
-const servicesData = getServices();
+const servicesData = await getServices();
 ---
 
 <section id="services" class="py-10 md:py-24 relative">

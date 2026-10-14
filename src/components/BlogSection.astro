@@ -3,7 +3,7 @@ import SectionLabel from "./SectionLabel.astro";
 import Button from "./Button.astro";
 import { getArticles } from "../lib/cms";
 
-const blogArticles = getArticles().filter((a: any) => a.published);
+const blogArticles = (await getArticles()).filter((a: any) => a.published);
 ---
 
 <section id="blog" class="py-16 md:py-28 relative bg-[#fff]">

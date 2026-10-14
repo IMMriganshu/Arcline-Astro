@@ -6,7 +6,7 @@ import { getArticles, getArticleBySlug, defaultArticles } from "../../lib/cms";
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const articles = getArticles();
+  const articles = await getArticles();
   const list = articles && articles.length > 0 ? articles : defaultArticles;
   return list.map((art) => ({
     params: { slug: art.slug },
