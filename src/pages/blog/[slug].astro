@@ -3,20 +3,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Button from "../../components/Button.astro";
 import { getArticles, getArticleBySlug, defaultArticles } from "../../lib/cms";
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const articles = await getArticles();
-  const list = articles && articles.length > 0 ? articles : defaultArticles;
-  return list.map((art) => ({
-    params: { slug: art.slug },
-    props: { article: art },
-  }));
-}
+export const prerender = false;
 
 const { slug } = Astro.params;
-const articleProp = Astro.props.article;
-const article = articleProp || (slug ? getArticleBySlug(slug) : null) || defaultArticles[0];
+const article = await getArticleBySlug(slug || '');
 
 if (!article) {
   return Astro.redirect("/404");
