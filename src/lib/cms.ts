@@ -12,6 +12,31 @@ const CMS_FILE_PATH = isServerless
 export const defaultArticles = defaultCmsContent.articles;
 
 /**
+ * Helper to deep merge default and saved CMS data
+ */
+function deepMerge(target: any, source: any): any {
+  const output = { ...target };
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach((key) => {
+      if (isObject(source[key])) {
+        if (!(key in output)) {
+          Object.assign(output, { [key]: source[key] });
+        } else {
+          output[key] = deepMerge(output[key], source[key]);
+        }
+      } else {
+        Object.assign(output, { [key]: source[key] });
+      }
+    });
+  }
+  return output;
+}
+
+function isObject(item: any): boolean {
+  return item && typeof item === 'object' && !Array.isArray(item);
+}
+
+/**
  * Server-side helper to read persistent CMS data from disk or fallback to default
  */
 export function getServerCmsData(): CmsData {
@@ -19,13 +44,13 @@ export function getServerCmsData(): CmsData {
     if (fs.existsSync(CMS_FILE_PATH)) {
       const fileData = fs.readFileSync(CMS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      return { ...defaultCmsContent, ...parsed };
+      return deepMerge(defaultCmsContent, parsed);
     }
     const localPath = path.resolve(process.cwd(), 'src/data/cmsContent.json');
     if (fs.existsSync(localPath)) {
       const fileData = fs.readFileSync(localPath, 'utf-8');
       const parsed = JSON.parse(fileData);
-      return { ...defaultCmsContent, ...parsed };
+      return deepMerge(defaultCmsContent, parsed);
     }
   } catch (err) {
     console.error('Error reading CMS file from disk:', err);
