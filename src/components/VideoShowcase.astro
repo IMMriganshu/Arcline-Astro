@@ -1,16 +1,20 @@
 ---
 ---
 
-<section class="py-8 md:py-16 relative">
-  <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+<section class="py-0 relative">
+  <div class="w-full">
     <!-- Large Rounded Feature Architecture Showcase (Recording 00:42-00:45) -->
-    <div data-animate="scale-in" class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-black/5 aspect-[16/9] md:aspect-[21/9] group bg-neutral-900">
-      <img
-        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2100&q=85"
-        alt="Illuminated contemporary architectural villa with swimming pool at twilight"
+    <div data-animate="scale-in" class="relative overflow-hidden shadow-xl border border-black/5 aspect-[16/9] md:aspect-[21/9] group bg-neutral-900">
+      <video
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
         class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-        loading="lazy"
-      />
+      >
+        <source src="/videos/title-video.mp4" type="video/mp4" />
+      </video>
 
       <!-- Dark overlay gradient -->
       <div class="absolute inset-0 bg-black/25 transition-colors group-hover:bg-black/35"></div>
@@ -50,16 +54,15 @@
         </svg>
       </button>
 
-      <div class="aspect-video w-full bg-neutral-950 flex flex-col items-center justify-center p-8 text-center">
-        <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-4 text-[#C5A880]">
-          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-        </div>
-        <h3 class="text-2xl font-bold text-white mb-2">Arcline Architectural Cinema Tour</h3>
-        <p class="text-neutral-400 max-w-md text-sm">
-          A high-definition visual walkthrough of our flagship residences, showcasing fluid indoor-outdoor transitions and bespoke material craft.
-        </p>
+      <div class="aspect-video w-full bg-black flex items-center justify-center">
+        <video
+          id="modal-video"
+          autoplay
+          controls
+          class="w-full h-full"
+        >
+          <source src="/videos/title-video.mp4" type="video/mp4" />
+        </video>
       </div>
     </div>
   </div>

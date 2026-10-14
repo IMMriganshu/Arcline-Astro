@@ -5,8 +5,8 @@ import Button from "./Button.astro";
 <section id="hero" class="home-hero">
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <div class="home-hero__wrapper">
-      <!-- Title with continuous looping video-through-text mask effect -->
-      <div class="home-hero__title-wrapper" id="hero-title-wrapper">
+    <!-- Title with continuous looping video-through-text mask effect -->
+    <div class="home-hero__title-wrapper" id="hero-title-wrapper">
         <div class="home-hero__video-bg" aria-hidden="true">
           <video
             id="hero-title-video"
@@ -42,49 +42,11 @@ import Button from "./Button.astro";
 
                 <!-- Official Seelutions Icon -->
                 <span class="home-hero__icon-box" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 100 100"
-                    class="home-hero__icon-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <!-- Video Pass-Through Chamber 1 (Top-Left) -->
-                    <path
-                      d="M 5 68 C 32 66, 52 44, 95 22 L 95 23 A 18 18 0 0 0 77 5 L 23 5 A 18 18 0 0 0 5 23 Z"
-                      fill="#000000"
-                    />
-                    <!-- Video Pass-Through Chamber 2 (Bottom-Right) -->
-                    <path
-                      d="M 5 80 C 35 78, 55 56, 95 34 L 95 77 A 18 18 0 0 1 77 95 L 23 95 A 18 18 0 0 1 5 77 Z"
-                      fill="#000000"
-                    />
-                    <!-- Outer Rounded Frame Stroke -->
-                    <rect
-                      x="5"
-                      y="5"
-                      width="90"
-                      height="90"
-                      rx="18"
-                      fill="none"
-                      stroke="#0e1732"
-                      stroke-width="7"
-                      stroke-linejoin="round"
-                    />
-                    <!-- S-Curve Wave Strokes -->
-                    <path
-                      d="M 5 68 C 32 66, 52 44, 95 22"
-                      fill="none"
-                      stroke="#0e1732"
-                      stroke-width="6"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      d="M 5 80 C 35 78, 55 56, 95 34"
-                      fill="none"
-                      stroke="#0e1732"
-                      stroke-width="6"
-                      stroke-linecap="round"
-                    />
-                  </svg>
+                  <img
+                    src="/images/seelutions%20new%20updatedLogo.png"
+                    alt="Seelutions Logo"
+                    class="w-full h-full object-contain filter grayscale brightness-0"
+                  />
                 </span>
               </div>
 
@@ -112,7 +74,7 @@ import Button from "./Button.astro";
       </div>
 
       <!-- Full-Width Hero Banner with Overlaid Content on Right (Matching Reference Image) -->
-      <div class="hero-banner-card relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-white/10 my-4" id="hero-banner" data-hero-animate>
+      <div class="hero-banner-card sticky top-24 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-white/10" id="hero-banner" data-hero-animate>
         <!-- Background Image -->
         <div class="absolute inset-0 w-full h-full z-0">
           <img
@@ -125,7 +87,7 @@ import Button from "./Button.astro";
             class="w-full h-full object-cover object-left"
           />
           <!-- Gradient overlay on right side to ensure text readability -->
-          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#050b1a]/60 to-[#030712]/90 lg:from-transparent lg:via-[#050b1a]/50 lg:to-[#030712]/85"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-[#050b1a]/80 to-[#030712]/95 lg:from-transparent lg:via-[#050b1a]/50 lg:to-[#030712]/85"></div>
         </div>
 
         <!-- Content Container (Grid layout with text on right) -->
@@ -141,12 +103,12 @@ import Button from "./Button.astro";
             </div>
 
             <!-- Main Headline -->
-            <h2 class="text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white mb-4 font-urbanist leading-[1.15]">
-              Be Seen in Search. Be Chosen by High-Ticket Patients.
+            <h2 class="text-4xl sm:text-6xl xl:text-7xl font-extrabold tracking-tight text-white mb-6 pt-8 font-urbanist leading-[1.1]">
+              Be Seen in Search. <br class="sm:hidden" /> Be Chosen by <br class="sm:hidden" /> High-Ticket Patients.
             </h2>
 
             <!-- Subheadline Paragraph -->
-            <p class="text-neutral-200 text-sm sm:text-base leading-relaxed mb-8 max-w-xl">
+            <p class="text-neutral-100 text-base sm:text-base leading-relaxed mb-10 max-w-xl">
               Stop renting $35 clicks. We engineer long-term search authority, Google Map Pack dominance, and AI search visibility that keeps board-certified surgical calendars booked—predictably and organically.
             </p>
 
@@ -378,7 +340,7 @@ import Button from "./Button.astro";
 
   @media screen and (max-width: 991px) {
     .home-hero {
-      padding-top: 90px;
+      padding-top: 130px;
       padding-bottom: 8px;
     }
     .home-hero__title-wrapper {

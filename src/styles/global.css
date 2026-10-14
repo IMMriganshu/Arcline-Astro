@@ -169,6 +169,11 @@ html.lenis, html.lenis body {
 /* Typography Helpers */
 .font-urbanist {
   font-family: 'Urbanist', sans-serif;
+  text-transform: capitalize;
+}
+
+h1, h2, h3, h4 {
+  text-transform: capitalize;
 }
 
 /* Custom Scrollbar */

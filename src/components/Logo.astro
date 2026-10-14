@@ -10,12 +10,11 @@ const { variant = "dark", size = "md", class: className = "", tagline } = Astro.
 
 const isLight = variant === "light";
 const textColor = isLight ? "text-white" : "text-[#030303]";
-const barBg = isLight ? "bg-white" : "bg-[#030303]";
 
 const iconSizes = {
-  sm: "h-6 w-6",
-  md: "h-8 w-8",
-  lg: "h-10 w-10",
+  sm: "h-10 w-10",
+  md: "h-16 w-16",
+  lg: "h-20 w-20",
 };
 
 const textSizes = {
@@ -28,12 +27,12 @@ const textSizes = {
 <a href="/" class={`inline-flex items-center gap-3 group select-none ${className}`}>
   <!-- New logo -->
   <div class={iconSizes[size]}>
-    <img src="/images/seelutions-favicon.png" alt="Seelutions Logo" class="w-full h-full object-contain" />
+    <img src="/images/seelutions%20new%20updatedLogo.png" alt="Seelutions Logo" class="w-full h-full object-contain" />
   </div>
   <div class="flex flex-col">
     <span class={`font-bold tracking-tight ${textColor} ${textSizes[size]}`}>
       Seelutions
     </span>
-    {tagline && <span class="text-[10px] font-medium text-neutral-500 uppercase tracking-wide -mt-0.5">{tagline}</span>}
+    {tagline && <span class="text-[10px] font-medium text-neutral-500 uppercase tracking-widest -mt-0.5">{tagline}</span>}
   </div>
 </a>
