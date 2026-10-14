@@ -368,4 +368,161 @@ var CacheNotEnabled = {
 	hint: "Use an adapter that provides a default cache provider, or set one explicitly: `cache: { provider: \"...\" }`. See https://docs.astro.build/en/guides/caching/."
 };
 //#endregion
-export { MissingMediaQueryDirective as A, PrerenderClientAddressNotAvailable as B, LocalImageUsedWrongly as C, MiddlewareNotAResponse as D, MiddlewareNoDataOrNextCalled as E, NoMatchingImport as F, RewriteWithBodyUsed as G, RemoteImageNotAllowed as H, NoMatchingRenderer as I, UnsupportedImageConversion as J, StaticClientAddressNotAvailable as K, NoMatchingStaticPathFound as L, NoClientOnlyHint as M, NoImageMetadata as N, MissingGetFontFileRequestUrl as O, NoManifestAvailable as P, isAstroError as Q, OnlyResponseCanBeReturned as R, InvalidImageService as S, LocalsReassigned as T, ReservedSlotName as U, PrerenderDynamicEndpointPathCollide as V, ResponseSentError as W, i18nNoLocaleFoundInPath as X, UnsupportedImageFormat as Y, AstroError as Z, ImageMissingAlt as _, ClientAddressNotAvailable as a, InvalidGetStaticPathsEntry as b, ExpectedImageOptions as c, FontFamilyNotFound as d, FontFileUrlNotFound as f, GetStaticPathsRequired as g, GetStaticPathsInvalidRouteParam as h, CacheNotEnabled as i, MissingSharp as j, MissingImageDimension as k, ExpectedNotESMImage as l, GetStaticPathsExpectedParams as m, ActionsReturnedInvalidDataError as n, EndpointDidNotReturnAResponse as o, ForbiddenRewrite as p, UnavailableAstroGlobal as q, AstroResponseHeadersReassigned as r, ExpectedImage as s, ActionNotFoundError as t, FailedToFetchRemoteImageDimensions as u, IncompatibleDescriptorOptions as v, LocalsNotAnObject as w, InvalidGetStaticPathsReturn as x, InvalidComponentArgs as y, PageNumberParamNotFound as z };
+//#region node_modules/@astrojs/internal-helpers/dist/path.js
+function appendForwardSlash(path) {
+	return path.endsWith("/") ? path : path + "/";
+}
+function prependForwardSlash(path) {
+	return path[0] === "/" ? path : "/" + path;
+}
+var MANY_LEADING_SLASHES = /^\/{2,}/;
+function collapseDuplicateLeadingSlashes(path) {
+	if (!path) return path;
+	return path.replace(MANY_LEADING_SLASHES, "/");
+}
+var MANY_SLASHES = /\/{2,}/g;
+function collapseDuplicateSlashes(path) {
+	if (!path) return path;
+	return path.replace(MANY_SLASHES, "/");
+}
+var MANY_TRAILING_SLASHES = /\/{2,}$/g;
+function collapseDuplicateTrailingSlashes(path, trailingSlash) {
+	if (!path) return path;
+	return path.replace(MANY_TRAILING_SLASHES, trailingSlash ? "/" : "") || "/";
+}
+function removeTrailingForwardSlash(path) {
+	return path.endsWith("/") ? path.slice(0, path.length - 1) : path;
+}
+function removeLeadingForwardSlash(path) {
+	return path.startsWith("/") ? path.substring(1) : path;
+}
+function trimSlashes(path) {
+	return path.replace(/^\/|\/$/g, "");
+}
+function isString(path) {
+	return typeof path === "string" || path instanceof String;
+}
+var INTERNAL_PREFIXES = /* @__PURE__ */ new Set([
+	"/_",
+	"/@",
+	"/.",
+	"//"
+]);
+var JUST_SLASHES = /^\/{2,}$/;
+function isInternalPath(path) {
+	const prefix = path.slice(0, 2).replace(/\\/g, "/");
+	return INTERNAL_PREFIXES.has(prefix) && !JUST_SLASHES.test(path);
+}
+function joinPaths(...paths) {
+	return paths.filter(isString).map((path, i) => {
+		if (i === 0) return removeTrailingForwardSlash(path);
+		else if (i === paths.length - 1) return removeLeadingForwardSlash(path);
+		else return trimSlashes(path);
+	}).join("/");
+}
+function removeQueryString(path) {
+	const index = path.lastIndexOf("?");
+	return index > 0 ? path.substring(0, index) : path;
+}
+function isRemotePath(src) {
+	if (!src) return false;
+	const trimmed = src.trim();
+	if (!trimmed) return false;
+	let decoded = trimmed;
+	let previousDecoded = "";
+	let maxIterations = 10;
+	while (decoded !== previousDecoded && maxIterations > 0) {
+		previousDecoded = decoded;
+		try {
+			decoded = decodeURIComponent(decoded);
+		} catch {
+			break;
+		}
+		maxIterations--;
+	}
+	if (/^[a-zA-Z]:/.test(decoded)) return false;
+	if (decoded[0] === "/" && /^\/[\w.@-]/.test(decoded)) return false;
+	if (decoded[0] === "\\") return true;
+	if (decoded.startsWith("//")) return true;
+	try {
+		const url = new URL(decoded, "http://n");
+		if (url.username || url.password) return true;
+		if (decoded.includes("@") && !url.pathname.includes("@") && !url.search.includes("@")) return true;
+		if (url.origin !== "http://n") {
+			if (url.protocol.toLowerCase() === "file:") return false;
+			return true;
+		}
+		if (URL.canParse(decoded)) return true;
+		return false;
+	} catch {
+		return true;
+	}
+}
+function slash(path) {
+	return path.replace(/\\/g, "/");
+}
+function fileExtension(path) {
+	const ext = path.split(".").pop();
+	return ext !== path ? `.${ext}` : "";
+}
+function stripRequestBase(pathname, base) {
+	pathname = collapseDuplicateLeadingSlashes(pathname);
+	const baseWithoutTrailingSlash = removeTrailingForwardSlash(base);
+	if (pathname === baseWithoutTrailingSlash) return "/";
+	if (pathname.startsWith(baseWithoutTrailingSlash + "/")) return pathname.slice(baseWithoutTrailingSlash.length);
+	return pathname;
+}
+var WITH_FILE_EXT = /\/[^/]+\.\w+$/;
+function hasFileExtension(path) {
+	return WITH_FILE_EXT.test(path);
+}
+//#endregion
+//#region node_modules/@astrojs/internal-helpers/dist/remote.js
+function matchPattern(url, remotePattern) {
+	return matchProtocol(url, remotePattern.protocol) && matchHostname(url, remotePattern.hostname, true) && matchPort(url, remotePattern.port) && matchPathname(url, remotePattern.pathname, true);
+}
+function matchPort(url, port) {
+	return !port || port === url.port;
+}
+function matchProtocol(url, protocol) {
+	return !protocol || protocol === url.protocol.slice(0, -1);
+}
+function matchHostname(url, hostname, allowWildcard = false) {
+	if (!hostname) return true;
+	else if (!allowWildcard || !hostname.startsWith("*")) return hostname === url.hostname;
+	else if (hostname.startsWith("**.")) {
+		const slicedHostname = hostname.slice(2);
+		return slicedHostname !== url.hostname && url.hostname.endsWith(slicedHostname);
+	} else if (hostname.startsWith("*.")) {
+		const slicedHostname = hostname.slice(1);
+		if (!url.hostname.endsWith(slicedHostname)) return false;
+		const subdomainWithDot = url.hostname.slice(0, -(slicedHostname.length - 1));
+		return subdomainWithDot.endsWith(".") && !subdomainWithDot.slice(0, -1).includes(".");
+	}
+	return false;
+}
+function matchPathname(url, pathname, allowWildcard = false) {
+	if (!pathname) return true;
+	else if (!allowWildcard || !pathname.endsWith("*")) return pathname === url.pathname;
+	else if (pathname.endsWith("/**")) {
+		const slicedPathname = pathname.slice(0, -2);
+		return slicedPathname !== url.pathname && url.pathname.startsWith(slicedPathname);
+	} else if (pathname.endsWith("/*")) {
+		const slicedPathname = pathname.slice(0, -1);
+		if (!url.pathname.startsWith(slicedPathname)) return false;
+		return url.pathname.slice(slicedPathname.length).split("/").filter(Boolean).length === 1;
+	}
+	return false;
+}
+function isRemoteAllowed(src, { domains, remotePatterns }) {
+	if (!URL.canParse(src)) return false;
+	const url = new URL(src);
+	if (![
+		"http:",
+		"https:",
+		"data:"
+	].includes(url.protocol)) return false;
+	return domains.some((domain) => matchHostname(url, domain)) || remotePatterns.some((remotePattern) => matchPattern(url, remotePattern));
+}
+//#endregion
+export { NoMatchingImport as $, FontFileUrlNotFound as A, InvalidImageService as B, ClientAddressNotAvailable as C, ExpectedNotESMImage as D, ExpectedImageOptions as E, ImageMissingAlt as F, MiddlewareNotAResponse as G, LocalsNotAnObject as H, IncompatibleDescriptorOptions as I, MissingMediaQueryDirective as J, MissingGetFontFileRequestUrl as K, InvalidComponentArgs as L, GetStaticPathsExpectedParams as M, GetStaticPathsInvalidRouteParam as N, FailedToFetchRemoteImageDimensions as O, GetStaticPathsRequired as P, NoManifestAvailable as Q, InvalidGetStaticPathsEntry as R, CacheNotEnabled as S, ExpectedImage as T, LocalsReassigned as U, LocalImageUsedWrongly as V, MiddlewareNoDataOrNextCalled as W, NoClientOnlyHint as X, MissingSharp as Y, NoImageMetadata as Z, stripRequestBase as _, collapseDuplicateSlashes as a, PrerenderDynamicEndpointPathCollide as at, ActionsReturnedInvalidDataError as b, hasFileExtension as c, ResponseSentError as ct, joinPaths as d, UnavailableAstroGlobal as dt, NoMatchingRenderer as et, prependForwardSlash as f, UnsupportedImageConversion as ft, slash as g, isAstroError as gt, removeTrailingForwardSlash as h, AstroError as ht, collapseDuplicateLeadingSlashes as i, PrerenderClientAddressNotAvailable as it, ForbiddenRewrite as j, FontFamilyNotFound as k, isInternalPath as l, RewriteWithBodyUsed as lt, removeQueryString as m, i18nNoLocaleFoundInPath as mt, matchPattern as n, OnlyResponseCanBeReturned as nt, collapseDuplicateTrailingSlashes as o, RemoteImageNotAllowed as ot, removeLeadingForwardSlash as p, UnsupportedImageFormat as pt, MissingImageDimension as q, appendForwardSlash as r, PageNumberParamNotFound as rt, fileExtension as s, ReservedSlotName as st, isRemoteAllowed as t, NoMatchingStaticPathFound as tt, isRemotePath as u, StaticClientAddressNotAvailable as ut, trimSlashes as v, EndpointDidNotReturnAResponse as w, AstroResponseHeadersReassigned as x, ActionNotFoundError as y, InvalidGetStaticPathsReturn as z };

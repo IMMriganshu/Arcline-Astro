@@ -4,7 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const CMS_STORAGE_KEY = 'arcline_cms_content_v1';
-const CMS_FILE_PATH = path.resolve(process.cwd(), 'src/data/cmsContent.json');
+const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+const CMS_FILE_PATH = isServerless
+  ? path.resolve('/tmp', 'cmsContent.json')
+  : path.resolve(process.cwd(), 'src/data/cmsContent.json');
 
 export const defaultArticles = defaultCmsContent.articles;
 
@@ -15,6 +18,12 @@ export function getServerCmsData(): CmsData {
   try {
     if (fs.existsSync(CMS_FILE_PATH)) {
       const fileData = fs.readFileSync(CMS_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      return { ...defaultCmsContent, ...parsed };
+    }
+    const localPath = path.resolve(process.cwd(), 'src/data/cmsContent.json');
+    if (fs.existsSync(localPath)) {
+      const fileData = fs.readFileSync(localPath, 'utf-8');
       const parsed = JSON.parse(fileData);
       return { ...defaultCmsContent, ...parsed };
     }
@@ -87,7 +96,8 @@ export function getSiteConfig() {
  */
 export function saveServerCmsData(data: CmsData): boolean {
   try {
-    const dir = path.dirname(CMS_FILE_PATH);
+    const targetPath = isServerless ? path.resolve('/tmp', 'cmsContent.json') : CMS_FILE_PATH;
+    const dir = path.dirname(targetPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -96,7 +106,7 @@ export function saveServerCmsData(data: CmsData): boolean {
       lastPublishedAt: new Date().toISOString(),
       version: (data.version || 1) + 1,
     };
-    fs.writeFileSync(CMS_FILE_PATH, JSON.stringify(updated, null, 2), 'utf-8');
+    fs.writeFileSync(targetPath, JSON.stringify(updated, null, 2), 'utf-8');
     return true;
   } catch (err) {
     console.error('Error saving CMS file to disk:', err);
