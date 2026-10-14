@@ -4,9 +4,10 @@ interface Props {
   size?: "sm" | "md" | "lg";
   class?: string;
   tagline?: string;
+  fetchpriority?: "high" | "low" | "auto";
 }
 
-const { variant = "dark", size = "md", class: className = "", tagline } = Astro.props;
+const { variant = "dark", size = "md", class: className = "", tagline, fetchpriority = "auto" } = Astro.props;
 
 const isLight = variant === "light";
 const textColor = isLight ? "text-white" : "text-[#030303]";
@@ -27,7 +28,7 @@ const textSizes = {
 <a href="/" class={`inline-flex items-center gap-3 group select-none ${className}`}>
   <!-- New logo -->
   <div class={iconSizes[size]}>
-    <img src="/images/seelutions%20new%20updatedLogo.png" alt="Seelutions Logo" class="w-full h-full object-contain" />
+    <img src="/images/seelutions%20new%20updatedLogo.png" alt="Seelutions Logo" fetchpriority={fetchpriority} class="w-full h-full object-contain" />
   </div>
   <div class="flex flex-col">
     <span class={`font-bold tracking-tight ${textColor} ${textSizes[size]}`}>
