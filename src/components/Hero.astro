@@ -1,93 +1,100 @@
 ---
 import Button from "./Button.astro";
+import { getSiteContent } from "../lib/cmsData";
+
+const content = getSiteContent();
+const hero = content.hero;
 ---
 
 <section id="hero" class="home-hero">
+  <!-- Full-Width Title with continuous looping video-through-text mask effect spanning across the page -->
+  <div class="w-full home-hero__title-wrapper" id="hero-title-wrapper">
+    <div class="home-hero__video-bg" aria-hidden="true">
+      <video
+        id="hero-title-video"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        class="home-hero__video"
+      >
+        <source src="/videos/title-video.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <div class="home-hero__title-block">
+      <div class="home-hero__title-container">
+        <h1 class="home-hero__title font-urbanist" aria-label="BE SEEN BE CHOSEN">
+          <!-- Line 1: BE SEEN + Outline Icon Inline -->
+          <div class="home-hero__row">
+            <span class="home-hero__line">
+              <span class="home-hero__word">
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="1">B</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="2">E</span></span>
+              </span>
+              <span class="home-hero__space">&nbsp;</span>
+              <span class="home-hero__word">
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="3">S</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="4">E</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="5">E</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="6">N</span></span>
+              </span>
+            </span>
+
+            <!-- Official Seelutions Icon -->
+            <span class="home-hero__icon-box" aria-hidden="true">
+              <img
+                src="/images/seelutions%20new%20updatedLogo.png"
+                alt="Seelutions Logo"
+                class="w-full h-full object-contain filter grayscale brightness-0"
+              />
+            </span>
+          </div>
+
+          <!-- Line 2: BE CHOSEN -->
+          <div class="home-hero__row">
+            <span class="home-hero__line">
+              <span class="home-hero__word">
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="7">B</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="8">E</span></span>
+              </span>
+              <span class="home-hero__space">&nbsp;</span>
+              <span class="home-hero__word">
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="9">C</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="10">H</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="11">O</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="12">S</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="13">E</span></span>
+                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="14">N</span></span>
+              </span>
+            </span>
+          </div>
+        </h1>
+      </div>
+    </div>
+  </div>
+
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <div class="home-hero__wrapper">
-    <!-- Title with continuous looping video-through-text mask effect -->
-    <div class="home-hero__title-wrapper" id="hero-title-wrapper">
-        <div class="home-hero__video-bg" aria-hidden="true">
+      <!-- Full-Width Hero Banner with Overlaid Content on Right -->
+      <div class="hero-banner-card sticky top-24 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-white/10" id="hero-banner" data-hero-animate>
+        <!-- Background Video / Image (Fitting Plastic & Facial Cosmetic Surgeon Patient Acquisition) -->
+        <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
           <video
-            id="hero-title-video"
+            id="hero-banner-video"
             autoplay
             loop
             muted
             playsinline
-            preload="metadata"
-            class="home-hero__video"
-          >
-            <source src="/videos/title-video.mp4" type="video/mp4" />
-          </video>
-        </div>
-
-        <div class="home-hero__title-block">
-          <div class="home-hero__title-container">
-            <h1 class="home-hero__title font-urbanist" aria-label="BE SEEN BE CHOSEN">
-              <!-- Line 1: BE SEEN + Outline Icon Inline -->
-              <div class="home-hero__row">
-                <span class="home-hero__line">
-                  <span class="home-hero__word">
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="1">B</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="2">E</span></span>
-                  </span>
-                  <span class="home-hero__space">&nbsp;</span>
-                  <span class="home-hero__word">
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="3">S</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="4">E</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="5">E</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="6">N</span></span>
-                  </span>
-                </span>
-
-                <!-- Official Seelutions Icon -->
-                <span class="home-hero__icon-box" aria-hidden="true">
-                  <img
-                    src="/images/seelutions%20new%20updatedLogo.png"
-                    alt="Seelutions Logo"
-                    class="w-full h-full object-contain filter grayscale brightness-0"
-                  />
-                </span>
-              </div>
-
-              <!-- Line 2: BE CHOSEN -->
-              <div class="home-hero__row">
-                <span class="home-hero__line">
-                  <span class="home-hero__word">
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="7">B</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="8">E</span></span>
-                  </span>
-                  <span class="home-hero__space">&nbsp;</span>
-                  <span class="home-hero__word">
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="9">C</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="10">H</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="11">O</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="12">S</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="13">E</span></span>
-                    <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="14">N</span></span>
-                  </span>
-                </span>
-              </div>
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      <!-- Full-Width Hero Banner with Overlaid Content on Right (Matching Reference Image) -->
-      <div class="hero-banner-card sticky top-24 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-white/10" id="hero-banner" data-hero-animate>
-        <!-- Background Image -->
-        <div class="absolute inset-0 w-full h-full z-0">
-          <img
-            id="hero-banner-img"
-            src="/images/home-hero-image.webp?v=5"
-            alt="Specialized bionic eyeball digital aesthetic for medical and surgical practices"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
+            preload="auto"
+            poster="/images/home-hero-image.webp?v=5"
             class="w-full h-full object-cover object-left"
-          />
+          >
+            <source src="/videos/eyeball-showcase.mp4" type="video/mp4" />
+          </video>
           <!-- Gradient overlay on right side to ensure text readability -->
-          <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-[#050b1a]/80 to-[#030712]/95 lg:from-transparent lg:via-[#050b1a]/50 lg:to-[#030712]/85"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-[#050b1a]/80 to-[#030712]/95 lg:from-transparent lg:via-[#050b1a]/50 lg:to-[#030712]/85 pointer-events-none"></div>
         </div>
 
         <!-- Content Container (Grid layout with text on right) -->
@@ -99,35 +106,35 @@ import Button from "./Button.astro";
           <div class="lg:col-span-7 flex flex-col justify-center text-white">
             <!-- Eyebrow Tag -->
             <div class="text-[11px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-cyan-300 mb-3 select-none opacity-90">
-              SPECIALIZED PATIENT ACQUISITION FOR PLASTIC & FACIAL COSMETIC SURGEONS
+              {hero.eyebrowTag}
             </div>
 
             <!-- Main Headline -->
             <h2 class="text-4xl sm:text-6xl xl:text-7xl font-extrabold tracking-tight text-white mb-6 pt-8 font-urbanist leading-[1.1]">
-              Be Seen in Search. <br class="sm:hidden" /> Be Chosen by <br class="sm:hidden" /> High-Ticket Patients.
+              {hero.headline}
             </h2>
 
             <!-- Subheadline Paragraph -->
             <p class="text-neutral-100 text-base sm:text-base leading-relaxed mb-10 max-w-xl">
-              Stop renting $35 clicks. We engineer long-term search authority, Google Map Pack dominance, and AI search visibility that keeps board-certified surgical calendars booked—predictably and organically.
+              {hero.subheadline}
             </p>
 
             <!-- Call to Action Buttons -->
             <div class="flex flex-wrap items-center gap-4">
               <a
-                href="#contact"
+                href={hero.primaryCtaLink}
                 class="inline-flex items-center gap-3 px-7 py-4 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 text-white font-semibold text-sm sm:text-base shadow-[0_0_25px_rgba(6,182,212,0.4)] hover:shadow-[0_0_35px_rgba(6,182,212,0.6)] transition-all duration-300 hover:scale-[1.02] group"
               >
-                <span>Get Your Free 3-Minute Practice Audit</span>
+                <span>{hero.primaryCtaText}</span>
                 <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </a>
               <a
-                href="#case-studies"
+                href={hero.secondaryCtaLink}
                 class="inline-flex items-center gap-2 px-6 py-4 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm sm:text-base backdrop-blur-md transition-all duration-300 hover:scale-[1.02]"
               >
-                <span>View the 10-Year Practice Case Study</span>
+                <span>{hero.secondaryCtaText}</span>
               </a>
             </div>
           </div>
@@ -376,15 +383,21 @@ import Button from "./Button.astro";
 </style>
 
 <script>
-  // Ensure the title video plays continuously in a loop across all browsers
-  const vid = document.getElementById('hero-title-video') as HTMLVideoElement | null;
-  if (vid) {
-    vid.muted = true;
-    const playVideo = () => {
-      vid.play().catch(() => {});
-    };
-    playVideo();
-    document.addEventListener('click', playVideo, { once: true });
-    document.addEventListener('touchstart', playVideo, { once: true });
-  }
+  // Ensure the title video and hero banner video play continuously in a loop across all browsers
+  const vids = [
+    document.getElementById('hero-title-video') as HTMLVideoElement | null,
+    document.getElementById('hero-banner-video') as HTMLVideoElement | null
+  ];
+
+  vids.forEach((vid) => {
+    if (vid) {
+      vid.muted = true;
+      const playVideo = () => {
+        vid.play().catch(() => {});
+      };
+      playVideo();
+      document.addEventListener('click', playVideo, { once: true });
+      document.addEventListener('touchstart', playVideo, { once: true });
+    }
+  });
 </script>
