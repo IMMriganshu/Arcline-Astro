@@ -1,6 +1,8 @@
 ---
 import SectionLabel from "./SectionLabel.astro";
-import { portfolioProjects } from "../data/siteData";
+import { getProjects } from "../lib/cms";
+
+const portfolioProjects = getProjects();
 ---
 
 <section class="recent-works" id="portfolio">

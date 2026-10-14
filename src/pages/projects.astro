@@ -1,8 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionLabel from "../components/SectionLabel.astro";
-import { portfolioProjects } from "../data/siteData";
+import { getProjects } from "../lib/cms";
 import ProjectCTA from "../components/ProjectCTA.astro";
+
+const portfolioProjects = getProjects();
 ---
 
 <BaseLayout

@@ -1,7 +1,9 @@
 ---
 import SectionLabel from "./SectionLabel.astro";
 import Button from "./Button.astro";
-import { servicesData } from "../data/siteData";
+import { getServices } from "../lib/cms";
+
+const servicesData = getServices();
 ---
 
 <section id="services" class="py-10 md:py-24 relative">

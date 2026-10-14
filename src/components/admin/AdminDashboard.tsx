@@ -2,13 +2,36 @@ import React, { useState, useEffect } from 'react';
 import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 
+const PERMANENT_VERCEL_HOOK = 'https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s';
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [authError, setAuthError] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>('overview');
 
-  const [cmsData, setCmsData] = useState<CmsData>(defaultCmsContent);
+  const [cmsData, setCmsData] = useState<CmsData>(() => {
+    if (typeof window !== 'undefined') {
+      const dedicatedHook = localStorage.getItem('arcline_vercel_hook') || PERMANENT_VERCEL_HOOK;
+      try {
+        const local = localStorage.getItem('arcline_cms_content_v1');
+        if (local) {
+          const parsed = JSON.parse(local);
+          if (parsed && parsed.siteConfig) {
+            parsed.siteConfig.vercelDeployHookUrl = dedicatedHook || parsed.siteConfig.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK;
+            return parsed;
+          }
+        }
+      } catch (e) {}
+    }
+    return {
+      ...defaultCmsContent,
+      siteConfig: {
+        ...defaultCmsContent.siteConfig,
+        vercelDeployHookUrl: PERMANENT_VERCEL_HOOK,
+      },
+    };
+  });
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeploying, setIsDeploying] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -42,17 +65,14 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
     }
 
-    const dedicatedHook = localStorage.getItem('arcline_vercel_hook');
+    const dedicatedHook = localStorage.getItem('arcline_vercel_hook') || PERMANENT_VERCEL_HOOK;
     let localData: CmsData | null = null;
     try {
       const local = localStorage.getItem('arcline_cms_content_v1');
       if (local) {
         localData = JSON.parse(local);
-        if (localData) {
-          if (dedicatedHook && localData.siteConfig) {
-            localData.siteConfig.vercelDeployHookUrl = dedicatedHook;
-          }
-          setCmsData(localData);
+        if (localData && localData.siteConfig) {
+          localData.siteConfig.vercelDeployHookUrl = dedicatedHook || localData.siteConfig.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK;
         }
       }
     } catch (e) {
@@ -68,7 +88,7 @@ export default function AdminDashboard() {
             dedicatedHook ||
             json.data.siteConfig?.vercelDeployHookUrl ||
             localData?.siteConfig?.vercelDeployHookUrl ||
-            '';
+            PERMANENT_VERCEL_HOOK;
 
           const merged = {
             ...json.data,
@@ -79,9 +99,7 @@ export default function AdminDashboard() {
           };
           setCmsData(merged);
           localStorage.setItem('arcline_cms_content_v1', JSON.stringify(merged));
-          if (effectiveHook) {
-            localStorage.setItem('arcline_vercel_hook', effectiveHook);
-          }
+          localStorage.setItem('arcline_vercel_hook', effectiveHook);
         }
       })
       .catch(() => {

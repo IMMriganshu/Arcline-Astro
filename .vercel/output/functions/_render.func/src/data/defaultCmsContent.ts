@@ -13,7 +13,7 @@ export const defaultCmsContent: CmsData = {
     estYear: "EST. 2010",
     ogImage: "/images/home-hero-image.webp",
     analyticsId: "G-XXXXXXXXXX",
-    vercelDeployHookUrl: "",
+    vercelDeployHookUrl: "https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s",
   },
   hero: {
     eyebrowTag: "SPECIALIZED PATIENT ACQUISITION FOR PLASTIC & FACIAL COSMETIC SURGEONS",
