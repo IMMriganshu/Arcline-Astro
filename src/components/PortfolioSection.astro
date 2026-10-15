@@ -236,6 +236,32 @@ const portfolioProjects = await getProjects();
     opacity: 1;
   }
 
+  @media screen and (min-width: 992px) and (max-width: 1919px) {
+    .recent-works__title {
+      font-size: 110px;
+      letter-spacing: -0.03em;
+    }
+    .recent-works__line-two {
+      gap: 120px;
+    }
+    .recent-works__sticky {
+      height: 85vh;
+      min-height: 520px;
+    }
+    .recent-works__projects-area {
+      max-width: 960px;
+    }
+    .recent-works__project-image {
+      aspect-ratio: 2.4;
+    }
+    .recent-works__project-name {
+      font-size: 17px;
+    }
+    .recent-works__project-category {
+      font-size: 12px;
+    }
+  }
+
   @media screen and (min-width: 1280px) {
     .recent-works__title {
       font-size: 275px;
