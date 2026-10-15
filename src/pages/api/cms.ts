@@ -4,7 +4,7 @@ import { getServerCmsData, saveServerCmsData, triggerVercelDeploy } from '../../
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
-  const data = getServerCmsData();
+  const data = await getServerCmsData();
   return new Response(JSON.stringify({ success: true, data }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },

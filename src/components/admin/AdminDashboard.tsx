@@ -17,9 +17,24 @@ export default function AdminDashboard() {
         const local = localStorage.getItem('arcline_cms_content_v1');
         if (local) {
           const parsed = JSON.parse(local);
-          if (parsed && parsed.siteConfig) {
-            parsed.siteConfig.vercelDeployHookUrl = dedicatedHook || parsed.siteConfig.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK;
-            return parsed;
+          if (parsed && typeof parsed === 'object') {
+            return {
+              ...defaultCmsContent,
+              ...parsed,
+              hero: { ...defaultCmsContent.hero, ...(parsed.hero || {}) },
+              siteConfig: {
+                ...defaultCmsContent.siteConfig,
+                ...(parsed.siteConfig || {}),
+                vercelDeployHookUrl: dedicatedHook || parsed.siteConfig?.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK,
+              },
+              comparison: { ...defaultCmsContent.comparison, ...(parsed.comparison || {}) },
+              navigation: { ...defaultCmsContent.navigation, ...(parsed.navigation || {}) },
+              articles: Array.isArray(parsed.articles) && parsed.articles.length > 0 ? parsed.articles : defaultCmsContent.articles,
+              services: Array.isArray(parsed.services) && parsed.services.length > 0 ? parsed.services : defaultCmsContent.services,
+              projects: Array.isArray(parsed.projects) && parsed.projects.length > 0 ? parsed.projects : defaultCmsContent.projects,
+              testimonials: Array.isArray(parsed.testimonials) && parsed.testimonials.length > 0 ? parsed.testimonials : defaultCmsContent.testimonials,
+              media: Array.isArray(parsed.media) && parsed.media.length > 0 ? parsed.media : defaultCmsContent.media,
+            };
           }
         }
       } catch (e) {}
@@ -83,19 +98,29 @@ export default function AdminDashboard() {
     fetch('/api/cms')
       .then((res) => res.json())
       .then((json) => {
-        if (json.data) {
+        if (json.data && typeof json.data === 'object') {
           const effectiveHook =
             dedicatedHook ||
             json.data.siteConfig?.vercelDeployHookUrl ||
             localData?.siteConfig?.vercelDeployHookUrl ||
             PERMANENT_VERCEL_HOOK;
 
-          const merged = {
+          const merged: CmsData = {
+            ...defaultCmsContent,
             ...json.data,
+            hero: { ...defaultCmsContent.hero, ...(json.data.hero || {}) },
             siteConfig: {
-              ...json.data.siteConfig,
+              ...defaultCmsContent.siteConfig,
+              ...(json.data.siteConfig || {}),
               vercelDeployHookUrl: effectiveHook,
             },
+            comparison: { ...defaultCmsContent.comparison, ...(json.data.comparison || {}) },
+            navigation: { ...defaultCmsContent.navigation, ...(json.data.navigation || {}) },
+            articles: Array.isArray(json.data.articles) && json.data.articles.length > 0 ? json.data.articles : defaultCmsContent.articles,
+            services: Array.isArray(json.data.services) && json.data.services.length > 0 ? json.data.services : defaultCmsContent.services,
+            projects: Array.isArray(json.data.projects) && json.data.projects.length > 0 ? json.data.projects : defaultCmsContent.projects,
+            testimonials: Array.isArray(json.data.testimonials) && json.data.testimonials.length > 0 ? json.data.testimonials : defaultCmsContent.testimonials,
+            media: Array.isArray(json.data.media) && json.data.media.length > 0 ? json.data.media : defaultCmsContent.media,
           };
           setCmsData(merged);
           localStorage.setItem('arcline_cms_content_v1', JSON.stringify(merged));
