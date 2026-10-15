@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset } from '../../lib/types';
+import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset, Page } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
+
+// ... (other state)
+  // Page editing modal state
+  const [editingPage, setEditingPage] = useState<Page | null>(null);
+  const [isPageModalOpen, setIsPageModalOpen] = useState<boolean>(false);
 
 const PERMANENT_VERCEL_HOOK = 'https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s';
 
@@ -10,6 +15,10 @@ export default function AdminDashboard() {
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [authError, setAuthError] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>('overview');
+
+  // Page editing modal state
+  const [editingPage, setEditingPage] = useState<Page | null>(null);
+  const [isPageModalOpen, setIsPageModalOpen] = useState<boolean>(false);
 
   const [cmsData, setCmsData] = useState<CmsData>(() => {
     if (typeof window !== 'undefined') {
@@ -447,6 +456,7 @@ export default function AdminDashboard() {
               { id: 'services', label: 'Services (01–05)', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
               { id: 'projects', label: 'Case Studies (10-Yr)', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
               { id: 'blog', label: 'Blog & Articles', icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' },
+              { id: 'pages', label: 'Manage Pages', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
               { id: 'testimonials', label: 'Surgeon Testimonials', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
               { id: 'comparison', label: 'Search vs PPC Matrix', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
               { id: 'navigation', label: 'Navigation & Footer', icon: 'M4 6h16M4 12h16M4 18h16' },
@@ -1484,6 +1494,60 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+           {/* TAB: Pages Management */}
+           {activeTab === 'pages' && (
+             <div className="space-y-6">
+               <div className="flex items-center justify-between">
+                 <div>
+                   <h2 className="text-2xl font-bold font-urbanist text-white">Manage Pages</h2>
+                   <p className="text-xs text-neutral-400">Create, edit, and manage custom website pages.</p>
+                 </div>
+                 <button
+                   onClick={() => {
+                     setEditingPage({ id: '', slug: '', title: '', content: '' });
+                     setIsPageModalOpen(true);
+                   }}
+                   className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
+                 >
+                   + Create New Page
+                 </button>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                 {cmsData.pages.map((page) => (
+                   <div key={page.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 backdrop-blur-md flex flex-col justify-between">
+                     <div>
+                       <h3 className="text-sm font-bold text-white mb-1">{page.title}</h3>
+                       <code className="text-[10px] text-cyan-400">/{page.slug}</code>
+                     </div>
+                     <div className="mt-4 flex gap-2">
+                       <button
+                         onClick={() => {
+                           setEditingPage(page);
+                           setIsPageModalOpen(true);
+                         }}
+                         className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] text-neutral-300"
+                       >
+                         Edit
+                       </button>
+                       <button
+                         onClick={() => {
+                           if (window.confirm('Delete this page?')) {
+                             setCmsData({ ...cmsData, pages: cmsData.pages.filter(p => p.id !== page.id) });
+                             setHasChanges(true);
+                           }
+                         }}
+                         className="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-[11px] text-red-400"
+                       >
+                         Delete
+                       </button>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+             </div>
+           )}
         </main>
       </div>
 
@@ -1836,6 +1900,78 @@ export default function AdminDashboard() {
                 className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
               >
                 Save Testimonial
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Page Modal */}
+      {isPageModalOpen && editingPage && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-neutral-900 border border-white/15 rounded-2xl w-full max-w-5xl max-h-[94vh] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-lg font-bold text-white font-urbanist">
+                {editingPage.id ? 'Edit Page Content' : 'Create New Page'}
+              </h3>
+              <button
+                onClick={() => setIsPageModalOpen(false)}
+                className="text-neutral-400 hover:text-white cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-300 mb-1">Page Title</label>
+                <input
+                  type="text"
+                  value={editingPage.title}
+                  onChange={(e) => setEditingPage({ ...editingPage, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-300 mb-1">Slug (URL path)</label>
+                <input
+                  type="text"
+                  value={editingPage.slug}
+                  onChange={(e) => setEditingPage({ ...editingPage, slug: e.target.value })}
+                  className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Rich Article Text Builder with H1-H6, Links, Quotes, Bullets, Images, Captions & Preview */}
+            <div className="pt-1">
+              <ArticleContentBuilder
+                value={editingPage.content || ''}
+                onChange={(content) => setEditingPage({ ...editingPage, content })}
+              />
+            </div>
+
+            <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+              <button
+                onClick={() => setIsPageModalOpen(false)}
+                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-neutral-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const exists = cmsData.pages.some((p) => p.id === editingPage.id);
+                  const updated = exists
+                    ? cmsData.pages.map((p) => (p.id === editingPage.id ? editingPage : p))
+                    : [...cmsData.pages, { ...editingPage, id: `page-${Date.now()}` }];
+                  setCmsData({ ...cmsData, pages: updated });
+                  setHasChanges(true);
+                  setIsPageModalOpen(false);
+                  showToast('Page saved to CMS', 'success');
+                }}
+                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
+              >
+                Save Page
               </button>
             </div>
           </div>

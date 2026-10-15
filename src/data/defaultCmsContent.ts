@@ -201,6 +201,7 @@ export const defaultCmsContent: CmsData = {
       published: true,
     },
   ],
+  pages: [],
   comparison: [
     {
       id: "comp-1",

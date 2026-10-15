@@ -97,6 +97,13 @@ export interface MediaAsset {
   size?: string;
 }
 
+export interface Page {
+  id: string;
+  slug: string;
+  title: string;
+  content: string; // HTML/Markdown
+}
+
 export interface CmsData {
   siteConfig: SiteConfig;
   hero: HeroContent;
@@ -105,6 +112,7 @@ export interface CmsData {
   projects: Project[];
   testimonials: Testimonial[];
   articles: Article[];
+  pages: Page[];
   comparison: ComparisonItem[];
   footer: FooterContent;
   media: MediaAsset[];
