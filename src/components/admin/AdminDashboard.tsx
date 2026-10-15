@@ -289,8 +289,12 @@ export default function AdminDashboard() {
           <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="text-center mb-8 relative z-10">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 border border-white/10 mb-4">
-              <span className="font-extrabold text-cyan-400 text-xl font-urbanist">A</span>
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/5 border border-white/10 p-2.5 mb-4 shadow-xl">
+              <img
+                src="/images/seelutions%20new%20updatedLogo.png"
+                alt="Seelutions Logo"
+                className="w-full h-full object-contain filter brightness-0 invert"
+              />
             </div>
             <h1 className="text-2xl font-bold font-urbanist tracking-tight text-white mb-2">
               Arcline Headless CMS
@@ -309,7 +313,7 @@ export default function AdminDashboard() {
                 type="password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="Enter passcode (e.g. arcline2026)"
+                placeholder="Enter administrator passcode"
                 className="w-full px-4 py-3 bg-black/50 border border-white/15 rounded-xl text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
                 autoFocus
               />
@@ -328,10 +332,6 @@ export default function AdminDashboard() {
               Sign In to CMS Dashboard
             </button>
           </form>
-
-          <div className="mt-8 pt-6 border-t border-white/5 text-center text-[11px] text-neutral-500">
-            Default credentials for demonstration: <span className="text-neutral-400 font-mono">arcline2026</span>
-          </div>
         </div>
       </div>
     );
@@ -359,8 +359,12 @@ export default function AdminDashboard() {
       <header className="sticky top-0 z-40 bg-[#050b1a]/90 backdrop-blur-md border-b border-white/10 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white text-sm shadow-md">
-              A
+            <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
+              <img
+                src="/images/seelutions%20new%20updatedLogo.png"
+                alt="Seelutions Logo"
+                className="w-full h-full object-contain filter brightness-0 invert"
+              />
             </div>
             <div>
               <span className="font-bold text-white text-base tracking-tight font-urbanist group-hover:text-cyan-400 transition-colors">
