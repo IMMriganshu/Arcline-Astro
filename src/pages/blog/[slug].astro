@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Button from "../../components/Button.astro";
-import { getArticles, getArticleBySlug, defaultArticles } from "../../lib/cms";
+import { getArticles, getArticleBySlug } from "../../lib/cms";
 
 export const prerender = false;
 
@@ -11,49 +11,81 @@ const article = await getArticleBySlug(slug || '');
 if (!article) {
   return Astro.redirect("/404");
 }
+
+const allArticles = await getArticles();
+const relatedArticles = allArticles
+  .filter((a) => a.published && a.slug !== article.slug)
+  .slice(0, 3);
 ---
 
 <BaseLayout
-  title={`${article.title} — Arcline Editorial`}
+  title={`${article.title} — Arcline Intelligence`}
   description={article.excerpt}
+  ogImage={article.image}
 >
-  <article class="pt-32 pb-24 bg-[#030712] text-white min-h-screen">
-    <div class="max-w-[840px] mx-auto px-4 sm:px-6">
-      <!-- Back Link -->
-      <a
-        href="/#blog"
-        class="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors mb-8"
-      >
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        <span>Back to Patient Grower Editorial</span>
-      </a>
+  <article class="pt-32 pb-24 bg-[#030712] text-white min-h-screen selection:bg-cyan-500 selection:text-black">
+    <div class="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-neutral-400 mb-8 font-medium">
+        <a href="/" class="hover:text-cyan-400 transition-colors">Home</a>
+        <span>/</span>
+        <a href="/blog" class="hover:text-cyan-400 transition-colors">Patient Grower</a>
+        <span>/</span>
+        <span class="text-neutral-200 truncate max-w-[240px] sm:max-w-md">{article.title}</span>
+      </nav>
 
       <!-- Header Info -->
-      <header class="mb-10">
-        <div class="flex items-center gap-3 text-xs text-neutral-400 mb-4">
-          <span class="px-2.5 py-1 rounded-full bg-cyan-950 border border-cyan-800/40 text-cyan-300 font-semibold text-[11px]">
+      <header class="mb-10 pb-8 border-b border-white/10">
+        <div class="flex flex-wrap items-center gap-3 text-xs text-neutral-400 mb-5">
+          <span class="px-3 py-1 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 font-semibold text-xs tracking-wide">
             {article.category}
           </span>
-          <span>·</span>
-          <span>{article.date}</span>
-          <span>·</span>
-          <span>{article.readTime}</span>
+          <span>•</span>
+          <span class="text-neutral-300">{article.date}</span>
+          <span>•</span>
+          <span class="text-neutral-300">{article.readTime}</span>
         </div>
 
-        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-urbanist leading-[1.15] mb-6">
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-urbanist leading-[1.12] mb-6">
           {article.title}
         </h1>
 
-        <p class="text-lg text-neutral-300 leading-relaxed font-light">
+        <p class="text-lg sm:text-xl text-neutral-300 leading-relaxed font-light">
           {article.excerpt}
         </p>
+
+        <!-- Author / Editorial Meta Bar -->
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white text-sm shadow-md">
+              PG
+            </div>
+            <div>
+              <div class="text-sm font-bold text-white font-urbanist">Patient Grower Intelligence</div>
+              <div class="text-xs text-neutral-400">Arcline Surgical Marketing Group</div>
+            </div>
+          </div>
+
+          <!-- Share Actions -->
+          <div class="flex items-center gap-2">
+            <button
+              id="copy-article-link"
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-neutral-300 transition-colors cursor-pointer"
+              title="Copy link to clipboard"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span id="copy-text">Share Article</span>
+            </button>
+          </div>
+        </div>
       </header>
 
-      <!-- Featured Image -->
+      <!-- Featured Hero Image -->
       {article.image && (
-        <div class="rounded-2xl overflow-hidden mb-12 border border-white/10 shadow-2xl aspect-[16/9] bg-neutral-900">
+        <div class="rounded-2xl overflow-hidden mb-12 border border-white/10 shadow-2xl aspect-[16/9] bg-neutral-900 relative">
           <img
             src={article.image}
             alt={article.title}
@@ -62,20 +94,108 @@ if (!article) {
         </div>
       )}
 
-      <!-- Body Content -->
-      <div class="prose prose-invert prose-cyan max-w-none text-neutral-200 leading-relaxed space-y-6 text-base" set:html={article.content}>
+      <!-- Rich Article Body with Full Element Styling -->
+      <div class="article-prose" set:html={article.content}>
       </div>
 
-      <!-- Footer CTA -->
-      <div class="mt-16 p-8 rounded-2xl bg-neutral-900/80 border border-white/10 text-center relative overflow-hidden">
-        <div class="relative z-10 max-w-md mx-auto">
-          <h3 class="text-xl font-bold font-urbanist text-white mb-2">Ready to dominate search in your metropolitan market?</h3>
-          <p class="text-xs text-neutral-400 mb-6">We partner exclusively with one board-certified plastic surgical practice per metropolitan territory.</p>
-          <Button href="/#contact" variant="black" showIcon={true} class="justify-center">
-            Request Practice Territory Audit
+      <!-- Article End Author Bio Card -->
+      <div class="mt-16 p-6 sm:p-8 rounded-2xl bg-neutral-900/60 border border-white/10 flex flex-col sm:flex-row gap-5 items-center sm:items-start backdrop-blur-md">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-lg">
+          A
+        </div>
+        <div class="text-center sm:text-left">
+          <div class="text-base font-bold text-white font-urbanist mb-1">About Arcline Patient Grower</div>
+          <p class="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+            Arcline is a distinguished agency delivering proprietary patient acquisition pipelines, generative engine optimization (GEO), and digital authority engineering for board-certified plastic and cosmetic surgeons across North America.
+          </p>
+        </div>
+      </div>
+
+      <!-- Practice Territory Call To Action -->
+      <div class="mt-12 p-8 sm:p-10 rounded-3xl bg-gradient-to-b from-neutral-900 to-black border border-cyan-500/30 text-center relative overflow-hidden shadow-2xl">
+        <div class="absolute top-0 right-1/2 translate-x-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-lg mx-auto">
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 mb-4">
+            Exclusive Territory Partnership
+          </span>
+          <h3 class="text-2xl sm:text-3xl font-bold font-urbanist text-white mb-3">
+            Secure Your Surgical Metropolitan Market
+          </h3>
+          <p class="text-xs sm:text-sm text-neutral-400 mb-6 leading-relaxed">
+            We partner with only one board-certified surgeon per metropolitan territory to prevent internal conflict of interest. Check market availability today.
+          </p>
+          <Button href="/#contact" variant="black" showIcon={true} class="justify-center mx-auto">
+            Request Territory Availability Audit
           </Button>
         </div>
       </div>
+
+      <!-- Related Articles Section -->
+      {relatedArticles.length > 0 && (
+        <section class="mt-20 pt-12 border-t border-white/10">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-2xl font-bold font-urbanist text-white">Recommended Reading</h2>
+              <p class="text-xs text-neutral-400">Continue exploring high-impact surgical practice acquisition insights.</p>
+            </div>
+            <a href="/blog" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+              View All &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedArticles.map((rel) => (
+              <a
+                href={`/blog/${rel.slug}`}
+                class="group block bg-neutral-900/40 hover:bg-neutral-900/80 border border-white/10 hover:border-cyan-500/40 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between p-4"
+              >
+                <div>
+                  {rel.image && (
+                    <div class="aspect-[16/10] rounded-xl overflow-hidden mb-4 bg-neutral-800">
+                      <img
+                        src={rel.image}
+                        alt={rel.title}
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <span class="text-[10px] font-semibold text-cyan-300 uppercase tracking-wider block mb-2">
+                    {rel.category}
+                  </span>
+                  <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2 leading-snug mb-2 font-urbanist">
+                    {rel.title}
+                  </h3>
+                  <p class="text-xs text-neutral-400 line-clamp-2 leading-relaxed mb-4">
+                    {rel.excerpt}
+                  </p>
+                </div>
+                <div class="text-[11px] font-semibold text-cyan-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Read Post</span>
+                  <span>&rarr;</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   </article>
+
+  <script>
+    const copyBtn = document.getElementById("copy-article-link");
+    const copyText = document.getElementById("copy-text");
+
+    if (copyBtn && copyText) {
+      copyBtn.addEventListener("click", () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(window.location.href);
+          copyText.textContent = "Link Copied!";
+          setTimeout(() => {
+            copyText.textContent = "Share Article";
+          }, 2500);
+        }
+      });
+    }
+  </script>
 </BaseLayout>
+

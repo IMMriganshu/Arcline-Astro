@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
+import { ArticleContentBuilder } from './ArticleContentBuilder';
 
 const PERMANENT_VERCEL_HOOK = 'https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s';
 
@@ -1484,11 +1485,11 @@ export default function AdminDashboard() {
 
       {/* Article Modal */}
       {isArticleModalOpen && editingArticle && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-neutral-900 border border-white/15 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-neutral-900 border border-white/15 rounded-2xl w-full max-w-5xl max-h-[94vh] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <h3 className="text-lg font-bold text-white font-urbanist">
-                {editingArticle.id ? 'Edit Article' : 'Create Article'}
+                {editingArticle.id ? 'Edit Article & Rich Content' : 'Create Article & Rich Content'}
               </h3>
               <button
                 onClick={() => setIsArticleModalOpen(false)}
@@ -1560,13 +1561,11 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">Article Content (HTML / Markdown)</label>
-              <textarea
-                rows={6}
-                value={editingArticle.content}
-                onChange={(e) => setEditingArticle({ ...editingArticle, content: e.target.value })}
-                className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white font-mono text-xs"
+            {/* Rich Article Text Builder with H1-H6, Links, Quotes, Bullets, Images, Captions & Preview */}
+            <div className="pt-1">
+              <ArticleContentBuilder
+                value={editingArticle.content || ''}
+                onChange={(content) => setEditingArticle({ ...editingArticle, content })}
               />
             </div>
 
