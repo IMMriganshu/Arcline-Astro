@@ -374,7 +374,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <span className="font-bold text-white text-base tracking-tight font-urbanist group-hover:text-cyan-400 transition-colors">
-                Arcline CMS
+                Seelutions CMS
               </span>
               <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
                 Headless Studio
