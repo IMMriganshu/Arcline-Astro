@@ -4,6 +4,14 @@ import { getSiteContent } from "../lib/cmsData";
 
 const content = await getSiteContent();
 const hero = content.hero;
+
+const titleLine1 = (hero.titleLine1 || "BE SEEN").trim();
+const titleLine2 = (hero.titleLine2 || "BE CHOSEN").trim();
+
+const wordsLine1 = titleLine1.split(/\s+/).filter(Boolean);
+const wordsLine2 = titleLine2.split(/\s+/).filter(Boolean);
+
+let letterCounter = 0;
 ---
 
 <section id="hero" class="home-hero">
@@ -19,27 +27,31 @@ const hero = content.hero;
         preload="metadata"
         class="home-hero__video"
       >
-        <source src="/videos/title-video.mp4" type="video/mp4" />
+        <source src={hero.titleVideoUrl || "/videos/title-video.mp4"} type="video/mp4" />
       </video>
     </div>
 
     <div class="home-hero__title-block">
       <div class="home-hero__title-container">
-        <h1 class="home-hero__title font-urbanist" aria-label="BE SEEN BE CHOSEN">
-          <!-- Line 1: BE SEEN + Outline Icon Inline -->
+        <h1 class="home-hero__title font-urbanist" aria-label={`${titleLine1} ${titleLine2}`}>
+          <!-- Line 1: Dynamic Line 1 + Outline Icon Inline -->
           <div class="home-hero__row">
             <span class="home-hero__line">
-              <span class="home-hero__word">
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="1">B</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="2">E</span></span>
-              </span>
-              <span class="home-hero__space">&nbsp;</span>
-              <span class="home-hero__word">
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="3">S</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="4">E</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="5">E</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="6">N</span></span>
-              </span>
+              {wordsLine1.map((word, wIdx) => (
+                <>
+                  <span class="home-hero__word">
+                    {word.split('').map((char) => {
+                      letterCounter++;
+                      return (
+                        <span class="home-hero__letter-block">
+                          <span class="home-hero__letter" data-hero-letter={letterCounter}>{char}</span>
+                        </span>
+                      );
+                    })}
+                  </span>
+                  {wIdx < wordsLine1.length - 1 && <span class="home-hero__space">&nbsp;</span>}
+                </>
+              ))}
             </span>
 
             <!-- Official Seelutions Icon -->
@@ -52,22 +64,24 @@ const hero = content.hero;
             </span>
           </div>
 
-          <!-- Line 2: BE CHOSEN -->
+          <!-- Line 2: Dynamic Line 2 -->
           <div class="home-hero__row">
             <span class="home-hero__line">
-              <span class="home-hero__word">
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="7">B</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="8">E</span></span>
-              </span>
-              <span class="home-hero__space">&nbsp;</span>
-              <span class="home-hero__word">
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="9">C</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="10">H</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="11">O</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="12">S</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="13">E</span></span>
-                <span class="home-hero__letter-block"><span class="home-hero__letter" data-hero-letter="14">N</span></span>
-              </span>
+              {wordsLine2.map((word, wIdx) => (
+                <>
+                  <span class="home-hero__word">
+                    {word.split('').map((char) => {
+                      letterCounter++;
+                      return (
+                        <span class="home-hero__letter-block">
+                          <span class="home-hero__letter" data-hero-letter={letterCounter}>{char}</span>
+                        </span>
+                      );
+                    })}
+                  </span>
+                  {wIdx < wordsLine2.length - 1 && <span class="home-hero__space">&nbsp;</span>}
+                </>
+              ))}
             </span>
           </div>
         </h1>

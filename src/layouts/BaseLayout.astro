@@ -3,17 +3,25 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ScrollToTop from "../components/ScrollToTop.astro";
 import ContactModal from "../components/ContactModal.astro";
+import { getSiteConfig } from "../lib/cms";
 import "../styles/global.css";
 
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
+const siteConfig = await getSiteConfig();
+
 const {
-  title = "Arcline — Architecture & Design Agency",
-  description = "Distinguished architectural agency located in Canada, creating meaningful spaces that stand the test of time.",
+  title,
+  description,
+  ogImage = siteConfig.ogImage || "/images/home-hero-image.webp",
 } = Astro.props;
+
+const pageTitle = title || siteConfig.title || siteConfig.name || "Arcline — Architecture & Design Agency";
+const pageDescription = description || siteConfig.description || "Distinguished architectural agency located in Canada, creating meaningful spaces that stand the test of time.";
 ---
 
 <!doctype html>
@@ -25,14 +33,16 @@ const {
     <meta name="generator" content={Astro.generator} />
 
     <!-- SEO Meta Tags -->
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Google Font: Urbanist -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,25 +53,23 @@ const {
     />
 
     <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "ArchitecturalFirm",
-        "name": "Arcline Architecture",
-        "description": "Distinguished architectural agency located in Canada creating meaningful spaces.",
-        "foundingDate": "2010",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "567 Jac Spruce Crescent",
-          "addressLocality": "Montreal",
-          "addressRegion": "QC",
-          "postalCode": "H1A 2K3",
-          "addressCountry": "CA"
-        },
-        "telephone": "+1-555-345-6789",
-        "email": "yourcompany@gmail.com"
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ArchitecturalFirm",
+      "name": siteConfig.name || "Arcline Architecture",
+      "description": pageDescription,
+      "foundingDate": siteConfig.estYear || "2010",
+      "telephone": siteConfig.phone || "+1-555-345-6789",
+      "email": siteConfig.email || "yourcompany@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": siteConfig.address || "567 Jac Spruce Crescent",
+        "addressLocality": "Montreal",
+        "addressRegion": "QC",
+        "postalCode": "H1A 2K3",
+        "addressCountry": "CA"
       }
-    </script>
+    })} />
   </head>
   <body class="min-h-screen flex flex-col justify-between selection:bg-black selection:text-white">
     <Header />
