@@ -41,6 +41,9 @@ const blogArticles = (await getArticles()).filter((a: any) => a.published);
                 alt={article.title}
                 class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 loading="lazy"
+                decoding="async"
+                width="600"
+                height="375"
               />
             </a>
 

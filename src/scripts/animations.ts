@@ -1,27 +1,42 @@
-import Lenis from 'lenis';
-
 export function initAnimations() {
   if (typeof window === 'undefined') return;
 
-  // 1. Initialize Lenis Smooth Scrolling across the entire page
-  let lenis: Lenis | null = null;
-  try {
-    lenis = new Lenis({
-      duration: 1.25,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.15,
-      touchMultiplier: 1.5,
-    });
+  // 1. Initialize Lenis Smooth Scrolling ONLY on Desktop non-touch devices
+  // On mobile touch devices, native 120Hz/60Hz inertial scrolling is used with zero JS thread overhead
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 992;
+  let lenis: any = null;
 
-    function raf(time: number) {
-      lenis?.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-  } catch (err) {
-    console.warn('Lenis initialization skipped:', err);
+  if (!isTouch) {
+    import('lenis').then(({ default: Lenis }) => {
+      try {
+        lenis = new Lenis({
+          duration: 1.25,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          smoothWheel: true,
+          wheelMultiplier: 1.15,
+        });
+
+        function raf(time: number) {
+          lenis?.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Subtle Parallax Ease on Architectural Imagery
+        const heroBannerImg = document.getElementById('hero-banner-img');
+        if (heroBannerImg && lenis) {
+          lenis.on('scroll', ({ scroll }: { scroll: number }) => {
+            if (scroll < 1000) {
+              const yOffset = scroll * 0.08;
+              heroBannerImg.style.transform = `translate3d(0, ${yOffset}px, 0)`;
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Lenis initialization skipped:', err);
+      }
+    });
   }
 
   // 2. Hero Letter Entrance Sequence
@@ -73,17 +88,6 @@ export function initAnimations() {
 
     animateElements.forEach((el) => {
       scrollObserver.observe(el);
-    });
-  }
-
-  // 4. Subtle Parallax Ease on Architectural Imagery
-  const heroBannerImg = document.getElementById('hero-banner-img');
-  if (heroBannerImg && lenis) {
-    lenis.on('scroll', ({ scroll }: { scroll: number }) => {
-      if (scroll < 1000) {
-        const yOffset = scroll * 0.08;
-        heroBannerImg.style.transform = `translate3d(0, ${yOffset}px, 0)`;
-      }
     });
   }
 }

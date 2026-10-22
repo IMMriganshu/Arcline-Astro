@@ -43,9 +43,11 @@ const portfolioProjects = await getProjects();
               <img
                 src={project.image}
                 alt={project.title}
-                loading="eager"
+                loading={idx === 0 ? "eager" : "lazy"}
                 decoding="async"
                 class="recent-works__project-image"
+                width="1200"
+                height="545"
               />
             </a>
             <div class="recent-works__project-meta flex flex-col md:flex-row md:items-start justify-between gap-4" data-rw-meta={idx}>
@@ -402,100 +404,91 @@ const portfolioProjects = await getProjects();
 </style>
 
 <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
   function initRecentWorks() {
-    gsap.registerPlugin(ScrollTrigger);
+    // Only load and initialize GSAP and ScrollTrigger on desktop viewports (>= 992px)
+    // On mobile / tablet (< 992px), CSS vertical flex stack handles layout natively with zero JS overhead
+    if (window.innerWidth < 992) {
+      return;
+    }
 
-    const wrapper = document.querySelector<HTMLElement>('[data-recent-works]');
-    if (!wrapper) return;
+    Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger')
+    ]).then(([{ gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger);
 
-    const titleArea = wrapper.querySelector<HTMLElement>('[data-rw-titles]');
-    const leftText = wrapper.querySelector<HTMLElement>('[data-rw-left]');
-    const rightText = wrapper.querySelector<HTMLElement>('[data-rw-right]');
-    const projectsArea = wrapper.querySelector<HTMLElement>('[data-rw-projects]');
-    const items = wrapper.querySelectorAll<HTMLElement>('[data-rw-item]');
-    const metas = wrapper.querySelectorAll<HTMLElement>('[data-rw-meta]');
+      const wrapper = document.querySelector<HTMLElement>('[data-recent-works]');
+      if (!wrapper) return;
 
-    ScrollTrigger.matchMedia({
-      // Desktop and tablet (>= 992px)
-      "(min-width: 992px)": function() {
-        gsap.set(leftText, { xPercent: 25 });
-        gsap.set(rightText, { xPercent: -25 });
-        gsap.set(projectsArea, { opacity: 0, width: "20%" });
-        gsap.set(titleArea, { opacity: 1 });
+      const titleArea = wrapper.querySelector<HTMLElement>('[data-rw-titles]');
+      const leftText = wrapper.querySelector<HTMLElement>('[data-rw-left]');
+      const rightText = wrapper.querySelector<HTMLElement>('[data-rw-right]');
+      const projectsArea = wrapper.querySelector<HTMLElement>('[data-rw-projects]');
+      const items = wrapper.querySelectorAll<HTMLElement>('[data-rw-item]');
+      const metas = wrapper.querySelectorAll<HTMLElement>('[data-rw-meta]');
 
-        items.forEach((item, idx) => {
-          if (idx > 0) {
-            gsap.set(item, { opacity: 0, y: -30 });
-          } else {
-            gsap.set(item, { opacity: 1, y: 0 });
-          }
-        });
+      gsap.set(leftText, { xPercent: 25 });
+      gsap.set(rightText, { xPercent: -25 });
+      gsap.set(projectsArea, { opacity: 0, width: "20%" });
+      gsap.set(titleArea, { opacity: 1 });
 
-        if (metas[0]) {
-          gsap.set(metas[0], { opacity: 0, y: 15, maxHeight: 0, paddingTop: 0, paddingBottom: 0, overflow: 'hidden' });
+      items.forEach((item, idx) => {
+        if (idx > 0) {
+          gsap.set(item, { opacity: 0, y: -30 });
+        } else {
+          gsap.set(item, { opacity: 1, y: 0 });
         }
+      });
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: wrapper,
-            start: "top top",
-            end: "+=320%",
-            pin: true,
-            scrub: 0.8,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          }
-        });
-
-        // Phase 1: Slit appears: "Wo" moves left, "rks" moves right, projectsArea fades in
-        tl.to(leftText, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0);
-        tl.to(rightText, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0);
-        tl.to(projectsArea, { opacity: 1, ease: "power1.inOut", duration: 0.8 }, 0);
-
-        // Phase 2: Width expands from 20% to 100%
-        tl.to(projectsArea, { width: "100%", ease: "power1.inOut", duration: 1.6 }, 0.6);
-
-        // Phase 3: Background titles fade out and show item 0 content once image is fully enlarged
-        tl.to(titleArea, { opacity: 0, ease: "power1.inOut", duration: 1 }, 1.0);
-        if (metas[0]) {
-          tl.to(metas[0], { opacity: 1, y: 0, maxHeight: 180, paddingTop: 20, paddingBottom: 0, ease: "power1.out", duration: 0.8 }, 1.4);
-        }
-
-        // Pause on Project 1
-        tl.to({}, { duration: 0.6 });
-
-        // Phase 4: Project 2 slides in
-        tl.to(items[1], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
-        tl.to({}, { duration: 0.6 });
-
-        // Phase 5: Project 3 slides in
-        tl.to(items[2], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
-        tl.to({}, { duration: 0.6 });
-
-        // Phase 6: Project 4 slides in
-        tl.to(items[3], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
-        tl.to({}, { duration: 0.6 });
-      },
-
-      // Mobile / tablet portrait (< 992px): clear GSAP props so clean vertical stack takes over
-      "(max-width: 991px)": function() {
-        gsap.set([leftText, rightText, projectsArea, titleArea], { clearProps: "all" });
-        items.forEach((item) => {
-          gsap.set(item, { clearProps: "all" });
-        });
-        if (metas[0]) {
-          gsap.set(metas[0], { clearProps: "all" });
-        }
+      if (metas[0]) {
+        gsap.set(metas[0], { opacity: 0, y: 15, maxHeight: 0, paddingTop: 0, paddingBottom: 0, overflow: 'hidden' });
       }
-    });
 
-    // Sync with smooth scroll & refresh ScrollTrigger after DOM images load
-    window.addEventListener('scroll', () => ScrollTrigger.update(), { passive: true });
-    window.addEventListener('load', () => {
-      ScrollTrigger.refresh();
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper,
+          start: "top top",
+          end: "+=320%",
+          pin: true,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      // Phase 1: Slit appears: "Wo" moves left, "rks" moves right, projectsArea fades in
+      tl.to(leftText, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0);
+      tl.to(rightText, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0);
+      tl.to(projectsArea, { opacity: 1, ease: "power1.inOut", duration: 0.8 }, 0);
+
+      // Phase 2: Width expands from 20% to 100%
+      tl.to(projectsArea, { width: "100%", ease: "power1.inOut", duration: 1.6 }, 0.6);
+
+      // Phase 3: Background titles fade out and show item 0 content once image is fully enlarged
+      tl.to(titleArea, { opacity: 0, ease: "power1.inOut", duration: 1 }, 1.0);
+      if (metas[0]) {
+        tl.to(metas[0], { opacity: 1, y: 0, maxHeight: 180, paddingTop: 20, paddingBottom: 0, ease: "power1.out", duration: 0.8 }, 1.4);
+      }
+
+      // Pause on Project 1
+      tl.to({}, { duration: 0.6 });
+
+      // Phase 4: Project 2 slides in
+      tl.to(items[1], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+      tl.to({}, { duration: 0.6 });
+
+      // Phase 5: Project 3 slides in
+      tl.to(items[2], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+      tl.to({}, { duration: 0.6 });
+
+      // Phase 6: Project 4 slides in
+      tl.to(items[3], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+      tl.to({}, { duration: 0.6 });
+
+      window.addEventListener('scroll', () => ScrollTrigger.update(), { passive: true });
+      window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
+      });
     });
   }
 

@@ -105,6 +105,9 @@ const testimonialsData = await getTestimonials();
               class={`testimonial-avatar absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
               data-index={idx}
               loading="lazy"
+              decoding="async"
+              width="500"
+              height="500"
             />
           ))}
         </div>

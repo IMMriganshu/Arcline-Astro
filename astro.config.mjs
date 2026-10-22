@@ -11,6 +11,10 @@ export default defineConfig({
   output: 'server',
   adapter: isVercel ? vercel() : node({ mode: 'standalone' }),
   integrations: [react()],
+  build: {
+    inlineStylesheets: 'always',
+  },
+  compressHTML: true,
   server: {
     port: 3000,
     host: '0.0.0.0',
