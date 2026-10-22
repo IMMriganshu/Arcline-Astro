@@ -150,6 +150,14 @@ export async function getAboutContent() {
 }
 
 /**
+ * Get Comparison section content (Why Traditional Models Fail Plastic Surgeons)
+ */
+export async function getComparisonContent() {
+  const data = await getCmsData();
+  return data.comparisonContent || defaultCmsContent.comparisonContent!;
+}
+
+/**
  * Get Project CTA content
  */
 export async function getProjectCtaContent() {

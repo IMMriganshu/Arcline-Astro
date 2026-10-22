@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { CmsData, Page, HeroContent, AboutContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem } from '../../lib/types';
+import type { CmsData, Page, HeroContent, AboutContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 
@@ -56,6 +56,24 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
   const [localProjects, setLocalProjects] = useState<Project[]>(() => safeArray(cmsData?.projects, defaultCmsContent.projects));
   const [localTestimonials, setLocalTestimonials] = useState<Testimonial[]>(() => safeArray(cmsData?.testimonials, defaultCmsContent.testimonials));
   const [localComparison, setLocalComparison] = useState<ComparisonItem[]>(() => safeArray(cmsData?.comparison, defaultCmsContent.comparison));
+  const [localComparisonContent, setLocalComparisonContent] = useState<ComparisonSectionContent>(() => {
+    const base = cmsData?.comparisonContent || defaultCmsContent.comparisonContent || {
+      badge: "Rented Clicks vs. Owned Authority",
+      headline: "Why Traditional Models Fail Plastic Surgeons",
+      traditionalTitle: "Traditional Agencies (Rented Clicks)",
+      traditionalItems: [],
+      seelutionsTitle: "The Seelutions Growth Blueprint",
+      seelutionsItems: [],
+    };
+    return {
+      badge: base.badge || "Rented Clicks vs. Owned Authority",
+      headline: base.headline || "Why Traditional Models Fail Plastic Surgeons",
+      traditionalTitle: base.traditionalTitle || "Traditional Agencies (Rented Clicks)",
+      traditionalItems: safeArray(base.traditionalItems, defaultCmsContent.comparisonContent?.traditionalItems || []),
+      seelutionsTitle: base.seelutionsTitle || "The Seelutions Growth Blueprint",
+      seelutionsItems: safeArray(base.seelutionsItems, defaultCmsContent.comparisonContent?.seelutionsItems || []),
+    };
+  });
   const [localVideo, setLocalVideo] = useState<VideoShowcaseContent>(() => ({
     ...defaultCmsContent.videoShowcase!,
     ...(cmsData?.videoShowcase || {}),
@@ -78,7 +96,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
     ...(isHome ? [
       { id: 'hero', name: 'Hero & Masked Typography', icon: '⚡', description: 'Headline, subheadline, CTAs and video masks' },
       { id: 'about', name: 'About Us & Practice Growth', icon: '🏢', description: 'Editorial narrative, eyeball aesthetic & retainer milestones' },
-      { id: 'comparison', name: 'Search vs PPC Matrix', icon: '⚖️', description: 'Rented clicks vs owned search authority comparison' },
+      { id: 'comparison', name: 'Why Traditional Models Fail Plastic Surgeons', icon: '⚖️', description: 'COMPARING: Rented Clicks vs. Owned Authority & Seelutions Growth Blueprint' },
       { id: 'services', name: 'Selected Services (01–05)', icon: '💼', description: '5 core surgical acquisition services and descriptions' },
       { id: 'projects', name: '10-Year Case Study Timeline', icon: '📈', description: 'Practice growth trajectory from 2016 to modern AI search' },
       { id: 'video', name: 'Architectural Video Showcase', icon: '🎥', description: 'Cinematic looping showcase video and modal player' },
@@ -119,6 +137,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       projects: localProjects,
       testimonials: localTestimonials,
       comparison: localComparison,
+      comparisonContent: localComparisonContent,
       videoShowcase: localVideo,
       pages: cmsData.pages.map((p) => (p.id === currentPage.id ? currentPage : p)),
     };
@@ -740,57 +759,261 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
               </div>
             )}
 
-            {/* SECTION 5: COMPARISON MATRIX */}
+            {/* SECTION 5: WHY TRADITIONAL MODELS FAIL PLASTIC SURGEONS (COMPARISON) */}
             {activeSectionId === 'comparison' && (
-              <div className="space-y-4">
-                {(localComparison || []).map((comp, idx) => (
-                  <div key={comp.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Evaluation Metric</label>
-                      <input
-                        type="text"
-                        value={comp.metric}
-                        onChange={(e) => {
-                          const updated = [...localComparison];
-                          updated[idx].metric = e.target.value;
-                          setLocalComparison(updated);
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold"
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-6">
+                {activeViewMode === 'editor' ? (
+                  <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-6">
+                    {/* Header Controls */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-white/10">
                       <div>
-                        <label className="block text-[11px] font-semibold text-red-400 mb-1">Traditional (Rented Clicks)</label>
+                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                          Eyebrow Tag / Section Badge
+                        </label>
                         <input
                           type="text"
-                          value={comp.rentedClicks}
+                          value={localComparisonContent.badge}
                           onChange={(e) => {
-                            const updated = [...localComparison];
-                            updated[idx].rentedClicks = e.target.value;
-                            setLocalComparison(updated);
+                            setLocalComparisonContent({ ...localComparisonContent, badge: e.target.value });
                             setHasChanges(true);
                           }}
-                          className="w-full px-3 py-2 bg-black/50 border border-red-500/20 rounded-xl text-red-200 text-xs"
+                          placeholder="Rented Clicks vs. Owned Authority"
+                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
                         />
                       </div>
                       <div>
-                        <label className="block text-[11px] font-semibold text-emerald-400 mb-1">Seelutions (Organic &amp; AI Authority)</label>
+                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                          Section Main Headline
+                        </label>
                         <input
                           type="text"
-                          value={comp.organicAuthority}
+                          value={localComparisonContent.headline}
                           onChange={(e) => {
-                            const updated = [...localComparison];
-                            updated[idx].organicAuthority = e.target.value;
-                            setLocalComparison(updated);
+                            setLocalComparisonContent({ ...localComparisonContent, headline: e.target.value });
                             setHasChanges(true);
                           }}
-                          className="w-full px-3 py-2 bg-black/50 border border-emerald-500/20 rounded-xl text-emerald-200 text-xs"
+                          placeholder="Why Traditional Models Fail Plastic Surgeons"
+                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold focus:outline-none focus:border-cyan-400"
                         />
+                      </div>
+                    </div>
+
+                    {/* 2-Column Comparison Editor */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Left: Traditional Agencies (Rented Clicks) */}
+                      <div className="p-5 bg-black/40 border border-red-500/20 rounded-2xl space-y-4">
+                        <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                          <label className="block text-xs font-bold text-red-400 uppercase tracking-wider">
+                            Left Column Title
+                          </label>
+                          <span className="text-[10px] text-neutral-500 font-mono">
+                            {(localComparisonContent.traditionalItems || []).length} Points
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          value={localComparisonContent.traditionalTitle}
+                          onChange={(e) => {
+                            setLocalComparisonContent({ ...localComparisonContent, traditionalTitle: e.target.value });
+                            setHasChanges(true);
+                          }}
+                          placeholder="Traditional Agencies (Rented Clicks)"
+                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-red-400"
+                        />
+
+                        <div className="space-y-3 pt-2">
+                          {(localComparisonContent.traditionalItems || []).map((item, idx) => (
+                            <div key={item.id || idx} className="p-3 bg-neutral-900/80 border border-white/10 rounded-xl space-y-2">
+                              <div className="flex items-center justify-between">
+                                <label className="text-[10px] uppercase font-bold text-neutral-400">
+                                  Point #{idx + 1} Title
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = (localComparisonContent.traditionalItems || []).filter((_, i) => i !== idx);
+                                    setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                                    setHasChanges(true);
+                                  }}
+                                  className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => {
+                                  const updated = [...(localComparisonContent.traditionalItems || [])];
+                                  updated[idx].title = e.target.value;
+                                  setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                                  setHasChanges(true);
+                                }}
+                                placeholder="e.g. Rented Clicks, Generic Templates"
+                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white text-xs font-semibold focus:outline-none focus:border-red-400"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => {
+                                  const updated = [...(localComparisonContent.traditionalItems || [])];
+                                  updated[idx].description = e.target.value;
+                                  setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                                  setHasChanges(true);
+                                }}
+                                placeholder="Explanation of traditional agency weakness..."
+                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-neutral-300 text-xs leading-relaxed focus:outline-none focus:border-red-400"
+                              />
+                            </div>
+                          ))}
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [
+                                ...(localComparisonContent.traditionalItems || []),
+                                { id: `trad-${Date.now()}`, title: 'New Failure Point', description: 'Description of traditional model flaw...' },
+                              ];
+                              setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                              setHasChanges(true);
+                            }}
+                            className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                          >
+                            + Add Traditional Point
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Right: The Seelutions Growth Blueprint */}
+                      <div className="p-5 bg-black/40 border border-emerald-500/20 rounded-2xl space-y-4">
+                        <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                          <label className="block text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                            Right Column Title
+                          </label>
+                          <span className="text-[10px] text-neutral-500 font-mono">
+                            {(localComparisonContent.seelutionsItems || []).length} Points
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          value={localComparisonContent.seelutionsTitle}
+                          onChange={(e) => {
+                            setLocalComparisonContent({ ...localComparisonContent, seelutionsTitle: e.target.value });
+                            setHasChanges(true);
+                          }}
+                          placeholder="The Seelutions Growth Blueprint"
+                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-emerald-400"
+                        />
+
+                        <div className="space-y-3 pt-2">
+                          {(localComparisonContent.seelutionsItems || []).map((item, idx) => (
+                            <div key={item.id || idx} className="p-3 bg-neutral-900/80 border border-white/10 rounded-xl space-y-2">
+                              <div className="flex items-center justify-between">
+                                <label className="text-[10px] uppercase font-bold text-neutral-400">
+                                  Point #{idx + 1} Title
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = (localComparisonContent.seelutionsItems || []).filter((_, i) => i !== idx);
+                                    setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                                    setHasChanges(true);
+                                  }}
+                                  className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => {
+                                  const updated = [...(localComparisonContent.seelutionsItems || [])];
+                                  updated[idx].title = e.target.value;
+                                  setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                                  setHasChanges(true);
+                                }}
+                                placeholder="e.g. Owned Search Equity, High-Ticket Gallery UX"
+                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-emerald-300 text-xs font-semibold focus:outline-none focus:border-emerald-400"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => {
+                                  const updated = [...(localComparisonContent.seelutionsItems || [])];
+                                  updated[idx].description = e.target.value;
+                                  setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                                  setHasChanges(true);
+                                }}
+                                placeholder="Explanation of Seelutions compounding advantage..."
+                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-neutral-300 text-xs leading-relaxed focus:outline-none focus:border-emerald-400"
+                              />
+                            </div>
+                          ))}
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [
+                                ...(localComparisonContent.seelutionsItems || []),
+                                { id: `seel-${Date.now()}`, title: 'New Growth Advantage', description: 'Description of Seelutions advantage...' },
+                              ];
+                              setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                              setHasChanges(true);
+                            }}
+                            className="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                          >
+                            + Add Seelutions Blueprint Point
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                ))}
+                ) : (
+                  /* LIVE PREVIEW OF "WHY TRADITIONAL MODELS FAIL PLASTIC SURGEONS" */
+                  <div className="bg-white text-black p-8 md:p-12 rounded-3xl space-y-8">
+                    <div className="text-center space-y-3">
+                      <div className="inline-block px-3 py-1 rounded-full bg-neutral-100 text-[#8DC541] text-xs font-bold uppercase tracking-wider">
+                        — {localComparisonContent.badge}
+                      </div>
+                      <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight">
+                        {localComparisonContent.headline}
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+                      {/* Left: Traditional (Rented Clicks) */}
+                      <div className="bg-neutral-50 rounded-3xl p-6 md:p-8 border border-neutral-200">
+                        <h3 className="text-xl font-black text-neutral-500 mb-6">
+                          {localComparisonContent.traditionalTitle}
+                        </h3>
+                        <div className="space-y-4">
+                          {(localComparisonContent.traditionalItems || []).map((item, idx) => (
+                            <div key={idx} className="p-5 bg-white rounded-2xl border border-neutral-100 shadow-xs">
+                              <h4 className="font-black text-base text-neutral-900 mb-1">{item.title}</h4>
+                              <p className="text-neutral-600 text-xs leading-relaxed">{item.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Right: Seelutions Blueprint */}
+                      <div className="bg-neutral-900 rounded-3xl p-6 md:p-8 border border-neutral-800 text-white">
+                        <h3 className="text-xl font-black text-[#8DC541] mb-6">
+                          {localComparisonContent.seelutionsTitle}
+                        </h3>
+                        <div className="space-y-4">
+                          {(localComparisonContent.seelutionsItems || []).map((item, idx) => (
+                            <div key={idx} className="p-5 bg-neutral-800 rounded-2xl border border-neutral-700 shadow-xs">
+                              <h4 className="font-black text-base text-white mb-1">{item.title}</h4>
+                              <p className="text-neutral-300 text-xs leading-relaxed">{item.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

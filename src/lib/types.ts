@@ -85,6 +85,21 @@ export interface ComparisonItem {
   organicAuthority: string;
 }
 
+export interface ComparisonCardItem {
+  id?: string;
+  title: string;
+  description: string;
+}
+
+export interface ComparisonSectionContent {
+  badge: string;
+  headline: string;
+  traditionalTitle: string;
+  traditionalItems: ComparisonCardItem[];
+  seelutionsTitle: string;
+  seelutionsItems: ComparisonCardItem[];
+}
+
 export interface FooterContent {
   tagline?: string;
   description?: string;
@@ -171,6 +186,7 @@ export interface CmsData {
   footer: FooterContent;
   media: MediaAsset[];
   aboutContent?: AboutContent;
+  comparisonContent?: ComparisonSectionContent;
   projectCta?: ProjectCtaContent;
   videoShowcase?: VideoShowcaseContent;
   lastPublishedAt?: string;

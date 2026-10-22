@@ -35,6 +35,7 @@ export default function AdminDashboard() {
                 vercelDeployHookUrl: dedicatedHook || parsed.siteConfig?.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK,
               },
               comparison: Array.isArray(parsed.comparison) && parsed.comparison.length > 0 ? parsed.comparison : defaultCmsContent.comparison,
+              comparisonContent: (parsed.comparisonContent !== undefined && parsed.comparisonContent !== null) ? parsed.comparisonContent : defaultCmsContent.comparisonContent,
               navigation: Array.isArray(parsed.navigation) && parsed.navigation.length > 0 ? parsed.navigation : defaultCmsContent.navigation,
               aboutContent: parsed.aboutContent || defaultCmsContent.aboutContent,
               projectCta: parsed.projectCta || defaultCmsContent.projectCta,
@@ -131,6 +132,10 @@ export default function AdminDashboard() {
               vercelDeployHookUrl: effectiveHook,
             },
             comparison: Array.isArray(json.data.comparison) && json.data.comparison.length > 0 ? json.data.comparison : defaultCmsContent.comparison,
+            // Force migration if missing
+            comparisonContent: (json.data.comparisonContent !== undefined && json.data.comparisonContent !== null) 
+              ? json.data.comparisonContent 
+              : defaultCmsContent.comparisonContent,
             navigation: Array.isArray(json.data.navigation) && json.data.navigation.length > 0 ? json.data.navigation : defaultCmsContent.navigation,
             aboutContent: json.data.aboutContent || defaultCmsContent.aboutContent,
             projectCta: json.data.projectCta || defaultCmsContent.projectCta,
@@ -468,7 +473,7 @@ export default function AdminDashboard() {
               { id: 'blog', label: 'Blog & Articles', icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' },
               { id: 'pages', label: 'Manage Pages', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
               { id: 'testimonials', label: 'Surgeon Testimonials', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
-              { id: 'comparison', label: 'Search vs PPC Matrix', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+              { id: 'comparison', label: 'Why Models Fail (Comparison)', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
               { id: 'navigation', label: 'Navigation & Footer', icon: 'M4 6h16M4 12h16M4 18h16' },
               { id: 'media', label: 'Media Assets', icon: 'M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z' },
               { id: 'settings', label: 'SEO & Deploy Settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
@@ -1540,68 +1545,264 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* TAB: Search vs PPC Matrix */}
-          {activeTab === 'comparison' && (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold font-urbanist text-white">Search vs PPC Economics Matrix</h2>
-                <p className="text-xs text-neutral-400">Customize the comparison chart between rented ads and compounding search authority.</p>
-              </div>
+          {/* TAB: Why Traditional Models Fail (Comparison) */}
+          {activeTab === 'comparison' && (() => {
+            const compContent = cmsData.comparisonContent || defaultCmsContent.comparisonContent!;
+            return (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold font-urbanist text-white">Why Traditional Models Fail Plastic Surgeons</h2>
+                  <p className="text-xs text-neutral-400">
+                    Customize the homepage comparison cards between Traditional Agencies (Rented Clicks) and The Seelutions Growth Blueprint.
+                  </p>
+                </div>
 
-              <div className="space-y-4">
-                {cmsData.comparison.map((item, idx) => (
-                  <div key={item.id || idx} className="p-5 bg-neutral-900/80 border border-white/10 rounded-2xl space-y-3">
-                    <div className="text-xs font-bold text-cyan-400 uppercase tracking-wider">
-                      Metric #{idx + 1}
-                    </div>
+                {/* Section Header */}
+                <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-4">
+                  <h3 className="text-sm font-bold text-cyan-300">Section Header &amp; Eyebrow</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Eyebrow Badge Label
+                      </label>
                       <input
                         type="text"
-                        value={item.metric}
+                        value={compContent.badge}
                         onChange={(e) => {
-                          const updated = [...cmsData.comparison];
-                          updated[idx].metric = e.target.value;
-                          setCmsData({ ...cmsData, comparison: updated });
+                          setCmsData({
+                            ...cmsData,
+                            comparisonContent: { ...compContent, badge: e.target.value },
+                          });
                           setHasChanges(true);
                         }}
-                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white font-semibold text-xs focus:outline-none focus:border-cyan-400"
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
                       />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-[11px] text-red-400 font-medium mb-1">Rented Clicks (Google Ads)</label>
-                        <input
-                          type="text"
-                          value={item.rentedClicks}
-                          onChange={(e) => {
-                            const updated = [...cmsData.comparison];
-                            updated[idx].rentedClicks = e.target.value;
-                            setCmsData({ ...cmsData, comparison: updated });
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-neutral-300 text-xs focus:outline-none focus:border-red-400"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] text-cyan-400 font-medium mb-1">Organic Authority (Seelutions)</label>
-                        <input
-                          type="text"
-                          value={item.organicAuthority}
-                          onChange={(e) => {
-                            const updated = [...cmsData.comparison];
-                            updated[idx].organicAuthority = e.target.value;
-                            setCmsData({ ...cmsData, comparison: updated });
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-neutral-300 text-xs focus:outline-none focus:border-cyan-400"
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Section Main Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={compContent.headline}
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            comparisonContent: { ...compContent, headline: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-cyan-400"
+                      />
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* 2-Column Comparison Editor */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Left Column: Traditional Agencies */}
+                  <div className="bg-neutral-900/80 border border-red-500/20 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                      <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider">
+                        Left Column: Traditional Agencies
+                      </h3>
+                      <span className="text-[10px] text-neutral-500 font-mono">
+                        {(compContent.traditionalItems || []).length} Points
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 mb-1">Column Title</label>
+                      <input
+                        type="text"
+                        value={compContent.traditionalTitle}
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            comparisonContent: { ...compContent, traditionalTitle: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-red-400"
+                      />
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      {(compContent.traditionalItems || []).map((item, idx) => (
+                        <div key={item.id || idx} className="p-3.5 bg-black/50 border border-white/10 rounded-xl space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase text-neutral-400">Point #{idx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = compContent.traditionalItems.filter((_, i) => i !== idx);
+                                setCmsData({
+                                  ...cmsData,
+                                  comparisonContent: { ...compContent, traditionalItems: updated },
+                                });
+                                setHasChanges(true);
+                              }}
+                              className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            value={item.title}
+                            onChange={(e) => {
+                              const updated = [...compContent.traditionalItems];
+                              updated[idx] = { ...updated[idx], title: e.target.value };
+                              setCmsData({
+                                ...cmsData,
+                                comparisonContent: { ...compContent, traditionalItems: updated },
+                              });
+                              setHasChanges(true);
+                            }}
+                            placeholder="Point Title"
+                            className="w-full px-3 py-1.5 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-semibold focus:outline-none focus:border-red-400"
+                          />
+                          <textarea
+                            rows={2}
+                            value={item.description}
+                            onChange={(e) => {
+                              const updated = [...compContent.traditionalItems];
+                              updated[idx] = { ...updated[idx], description: e.target.value };
+                              setCmsData({
+                                ...cmsData,
+                                comparisonContent: { ...compContent, traditionalItems: updated },
+                              });
+                              setHasChanges(true);
+                            }}
+                            placeholder="Point Description"
+                            className="w-full px-3 py-1.5 bg-neutral-900 border border-white/15 rounded-lg text-neutral-300 text-xs leading-relaxed focus:outline-none focus:border-red-400"
+                          />
+                        </div>
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [
+                            ...(compContent.traditionalItems || []),
+                            { id: `trad-${Date.now()}`, title: 'New Failure Point', description: 'Description of agency model flaw...' },
+                          ];
+                          setCmsData({
+                            ...cmsData,
+                            comparisonContent: { ...compContent, traditionalItems: updated },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                      >
+                        + Add Traditional Point
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Right Column: The Seelutions Growth Blueprint */}
+                  <div className="bg-neutral-900/80 border border-emerald-500/20 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                      <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
+                        Right Column: Seelutions Blueprint
+                      </h3>
+                      <span className="text-[10px] text-neutral-500 font-mono">
+                        {(compContent.seelutionsItems || []).length} Points
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 mb-1">Column Title</label>
+                      <input
+                        type="text"
+                        value={compContent.seelutionsTitle}
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            comparisonContent: { ...compContent, seelutionsTitle: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-emerald-400"
+                      />
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      {(compContent.seelutionsItems || []).map((item, idx) => (
+                        <div key={item.id || idx} className="p-3.5 bg-black/50 border border-white/10 rounded-xl space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase text-neutral-400">Point #{idx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = compContent.seelutionsItems.filter((_, i) => i !== idx);
+                                setCmsData({
+                                  ...cmsData,
+                                  comparisonContent: { ...compContent, seelutionsItems: updated },
+                                });
+                                setHasChanges(true);
+                              }}
+                              className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                          <input
+                            type="text"
+                            value={item.title}
+                            onChange={(e) => {
+                              const updated = [...compContent.seelutionsItems];
+                              updated[idx] = { ...updated[idx], title: e.target.value };
+                              setCmsData({
+                                ...cmsData,
+                                comparisonContent: { ...compContent, seelutionsItems: updated },
+                              });
+                              setHasChanges(true);
+                            }}
+                            placeholder="Point Title"
+                            className="w-full px-3 py-1.5 bg-neutral-900 border border-white/15 rounded-lg text-emerald-300 text-xs font-semibold focus:outline-none focus:border-emerald-400"
+                          />
+                          <textarea
+                            rows={2}
+                            value={item.description}
+                            onChange={(e) => {
+                              const updated = [...compContent.seelutionsItems];
+                              updated[idx] = { ...updated[idx], description: e.target.value };
+                              setCmsData({
+                                ...cmsData,
+                                comparisonContent: { ...compContent, seelutionsItems: updated },
+                              });
+                              setHasChanges(true);
+                            }}
+                            placeholder="Point Description"
+                            className="w-full px-3 py-1.5 bg-neutral-900 border border-white/15 rounded-lg text-neutral-300 text-xs leading-relaxed focus:outline-none focus:border-emerald-400"
+                          />
+                        </div>
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [
+                            ...(compContent.seelutionsItems || []),
+                            { id: `seel-${Date.now()}`, title: 'New Growth Advantage', description: 'Description of Seelutions advantage...' },
+                          ];
+                          setCmsData({
+                            ...cmsData,
+                            comparisonContent: { ...compContent, seelutionsItems: updated },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                      >
+                        + Add Seelutions Blueprint Point
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* TAB: Media Assets */}
           {activeTab === 'media' && (

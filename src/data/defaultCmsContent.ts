@@ -261,6 +261,46 @@ export const defaultCmsContent: CmsData = {
       organicAuthority: "Indexed as the top medical entity recommended by AI",
     },
   ],
+  comparisonContent: {
+    badge: "Rented Clicks vs. Owned Authority",
+    headline: "Why Traditional Models Fail Plastic Surgeons",
+    traditionalTitle: "Traditional Agencies (Rented Clicks)",
+    traditionalItems: [
+      {
+        id: "trad-1",
+        title: "Rented Clicks",
+        description: "Charges $35+ per click on Google Ads that stops generating leads the second ad spend ends.",
+      },
+      {
+        id: "trad-2",
+        title: "Generic Templates",
+        description: "Uses cookie-cutter websites built for general local businesses, not high-ticket surgical patients.",
+      },
+      {
+        id: "trad-3",
+        title: "High Account Churn",
+        description: "Practices switch agencies every 9 months due to lack of transparent ROI.",
+      },
+    ],
+    seelutionsTitle: "The Seelutions Growth Blueprint",
+    seelutionsItems: [
+      {
+        id: "seel-1",
+        title: "Owned Search Equity",
+        description: "Builds organic rankings, local Map Pack dominance, and AI search citations that belong to your practice forever.",
+      },
+      {
+        id: "seel-2",
+        title: "High-Ticket Gallery UX",
+        description: "Builds specialized procedure hubs for Facelifts, Rhinoplasty, and Body Contouring with GA4-optimized galleries.",
+      },
+      {
+        id: "seel-3",
+        title: "Decade-Long Retention",
+        description: "Proven track record of scaling practice investment through 10 years of continuous growth.",
+      },
+    ],
+  },
   footer: {
     tagline: "be seen. be chosen.",
     description: "Helping surgical practices dominate local and AI-driven search landscapes.",
