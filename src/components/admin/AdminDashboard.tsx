@@ -17,6 +17,7 @@ function SubmissionsView({ submissions }: { submissions: Submission[] }) {
           <thead className="text-neutral-500 uppercase">
             <tr>
               <th className="px-3 py-2">Name</th>
+              <th className="px-3 py-2">Website</th>
               <th className="px-3 py-2">Email</th>
               <th className="px-3 py-2">Phone</th>
               <th className="px-3 py-2">Focus</th>
@@ -27,6 +28,7 @@ function SubmissionsView({ submissions }: { submissions: Submission[] }) {
             {submissions.map((sub) => (
               <tr key={sub.id} className="border-t border-white/5">
                 <td className="px-3 py-3 text-white">{sub.name}</td>
+                <td className="px-3 py-3 text-cyan-400"><a href={sub.website.startsWith('http') ? sub.website : `https://${sub.website}`} target="_blank">{sub.website}</a></td>
                 <td className="px-3 py-3">{sub.email}</td>
                 <td className="px-3 py-3">{sub.phone}</td>
                 <td className="px-3 py-3">{sub.focus}</td>
