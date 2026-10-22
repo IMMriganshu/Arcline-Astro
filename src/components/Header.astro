@@ -34,11 +34,11 @@ const headerCtaLink = siteConfig.headerCtaLink || "#contact";
             )}
           </a>
           {item.hasDropdown && item.children && item.children.length > 0 && (
-            <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-black/10 p-2 hidden group-hover:block z-50">
+            <div class="absolute top-full left-0 mt-0 w-max min-w-[200px] bg-white rounded-xl shadow-lg border border-black/10 p-3 hidden group-hover:block z-50">
               {item.children.map((child) => (
                 <a
                   href={child.href}
-                  class="block px-3 py-2 text-sm font-medium text-[#030303] hover:bg-neutral-50 rounded-lg transition-colors"
+                  class="block px-3 py-2 text-sm font-medium text-[#030303] hover:bg-neutral-50 rounded-lg transition-colors whitespace-nowrap"
                 >
                   {child.label}
                 </a>
