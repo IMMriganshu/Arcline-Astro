@@ -127,9 +127,6 @@ import SectionLabel from "./SectionLabel.astro";
 </div>
 
 <script type="module">
-  import { db } from "../lib/firebase.ts";
-  import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-
   const contactModal = document.getElementById('contact-modal');
   const closeModalBtn = document.getElementById('close-contact-modal');
   const contactForm = document.getElementById('contact-form');
@@ -158,6 +155,11 @@ import SectionLabel from "./SectionLabel.astro";
 
   contactForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Defer loading Firebase
+    const { db } = await import("../lib/firebase.ts");
+    const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
+
     const formData = new FormData(contactForm);
     const data = {
       name: formData.get('name'),
