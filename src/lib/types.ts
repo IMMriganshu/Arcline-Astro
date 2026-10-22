@@ -9,6 +9,8 @@ export interface SiteConfig {
   ogImage?: string;
   analyticsId?: string;
   vercelDeployHookUrl?: string;
+  headerCtaText?: string;
+  headerCtaLink?: string;
 }
 
 export interface HeroContent {
@@ -84,6 +86,8 @@ export interface ComparisonItem {
 }
 
 export interface FooterContent {
+  tagline?: string;
+  description?: string;
   copyrightText: string;
   badge: string;
   disclaimer: string;

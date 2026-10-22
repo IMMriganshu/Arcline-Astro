@@ -28,6 +28,7 @@ export default function AdminDashboard() {
               ...defaultCmsContent,
               ...parsed,
               hero: { ...defaultCmsContent.hero, ...(parsed.hero || {}) },
+              footer: { ...defaultCmsContent.footer, ...(parsed.footer || {}) },
               siteConfig: {
                 ...defaultCmsContent.siteConfig,
                 ...(parsed.siteConfig || {}),
@@ -83,6 +84,10 @@ export default function AdminDashboard() {
   const [newMediaUrl, setNewMediaUrl] = useState<string>('');
   const [newMediaType, setNewMediaType] = useState<'image' | 'video'>('image');
 
+  // New Navigation Menu Item input
+  const [newMenuLabel, setNewMenuLabel] = useState<string>('');
+  const [newMenuHref, setNewMenuHref] = useState<string>('');
+
   // Check auth and load content on mount
   useEffect(() => {
     const session = localStorage.getItem('arcline_admin_session');
@@ -119,6 +124,7 @@ export default function AdminDashboard() {
             ...defaultCmsContent,
             ...json.data,
             hero: { ...defaultCmsContent.hero, ...(json.data.hero || {}) },
+            footer: { ...defaultCmsContent.footer, ...(json.data.footer || {}) },
             siteConfig: {
               ...defaultCmsContent.siteConfig,
               ...(json.data.siteConfig || {}),
@@ -1131,24 +1137,233 @@ export default function AdminDashboard() {
 
           {/* TAB: Navigation & Footer */}
           {activeTab === 'navigation' && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold font-urbanist text-white">Navigation & Footer Settings</h2>
-                <p className="text-xs text-neutral-400">Configure global menu links, phone, email, and legal disclaimers.</p>
+                <h2 className="text-2xl font-bold font-urbanist text-white">Header & Footer Management</h2>
+                <p className="text-xs text-neutral-400">
+                  Manage the header navigation menu items, header CTA buttons, contact details, and footer brand content.
+                </p>
               </div>
 
+              {/* SECTION 1: HEADER NAVIGATION MENU BUILDER */}
+              <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-white/10">
+                  <div>
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      Header Navigation Menu
+                    </h3>
+                    <p className="text-xs text-neutral-400 mt-0.5">
+                      Links appear in the top pill bar on desktop, the mobile drawer, and automatically mirror in the footer Quick Links.
+                    </p>
+                  </div>
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-mono w-fit">
+                    {(Array.isArray(cmsData.navigation) ? cmsData.navigation : []).length} Menu Items
+                  </span>
+                </div>
+
+                {/* List of Navigation Items */}
+                <div className="space-y-3">
+                  {(Array.isArray(cmsData.navigation) ? cmsData.navigation : []).map((item, idx, arr) => (
+                    <div
+                      key={item.id || `nav-${idx}`}
+                      className="p-4 bg-black/40 border border-white/10 rounded-xl hover:border-white/20 transition-all flex flex-col md:flex-row md:items-center gap-3"
+                    >
+                      {/* Index & Handle badge */}
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs font-mono font-bold text-cyan-300 shrink-0">
+                          {idx + 1}
+                        </span>
+                      </div>
+
+                      {/* Item Label Input */}
+                      <div className="flex-1 min-w-[140px]">
+                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
+                          Menu Label
+                        </label>
+                        <input
+                          type="text"
+                          value={item.label}
+                          onChange={(e) => {
+                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                            current[idx] = { ...current[idx], label: e.target.value };
+                            setCmsData({ ...cmsData, navigation: current });
+                            setHasChanges(true);
+                          }}
+                          placeholder="e.g. Services, About, Blog"
+                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-medium focus:outline-none focus:border-cyan-400"
+                        />
+                      </div>
+
+                      {/* Item Link/Href Input */}
+                      <div className="flex-[1.5] min-w-[180px]">
+                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
+                          Target URL / Anchor Link
+                        </label>
+                        <input
+                          type="text"
+                          value={item.href}
+                          onChange={(e) => {
+                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                            current[idx] = { ...current[idx], href: e.target.value };
+                            setCmsData({ ...cmsData, navigation: current });
+                            setHasChanges(true);
+                          }}
+                          placeholder="e.g. /#services, /blog, /about"
+                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                        />
+                      </div>
+
+                      {/* Actions: Reorder & Delete */}
+                      <div className="flex items-center gap-1.5 self-end md:self-end pt-1">
+                        <button
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() => {
+                            if (idx <= 0) return;
+                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                            const temp = current[idx];
+                            current[idx] = current[idx - 1];
+                            current[idx - 1] = temp;
+                            setCmsData({ ...cmsData, navigation: current });
+                            setHasChanges(true);
+                          }}
+                          title="Move up"
+                          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 disabled:opacity-30 disabled:pointer-events-none text-neutral-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          disabled={idx === arr.length - 1}
+                          onClick={() => {
+                            if (idx >= arr.length - 1) return;
+                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                            const temp = current[idx];
+                            current[idx] = current[idx + 1];
+                            current[idx + 1] = temp;
+                            setCmsData({ ...cmsData, navigation: current });
+                            setHasChanges(true);
+                          }}
+                          title="Move down"
+                          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 disabled:opacity-30 disabled:pointer-events-none text-neutral-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm(`Delete menu item "${item.label}"?`)) {
+                              const current = (Array.isArray(cmsData.navigation) ? cmsData.navigation : []).filter(
+                                (_, i) => i !== idx
+                              );
+                              setCmsData({ ...cmsData, navigation: current });
+                              setHasChanges(true);
+                              showToast(`Removed "${item.label}" from navigation`, 'info');
+                            }
+                          }}
+                          title="Delete menu item"
+                          className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 flex items-center justify-center text-xs transition-colors cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {(Array.isArray(cmsData.navigation) ? cmsData.navigation : []).length === 0 && (
+                    <div className="p-8 text-center border border-dashed border-white/10 rounded-xl text-neutral-500 text-xs">
+                      No navigation menu items configured. Add one below!
+                    </div>
+                  )}
+                </div>
+
+                {/* Add New Menu Item Form */}
+                <div className="p-4 bg-cyan-950/20 border border-cyan-500/30 rounded-xl space-y-3">
+                  <div className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add New Menu Item
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end">
+                    <div className="sm:col-span-1 md:col-span-2">
+                      <label className="block text-[11px] font-medium text-neutral-300 mb-1">
+                        Menu Label
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Case Studies, Pricing, About"
+                        value={newMenuLabel}
+                        onChange={(e) => setNewMenuLabel(e.target.value)}
+                        className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-lg text-white text-xs focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div className="sm:col-span-1 md:col-span-2">
+                      <label className="block text-[11px] font-medium text-neutral-300 mb-1">
+                        Target URL / Anchor Link
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. /#projects, /#about, /blog"
+                        value={newMenuHref}
+                        onChange={(e) => setNewMenuHref(e.target.value)}
+                        className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-lg text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div className="md:col-span-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!newMenuLabel.trim() || !newMenuHref.trim()) {
+                            showToast('Please provide both a label and a link for the menu item', 'error');
+                            return;
+                          }
+                          const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                          const newItem: NavItem = {
+                            id: `nav-${Date.now()}`,
+                            label: newMenuLabel.trim(),
+                            href: newMenuHref.trim(),
+                          };
+                          setCmsData({ ...cmsData, navigation: [...current, newItem] });
+                          setNewMenuLabel('');
+                          setNewMenuHref('');
+                          setHasChanges(true);
+                          showToast(`Added "${newItem.label}" to navigation menu`, 'success');
+                        }}
+                        className="w-full px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs rounded-lg transition-colors cursor-pointer text-center"
+                      >
+                        + Add Item
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-neutral-400">
+                    💡 Tip: Use <code className="text-cyan-300 font-mono">/#section-id</code> (e.g. <code className="text-cyan-300 font-mono">/#services</code>, <code className="text-cyan-300 font-mono">/#about</code>, <code className="text-cyan-300 font-mono">/#contact</code>) for homepage smooth scroll sections, or <code className="text-cyan-300 font-mono">/blog</code> for subpages.
+                  </p>
+                </div>
+              </div>
+
+              {/* SECTION 2: HEADER ACTION BUTTONS & PHONE */}
               <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-4">
-                <h3 className="text-sm font-bold text-cyan-300">Practice Contact Information</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <h3 className="text-base font-bold text-white flex items-center gap-2 pb-3 border-b border-white/10">
+                  <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+                  Header Action Buttons & Contact Callout
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                      Practice Phone Number
+                      Header CTA Button Text
                     </label>
                     <input
                       type="text"
-                      value={cmsData.siteConfig.phone}
+                      value={cmsData.siteConfig.headerCtaText || ''}
+                      placeholder="Request Practice Audit"
                       onChange={(e) => {
-                        setCmsData({ ...cmsData, siteConfig: { ...cmsData.siteConfig, phone: e.target.value } });
+                        setCmsData({
+                          ...cmsData,
+                          siteConfig: { ...cmsData.siteConfig, headerCtaText: e.target.value },
+                        });
                         setHasChanges(true);
                       }}
                       className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
@@ -1157,13 +1372,84 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                      Contact Email Address
+                      Header CTA Button Link
                     </label>
                     <input
-                      type="email"
-                      value={cmsData.siteConfig.email}
+                      type="text"
+                      value={cmsData.siteConfig.headerCtaLink || ''}
+                      placeholder="#contact"
                       onChange={(e) => {
-                        setCmsData({ ...cmsData, siteConfig: { ...cmsData.siteConfig, email: e.target.value } });
+                        setCmsData({
+                          ...cmsData,
+                          siteConfig: { ...cmsData.siteConfig, headerCtaLink: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Header Phone Number Display
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.siteConfig.phone}
+                      placeholder="(804) 707-5821"
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          siteConfig: { ...cmsData.siteConfig, phone: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 3: FOOTER BRANDING & DESCRIPTION */}
+              <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-4">
+                <h3 className="text-base font-bold text-white flex items-center gap-2 pb-3 border-b border-white/10">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  Footer Brand & Company Content
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Brand Tagline (Under Footer Logo)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.footer?.tagline || ''}
+                      placeholder="be seen. be chosen."
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          footer: { ...cmsData.footer, tagline: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Legal Copyright Notice
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.footer?.copyrightText || ''}
+                      placeholder="© 2026 seelutions. All Rights Reserved."
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          footer: { ...cmsData.footer, copyrightText: e.target.value },
+                        });
                         setHasChanges(true);
                       }}
                       className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
@@ -1173,51 +1459,81 @@ export default function AdminDashboard() {
 
                 <div>
                   <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Office Address
+                    Footer Mission / Agency Description
                   </label>
-                  <input
-                    type="text"
-                    value={cmsData.siteConfig.address}
+                  <textarea
+                    rows={2}
+                    value={cmsData.footer?.description || ''}
+                    placeholder="Helping surgical practices dominate local and AI-driven search landscapes."
                     onChange={(e) => {
-                      setCmsData({ ...cmsData, siteConfig: { ...cmsData.siteConfig, address: e.target.value } });
+                      setCmsData({
+                        ...cmsData,
+                        footer: { ...cmsData.footer, description: e.target.value },
+                      });
                       setHasChanges(true);
                     }}
                     className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
                   />
                 </div>
 
-                <div className="pt-4 border-t border-white/10">
-                  <h3 className="text-sm font-bold text-cyan-300 mb-3">Footer Legal & Territory Exclusivity</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Exclusivity Disclaimer
-                      </label>
-                      <textarea
-                        rows={2}
-                        value={cmsData.footer.disclaimer}
-                        onChange={(e) => {
-                          setCmsData({ ...cmsData, footer: { ...cmsData.footer, disclaimer: e.target.value } });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
-                      />
-                    </div>
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                    Territory Exclusivity & Legal Disclaimer
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={cmsData.footer?.disclaimer || ''}
+                    placeholder="Territory exclusivity guaranteed: We partner with exactly one surgical practice per geographic metro..."
+                    onChange={(e) => {
+                      setCmsData({
+                        ...cmsData,
+                        footer: { ...cmsData.footer, disclaimer: e.target.value },
+                      });
+                      setHasChanges(true);
+                    }}
+                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+              </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Copyright Notice
-                      </label>
-                      <input
-                        type="text"
-                        value={cmsData.footer.copyrightText}
-                        onChange={(e) => {
-                          setCmsData({ ...cmsData, footer: { ...cmsData.footer, copyrightText: e.target.value } });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
-                      />
-                    </div>
+              {/* SECTION 4: PRACTICE CONTACT DETAILS (MIRRORED IN FOOTER) */}
+              <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-4">
+                <h3 className="text-base font-bold text-white flex items-center gap-2 pb-3 border-b border-white/10">
+                  <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                  Practice Contact Details
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Contact Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={cmsData.siteConfig.email}
+                      placeholder="audit@seelutions.com"
+                      onChange={(e) => {
+                        setCmsData({ ...cmsData, siteConfig: { ...cmsData.siteConfig, email: e.target.value } });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Physical / Office Address
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.siteConfig.address}
+                      placeholder="488 Madison Avenue, New York, NY 10022"
+                      onChange={(e) => {
+                        setCmsData({ ...cmsData, siteConfig: { ...cmsData.siteConfig, address: e.target.value } });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    />
                   </div>
                 </div>
               </div>

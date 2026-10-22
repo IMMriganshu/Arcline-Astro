@@ -14,6 +14,8 @@ export const defaultCmsContent: CmsData = {
     ogImage: "/images/home-hero-image.webp",
     analyticsId: "G-XXXXXXXXXX",
     vercelDeployHookUrl: "https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s",
+    headerCtaText: "Request Practice Audit",
+    headerCtaLink: "#contact",
   },
   hero: {
     eyebrowTag: "SPECIALIZED PATIENT ACQUISITION FOR PLASTIC & FACIAL COSMETIC SURGEONS",
@@ -260,7 +262,9 @@ export const defaultCmsContent: CmsData = {
     },
   ],
   footer: {
-    copyrightText: "© 2026 Arcline / Seelutions. All rights reserved.",
+    tagline: "be seen. be chosen.",
+    description: "Helping surgical practices dominate local and AI-driven search landscapes.",
+    copyrightText: "© 2026 seelutions. All Rights Reserved. Patient Grower is a specialized publication of seelutions.",
     badge: "Specialized Search Authority for Plastic & Facial Surgeons",
     disclaimer: "We partner exclusively with one board-certified plastic or facial cosmetic surgical practice per metropolitan territory.",
   },

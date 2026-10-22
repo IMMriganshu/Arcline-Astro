@@ -1,10 +1,11 @@
 ---
 import Logo from "./Logo.astro";
 import SectionLabel from "./SectionLabel.astro";
-import { pagesDropdownData } from "../data/siteData";
-import { getSiteConfig } from "../lib/cms";
+import { getSiteConfig, getFooterContent, getNavigation } from "../lib/cms";
 
 const siteConfig = await getSiteConfig();
+const footer = await getFooterContent();
+const navItems = await getNavigation();
 ---
 
 <footer id="contact" class="bg-[#050505] text-white pt-20 pb-8">
@@ -15,22 +16,25 @@ const siteConfig = await getSiteConfig();
       <!-- Col 1: Logo, Tagline, Positioning -->
       <div class="flex flex-col gap-6">
         <Logo variant="light" size="lg" />
-        <p class="text-xl font-medium tracking-tight">be seen. be chosen.</p>
+        <p class="text-xl font-medium tracking-tight">{footer.tagline || "be seen. be chosen."}</p>
         <p class="text-sm text-neutral-400 leading-relaxed">
-          Helping surgical practices dominate local and AI-driven search landscapes.
+          {footer.description || "Helping surgical practices dominate local and AI-driven search landscapes."}
         </p>
       </div>
 
-      <!-- Col 2: Quick Links -->
+      <!-- Col 2: Quick Links (Synced with Navigation) -->
       <div>
         <h3 class="text-sm font-semibold tracking-wider text-white uppercase mb-6">
           Quick Links
         </h3>
         <ul class="space-y-3 text-sm text-neutral-400">
-          <li><a href="/#about" class="hover:text-white transition-colors">About</a></li>
-          <li><a href="/#services" class="hover:text-white transition-colors">Services</a></li>
-          <li><a href="/#case-study" class="hover:text-white transition-colors">Case Study</a></li>
-          <li><a href="/#patient-grower" class="hover:text-white transition-colors">Patient Grower</a></li>
+          {navItems.map((item) => (
+            <li>
+              <a href={item.href} class="hover:text-white transition-colors">
+                {item.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -61,9 +65,14 @@ const siteConfig = await getSiteConfig();
         <h3 class="text-sm font-semibold tracking-wider text-white uppercase mb-6">
           Legal
         </h3>
-        <p class="text-sm text-neutral-400 leading-relaxed mb-4">
-          © 2026 seelutions. All Rights Reserved. Patient Grower is a specialized publication of seelutions.
+        <p class="text-sm text-neutral-400 leading-relaxed mb-3">
+          {footer.copyrightText || "© 2026 seelutions. All Rights Reserved."}
         </p>
+        {footer.disclaimer && (
+          <p class="text-xs text-neutral-500 leading-relaxed mb-4">
+            {footer.disclaimer}
+          </p>
+        )}
         <a
           href="/admin"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-neutral-400 hover:text-cyan-300 transition-colors"

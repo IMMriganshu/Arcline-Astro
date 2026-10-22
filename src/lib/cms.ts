@@ -94,6 +94,22 @@ export async function getPageBySlug(slug: string) {
 }
 
 /**
+ * Get all header navigation items
+ */
+export async function getNavigation() {
+  const data = await getCmsData();
+  return (data.navigation && data.navigation.length > 0) ? data.navigation : defaultCmsContent.navigation;
+}
+
+/**
+ * Get footer configuration & content
+ */
+export async function getFooterContent() {
+  const data = await getCmsData();
+  return data.footer || defaultCmsContent.footer;
+}
+
+/**
  * Get all services
  */
 export async function getServices() {
