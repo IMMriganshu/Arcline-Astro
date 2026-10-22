@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset, Page } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
+import { PageSectionBuilder } from './PageSectionBuilder';
 
 const PERMANENT_VERCEL_HOOK = 'https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s';
 
@@ -1883,76 +1884,19 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Page Modal */}
+      {/* WordPress-Style Section-Wise Page Content Builder */}
       {isPageModalOpen && editingPage && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-neutral-900 border border-white/15 rounded-2xl w-full max-w-5xl max-h-[94vh] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="text-lg font-bold text-white font-urbanist">
-                {editingPage.id ? 'Edit Page Content' : 'Create New Page'}
-              </h3>
-              <button
-                onClick={() => setIsPageModalOpen(false)}
-                className="text-neutral-400 hover:text-white cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1">Page Title</label>
-                <input
-                  type="text"
-                  value={editingPage.title}
-                  onChange={(e) => setEditingPage({ ...editingPage, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1">Slug (URL path)</label>
-                <input
-                  type="text"
-                  value={editingPage.slug}
-                  onChange={(e) => setEditingPage({ ...editingPage, slug: e.target.value })}
-                  className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
-                />
-              </div>
-            </div>
-
-            {/* Rich Article Text Builder with H1-H6, Links, Quotes, Bullets, Images, Captions & Preview */}
-            <div className="pt-1">
-              <ArticleContentBuilder
-                value={editingPage.content || ''}
-                onChange={(content) => setEditingPage({ ...editingPage, content })}
-              />
-            </div>
-
-            <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
-              <button
-                onClick={() => setIsPageModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-neutral-300 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  const exists = cmsData.pages.some((p) => p.id === editingPage.id);
-                  const updated = exists
-                    ? cmsData.pages.map((p) => (p.id === editingPage.id ? editingPage : p))
-                    : [...cmsData.pages, { ...editingPage, id: `page-${Date.now()}` }];
-                  setCmsData({ ...cmsData, pages: updated });
-                  setHasChanges(true);
-                  setIsPageModalOpen(false);
-                  showToast('Page saved to CMS', 'success');
-                }}
-                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
-              >
-                Save Page
-              </button>
-            </div>
-          </div>
-        </div>
+        <PageSectionBuilder
+          page={editingPage}
+          cmsData={cmsData}
+          onClose={() => setIsPageModalOpen(false)}
+          onSave={(updatedPage, updatedCmsData) => {
+            setCmsData(updatedCmsData);
+            setHasChanges(true);
+            setIsPageModalOpen(false);
+            showToast(`Page "${updatedPage.title}" and its sections updated successfully! Click "Save & Publish" to deploy.`, 'success');
+          }}
+        />
       )}
     </div>
   );

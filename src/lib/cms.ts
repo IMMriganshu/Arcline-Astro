@@ -126,6 +126,30 @@ export async function getSiteConfig() {
 }
 
 /**
+ * Get About section content
+ */
+export async function getAboutContent() {
+  const data = await getCmsData();
+  return data.aboutContent || defaultCmsContent.aboutContent!;
+}
+
+/**
+ * Get Project CTA content
+ */
+export async function getProjectCtaContent() {
+  const data = await getCmsData();
+  return data.projectCta || defaultCmsContent.projectCta!;
+}
+
+/**
+ * Get Video Showcase content
+ */
+export async function getVideoShowcaseContent() {
+  const data = await getCmsData();
+  return data.videoShowcase || defaultCmsContent.videoShowcase!;
+}
+
+/**
  * Server-side helper to persist CMS data to Firestore
  */
 export async function saveServerCmsData(data: CmsData): Promise<boolean> {

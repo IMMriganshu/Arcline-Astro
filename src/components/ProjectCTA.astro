@@ -1,13 +1,16 @@
 ---
 import SectionLabel from "./SectionLabel.astro";
 import Button from "./Button.astro";
+import { getProjectCtaContent } from "../lib/cms";
+
+const cta = await getProjectCtaContent();
 ---
 
 <section id="contact-cta" class="py-16 md:py-24 relative overflow-hidden bg-[#050505] text-white">
   <!-- Atmospheric Dark Architectural Background Image -->
   <div class="absolute inset-0 z-0">
     <img
-      src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85"
+      src={cta.backgroundImage || "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85"}
       alt="Modern medical aesthetic practice architecture"
       class="w-full h-full object-cover object-center opacity-25"
       loading="lazy"
@@ -19,23 +22,23 @@ import Button from "./Button.astro";
     <div class="max-w-3xl">
       <!-- Gold Label -->
       <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text="PRACTICE DIGITAL AUDIT" theme="dark" />
+        <SectionLabel text={cta.badge || "PRACTICE DIGITAL AUDIT"} theme="dark" />
       </div>
 
       <!-- Headline -->
       <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12] mb-6">
-        Is Your Practice Visible in Modern AI &amp; Google Search?
+        {cta.headline}
       </h2>
 
       <!-- Sub-Heading -->
       <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-300 leading-relaxed mb-8 max-w-2xl font-normal">
-        Claim a customized, 3-minute video analysis of your practice&apos;s digital footprint. We&apos;ll walk through your site, identify where high-ticket patient consults are leaking to local competitors, and show you how to fix it.
+        {cta.description}
       </p>
 
       <!-- Trigger Button -->
       <div data-animate="fade-up-sm" data-animate-delay="2">
-        <Button href="#contact" variant="white" showIcon={true} iconType="arrow-right">
-          Request Your Free 3-Minute Practice Audit
+        <Button href={cta.buttonLink || "#contact"} variant="white" showIcon={true} iconType="arrow-right">
+          {cta.buttonText || "Request Your Free 3-Minute Practice Audit"}
         </Button>
       </div>
     </div>

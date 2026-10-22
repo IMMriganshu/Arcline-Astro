@@ -97,11 +97,61 @@ export interface MediaAsset {
   size?: string;
 }
 
+export interface AboutMilestone {
+  yearBudget: string;
+  text: string;
+}
+
+export interface AboutContent {
+  badge: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  timelineTitle: string;
+  timelineSubtitle: string;
+  milestones: AboutMilestone[];
+}
+
+export interface VideoShowcaseContent {
+  videoUrl: string;
+  titleVideoUrl: string;
+  posterUrl: string;
+}
+
+export interface ProjectCtaContent {
+  badge: string;
+  headline: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  backgroundImage: string;
+}
+
+export interface PageSectionItem {
+  id: string;
+  name: string;
+  type: string;
+  badge?: string;
+  title?: string;
+  subtitle?: string;
+  body?: string;
+  image?: string;
+  videoUrl?: string;
+  primaryCtaText?: string;
+  primaryCtaLink?: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
+  customHtml?: string;
+  items?: any[];
+}
+
 export interface Page {
   id: string;
   slug: string;
   title: string;
   content: string; // HTML/Markdown
+  sections?: PageSectionItem[];
 }
 
 export interface CmsData {
@@ -116,6 +166,9 @@ export interface CmsData {
   comparison: ComparisonItem[];
   footer: FooterContent;
   media: MediaAsset[];
+  aboutContent?: AboutContent;
+  projectCta?: ProjectCtaContent;
+  videoShowcase?: VideoShowcaseContent;
   lastPublishedAt?: string;
   version: number;
 }
