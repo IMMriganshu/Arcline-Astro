@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset, Page, Submission } from '../../lib/types';
+import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset, Page, Submission, AdminUser } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 import { PageSectionBuilder } from './PageSectionBuilder';
+import { AdminUsersManagementView } from './AdminUsersManagementView';
 import { db } from '../../lib/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 
 
 
@@ -46,9 +47,16 @@ const PERMANENT_VERCEL_HOOK = 'https://api.vercel.com/v1/integrations/deploy/prj
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<'super' | 'admin'>('admin');
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; role: 'super' | 'admin' } | null>(null);
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [authError, setAuthError] = useState<string>('');
+  const [isVerifyingLogin, setIsVerifyingLogin] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
+
+  // Admin users state (for Super Admin user management)
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
+  const [isLoadingAdminUsers, setIsLoadingAdminUsers] = useState<boolean>(false);
 
   // Page editing modal state
   const [editingPage, setEditingPage] = useState<Page | null>(null);
@@ -133,12 +141,29 @@ export default function AdminDashboard() {
   // Check auth and load content on mount
   useEffect(() => {
     const session = localStorage.getItem('arcline_admin_session');
+    const storedRole = (localStorage.getItem('arcline_admin_role') as 'super' | 'admin') || 'admin';
+    const storedUserStr = localStorage.getItem('arcline_admin_user');
+    
     if (session === 'authenticated') {
       setIsAuthenticated(true);
+      setUserRole(storedRole);
+      if (storedUserStr) {
+        try {
+          setCurrentUser(JSON.parse(storedUserStr));
+        } catch {}
+      } else {
+        setCurrentUser({
+          name: storedRole === 'super' ? 'Super Administrator' : 'Staff Administrator',
+          email: storedRole === 'super' ? 'superadmin@seelutions.com' : 'admin@seelutions.com',
+          role: storedRole,
+        });
+      }
     }
-    
-    // Check if role is super
-    const role = localStorage.getItem('arcline_admin_role');
+
+    const dedicatedHook = typeof window !== 'undefined'
+      ? localStorage.getItem('arcline_vercel_hook') || PERMANENT_VERCEL_HOOK
+      : PERMANENT_VERCEL_HOOK;
+
     let localData: CmsData | null = null;
     try {
       const local = localStorage.getItem('arcline_cms_content_v1');
@@ -215,35 +240,203 @@ export default function AdminDashboard() {
       }
     };
     loadSubmissions();
+
+    // Load Admin Users from Firestore
+    loadAdminUsers();
   }, []);
+
+  const loadAdminUsers = async () => {
+    setIsLoadingAdminUsers(true);
+    try {
+      let fetchedList: AdminUser[] = [];
+      try {
+        const q = query(collection(db, 'admin_users'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        fetchedList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        } as AdminUser));
+      } catch {
+        const fallbackSnap = await getDocs(collection(db, 'admin_users'));
+        fetchedList = fallbackSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        } as AdminUser));
+      }
+
+      // Root Master Super Admin
+      const masterSuper: AdminUser = {
+        id: 'master-super-admin',
+        name: 'Master Super Administrator',
+        email: 'superadmin@seelutions.com',
+        role: 'super',
+        passcode: 'superadmin2026',
+        status: 'active',
+        createdBy: 'System Root',
+      };
+
+      const finalUsers = [
+        masterSuper,
+        ...fetchedList.filter(
+          (u) => u.id !== 'master-super-admin' && u.email !== 'superadmin@seelutions.com'
+        ),
+      ];
+      setAdminUsers(finalUsers);
+    } catch (err) {
+      console.error('Error loading admin users:', err);
+    } finally {
+      setIsLoadingAdminUsers(false);
+    }
+  };
+
+  const handleCreateAdminUser = async (newUserData: Omit<AdminUser, 'id'>) => {
+    try {
+      await addDoc(collection(db, 'admin_users'), {
+        ...newUserData,
+        createdAt: serverTimestamp(),
+        createdBy: currentUser?.name || 'Super Administrator',
+      });
+      showToast(`Admin user "${newUserData.name}" created successfully!`, 'success');
+      await loadAdminUsers();
+    } catch (err: any) {
+      showToast('Failed to create admin in Firestore: ' + err.message, 'error');
+      throw err;
+    }
+  };
+
+  const handleDeleteAdminUser = async (userId: string) => {
+    if (userId === 'master-super-admin') {
+      showToast('Master Super Administrator cannot be removed.', 'error');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to permanently delete this administrator account?')) {
+      return;
+    }
+    try {
+      await deleteDoc(doc(db, 'admin_users', userId));
+      setAdminUsers((prev) => prev.filter((u) => u.id !== userId));
+      showToast('Administrator account removed successfully.', 'info');
+    } catch (err: any) {
+      showToast('Failed to delete account: ' + err.message, 'error');
+    }
+  };
+
+  const handleToggleAdminStatus = async (userId: string, currentStatus: 'active' | 'disabled') => {
+    if (userId === 'master-super-admin') {
+      showToast('Master Super Administrator status cannot be changed.', 'error');
+      return;
+    }
+    const newStatus = currentStatus === 'active' ? 'disabled' : 'active';
+    try {
+      await updateDoc(doc(db, 'admin_users', userId), {
+        status: newStatus,
+      });
+      setAdminUsers((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u))
+      );
+      showToast(`Account status updated to ${newStatus}.`, 'success');
+    } catch (err: any) {
+      showToast('Failed to update status: ' + err.message, 'error');
+    }
+  };
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === 'superadmin2026') {
-      setIsAuthenticated(true);
-      localStorage.setItem('arcline_admin_session', 'authenticated');
-      localStorage.setItem('arcline_admin_role', 'super');
-      setAuthError('');
-      showToast('Welcome, Super Administrator', 'success');
-    } else if (passwordInput === 'arcline2026') {
-      setIsAuthenticated(true);
-      localStorage.setItem('arcline_admin_session', 'authenticated');
-      localStorage.setItem('arcline_admin_role', 'admin');
-      setAuthError('');
-      showToast('Welcome to Arcline Headless CMS', 'success');
-    } else {
+    const trimmed = passwordInput.trim();
+    if (!trimmed) {
+      setAuthError('Please enter administrator passcode.');
+      return;
+    }
+
+    setIsVerifyingLogin(true);
+    setAuthError('');
+
+    try {
+      // 1. Direct check for default Super Admin Master Key
+      if (trimmed === 'superadmin2026') {
+        const u = {
+          name: 'Master Super Administrator',
+          email: 'superadmin@seelutions.com',
+          role: 'super' as const,
+        };
+        setIsAuthenticated(true);
+        setUserRole('super');
+        setCurrentUser(u);
+        localStorage.setItem('arcline_admin_session', 'authenticated');
+        localStorage.setItem('arcline_admin_role', 'super');
+        localStorage.setItem('arcline_admin_user', JSON.stringify(u));
+        showToast('Welcome, Super Administrator', 'success');
+        return;
+      }
+
+      // 2. Direct check for default Staff Admin Key
+      if (trimmed === 'arcline2026') {
+        const u = {
+          name: 'Staff Administrator',
+          email: 'admin@seelutions.com',
+          role: 'admin' as const,
+        };
+        setIsAuthenticated(true);
+        setUserRole('admin');
+        setCurrentUser(u);
+        localStorage.setItem('arcline_admin_session', 'authenticated');
+        localStorage.setItem('arcline_admin_role', 'admin');
+        localStorage.setItem('arcline_admin_user', JSON.stringify(u));
+        showToast('Welcome to Arcline Headless CMS', 'success');
+        return;
+      }
+
+      // 3. Check created accounts in Firestore admin_users
+      const snap = await getDocs(collection(db, 'admin_users'));
+      const matchedDoc = snap.docs.find((d) => {
+        const data = d.data();
+        return data.passcode === trimmed;
+      });
+
+      if (matchedDoc) {
+        const data = matchedDoc.data();
+        if (data.status === 'disabled') {
+          setAuthError('This administrator account has been disabled. Please contact Super Admin.');
+          return;
+        }
+
+        const role: 'super' | 'admin' = data.role === 'super' ? 'super' : 'admin';
+        const u = {
+          name: data.name || 'CMS Administrator',
+          email: data.email || '',
+          role,
+        };
+        setIsAuthenticated(true);
+        setUserRole(role);
+        setCurrentUser(u);
+        localStorage.setItem('arcline_admin_session', 'authenticated');
+        localStorage.setItem('arcline_admin_role', role);
+        localStorage.setItem('arcline_admin_user', JSON.stringify(u));
+        showToast(`Welcome back, ${u.name}!`, 'success');
+        return;
+      }
+
       setAuthError('Invalid administrator passcode.');
+    } catch (err: any) {
+      console.error('Authentication verification error:', err);
+      setAuthError('Could not verify credentials: ' + (err.message || 'Network error'));
+    } finally {
+      setIsVerifyingLogin(false);
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUserRole('admin');
+    setCurrentUser(null);
     localStorage.removeItem('arcline_admin_session');
+    localStorage.removeItem('arcline_admin_role');
+    localStorage.removeItem('arcline_admin_user');
     showToast('Signed out successfully', 'info');
   };
 
@@ -416,11 +609,32 @@ export default function AdminDashboard() {
 
             <button
               type="submit"
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold rounded-xl text-sm shadow-lg shadow-cyan-500/25 transition-all duration-300 cursor-pointer"
+              disabled={isVerifyingLogin}
+              className="w-full py-3.5 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold rounded-xl text-sm shadow-lg shadow-cyan-500/25 transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              Sign In to CMS Dashboard
+              {isVerifyingLogin ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Verifying Passcode...</span>
+                </>
+              ) : (
+                <span>Sign In to CMS Dashboard</span>
+              )}
             </button>
           </form>
+
+          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-neutral-400 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <span className="text-amber-400">👑</span>
+              <span>Super Admin: <code className="text-amber-300 font-mono">superadmin2026</code></span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-cyan-400">🛡️</span>
+              <span>Staff Admin: <code className="text-cyan-300 font-mono">arcline2026</code></span>
+            </span>
+          </div>
         </div>
       </div>
     );
@@ -509,9 +723,41 @@ export default function AdminDashboard() {
             <span>{isSaving ? 'Saving...' : 'Save & Publish'}</span>
           </button>
 
+          {/* Current User Badge & Profile */}
+          {currentUser && (
+            <div className="hidden sm:flex items-center gap-2.5 pl-3 border-l border-white/10">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs uppercase shadow-sm ${
+                  userRole === 'super'
+                    ? 'bg-gradient-to-tr from-amber-500 to-amber-300 text-black shadow-amber-500/20'
+                    : 'bg-gradient-to-tr from-cyan-600 to-blue-500 text-white'
+                }`}
+              >
+                {currentUser.name ? currentUser.name.charAt(0) : (userRole === 'super' ? 'S' : 'A')}
+              </div>
+              <div className="text-left hidden lg:block leading-none">
+                <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+                  <span className="max-w-[120px] truncate">{currentUser.name}</span>
+                  {userRole === 'super' ? (
+                    <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold">
+                      👑 Super Admin
+                    </span>
+                  ) : (
+                    <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-semibold">
+                      🛡️ Admin
+                    </span>
+                  )}
+                </div>
+                <div className="text-[10px] text-neutral-400 mt-1 max-w-[140px] truncate font-mono">
+                  {currentUser.email || 'CMS Administrator'}
+                </div>
+              </div>
+            </div>
+          )}
+
           <button
             onClick={handleLogout}
-            title="Sign out"
+            title="Sign out of CMS"
             className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -526,12 +772,25 @@ export default function AdminDashboard() {
         {/* Sidebar Nav */}
         <aside className="w-64 bg-[#050b1a]/50 border-r border-white/10 flex flex-col justify-between p-4 overflow-y-auto">
           <nav className="space-y-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 px-3 py-2">
-              Content Sections
+            <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 px-3 py-2 flex items-center justify-between">
+              <span>Content Sections</span>
+              {userRole === 'super' && (
+                <span className="text-[9px] font-mono text-amber-400/80">SUPER ROLE</span>
+              )}
             </div>
 
             {[
               { id: 'overview', label: 'Overview & Status', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+              ...(userRole === 'super'
+                ? [
+                    {
+                      id: 'users',
+                      label: 'Admin Users',
+                      badge: 'Super Only',
+                      icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
+                    },
+                  ]
+                : []),
               { id: 'hero', label: 'Hero & Branding', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
               { id: 'services', label: 'Services (01–05)', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
               { id: 'projects', label: 'Case Studies (10-Yr)', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
@@ -547,16 +806,23 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-500/30'
                     : 'text-neutral-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={tab.icon} />
-                </svg>
-                <span>{tab.label}</span>
+                <div className="flex items-center gap-3">
+                  <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={tab.icon} />
+                  </svg>
+                  <span>{tab.label}</span>
+                </div>
+                {'badge' in tab && tab.badge && (
+                  <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40">
+                    👑 Super
+                  </span>
+                )}
               </button>
             ))}
           </nav>
@@ -1918,7 +2184,40 @@ export default function AdminDashboard() {
             );
           })()}
 
-          {/* TAB: Media Assets */}
+          {/* TAB: Admin Users (Super Admin Feature Only) */}
+          {activeTab === 'users' && userRole === 'super' && (
+            <AdminUsersManagementView
+              users={adminUsers}
+              isLoading={isLoadingAdminUsers}
+              currentUserId={currentUser?.email}
+              onRefresh={loadAdminUsers}
+              onCreateUser={handleCreateAdminUser}
+              onDeleteUser={handleDeleteAdminUser}
+              onToggleStatus={handleToggleAdminStatus}
+            />
+          )}
+
+          {activeTab === 'users' && userRole !== 'super' && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8 text-center space-y-3">
+              <div className="w-12 h-12 mx-auto rounded-full bg-red-500/20 flex items-center justify-center text-red-400">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-white font-urbanist">Restricted Access: Super Administrator Only</h3>
+              <p className="text-xs text-neutral-400 max-w-md mx-auto">
+                User creation and administrator list inspection is strictly reserved for the Super Administrator account.
+              </p>
+              <button
+                onClick={() => setActiveTab('overview')}
+                className="px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl text-xs font-semibold text-white transition-colors cursor-pointer"
+              >
+                Return to Overview
+              </button>
+            </div>
+          )}
+
+          {/* TAB: Form Submissions */}
           {activeTab === 'submissions' && <SubmissionsView submissions={submissions} />}
           {activeTab === 'media' && (
             <div className="space-y-6">
@@ -2048,25 +2347,41 @@ export default function AdminDashboard() {
                 </p>
 
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Vercel Deploy Hook URL
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+                      Vercel Deploy Hook URL
+                    </label>
+                    {userRole === 'super' ? (
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        👑 Super Admin Modifiable
+                      </span>
+                    ) : (
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+                        🔒 Super Admin Only (Locked)
+                      </span>
+                    )}
+                  </div>
                   <input
                     type="url"
                     placeholder="https://api.vercel.com/v1/integrations/deploy/prj_.../..."
                     value={cmsData.siteConfig.vercelDeployHookUrl || ''}
-                    readOnly={localStorage.getItem('arcline_admin_role') !== 'super'}
+                    readOnly={userRole !== 'super'}
                     onChange={(e) => {
+                      if (userRole !== 'super') return;
                       setCmsData({
                         ...cmsData,
                         siteConfig: { ...cmsData.siteConfig, vercelDeployHookUrl: e.target.value },
                       });
                       setHasChanges(true);
                     }}
-                    className={`w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400 ${localStorage.getItem('arcline_admin_role') !== 'super' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400 ${
+                      userRole !== 'super' ? 'opacity-50 cursor-not-allowed bg-black/80' : ''
+                    }`}
                   />
                   <span className="text-[11px] text-neutral-500 mt-1 block">
-                    Found in Vercel Project Dashboard → Settings → Git → Deploy Hooks.
+                    {userRole === 'super'
+                      ? 'Found in Vercel Project Dashboard → Settings → Git → Deploy Hooks. As Super Admin, you can edit this.'
+                      : 'This critical deployment webhook URL is protected and can only be altered by a Super Administrator.'}
                   </span>
                 </div>
 

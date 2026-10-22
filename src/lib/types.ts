@@ -184,6 +184,17 @@ export interface Submission {
   createdAt: any;
 }
 
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'super' | 'admin';
+  passcode: string;
+  status: 'active' | 'disabled';
+  createdAt?: any;
+  createdBy?: string;
+}
+
 export interface CmsData {
   siteConfig: SiteConfig;
   hero: HeroContent;

@@ -13,12 +13,31 @@
         "createdAt": { "type": "string", "format": "date-time", "description": "Submission Timestamp" }
       },
       "required": ["name", "website", "email", "phone", "focus", "createdAt"]
+    },
+    "adminUser": {
+      "title": "CMS Admin User",
+      "description": "Admin or Super Admin account for managing CMS",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full Name", "maxLength": 100 },
+        "email": { "type": "string", "description": "Admin Email or Username", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["admin", "super"], "description": "User Role" },
+        "passcode": { "type": "string", "description": "Access Passcode", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["active", "disabled"], "description": "Account Status" },
+        "createdAt": { "type": "string", "description": "Creation Timestamp" },
+        "createdBy": { "type": "string", "description": "Created by user identifier", "maxLength": 100 }
+      },
+      "required": ["name", "email", "role", "passcode", "status"]
     }
   },
   "firestore": {
     "/submissions/{submissionId}": {
       "schema": "submission",
       "description": "User form submissions"
+    },
+    "/admin_users/{userId}": {
+      "schema": "adminUser",
+      "description": "CMS administrators and super admins"
     }
   }
 }
