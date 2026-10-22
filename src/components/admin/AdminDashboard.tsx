@@ -1169,110 +1169,158 @@ export default function AdminDashboard() {
 
                 {/* List of Navigation Items */}
                 <div className="space-y-3">
-                  {(Array.isArray(cmsData.navigation) ? cmsData.navigation : []).map((item, idx, arr) => (
+                  {(Array.isArray(cmsData.navigation) ? cmsData.navigation : []).map((item, idx) => (
                     <div
                       key={item.id || `nav-${idx}`}
-                      className="p-4 bg-black/40 border border-white/10 rounded-xl hover:border-white/20 transition-all flex flex-col md:flex-row md:items-center gap-3"
+                      className="p-4 bg-black/40 border border-white/10 rounded-xl hover:border-white/20 transition-all flex flex-col gap-3"
                     >
-                      {/* Index & Handle badge */}
-                      <div className="flex items-center gap-2">
-                        <span className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs font-mono font-bold text-cyan-300 shrink-0">
-                          {idx + 1}
-                        </span>
-                      </div>
+                      <div className="flex flex-col md:flex-row md:items-center gap-3">
+                        {/* Index & Handle badge */}
+                        <div className="flex items-center gap-2">
+                          <span className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs font-mono font-bold text-cyan-300 shrink-0">
+                            {idx + 1}
+                          </span>
+                        </div>
 
-                      {/* Item Label Input */}
-                      <div className="flex-1 min-w-[140px]">
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
-                          Menu Label
-                        </label>
-                        <input
-                          type="text"
-                          value={item.label}
-                          onChange={(e) => {
-                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
-                            current[idx] = { ...current[idx], label: e.target.value };
-                            setCmsData({ ...cmsData, navigation: current });
-                            setHasChanges(true);
-                          }}
-                          placeholder="e.g. Services, About, Blog"
-                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-medium focus:outline-none focus:border-cyan-400"
-                        />
-                      </div>
-
-                      {/* Item Link/Href Input */}
-                      <div className="flex-[1.5] min-w-[180px]">
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
-                          Target URL / Anchor Link
-                        </label>
-                        <input
-                          type="text"
-                          value={item.href}
-                          onChange={(e) => {
-                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
-                            current[idx] = { ...current[idx], href: e.target.value };
-                            setCmsData({ ...cmsData, navigation: current });
-                            setHasChanges(true);
-                          }}
-                          placeholder="e.g. /#services, /blog, /about"
-                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
-                        />
-                      </div>
-
-                      {/* Actions: Reorder & Delete */}
-                      <div className="flex items-center gap-1.5 self-end md:self-end pt-1">
-                        <button
-                          type="button"
-                          disabled={idx === 0}
-                          onClick={() => {
-                            if (idx <= 0) return;
-                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
-                            const temp = current[idx];
-                            current[idx] = current[idx - 1];
-                            current[idx - 1] = temp;
-                            setCmsData({ ...cmsData, navigation: current });
-                            setHasChanges(true);
-                          }}
-                          title="Move up"
-                          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 disabled:opacity-30 disabled:pointer-events-none text-neutral-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
-                        >
-                          ↑
-                        </button>
-                        <button
-                          type="button"
-                          disabled={idx === arr.length - 1}
-                          onClick={() => {
-                            if (idx >= arr.length - 1) return;
-                            const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
-                            const temp = current[idx];
-                            current[idx] = current[idx + 1];
-                            current[idx + 1] = temp;
-                            setCmsData({ ...cmsData, navigation: current });
-                            setHasChanges(true);
-                          }}
-                          title="Move down"
-                          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 disabled:opacity-30 disabled:pointer-events-none text-neutral-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
-                        >
-                          ↓
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (window.confirm(`Delete menu item "${item.label}"?`)) {
-                              const current = (Array.isArray(cmsData.navigation) ? cmsData.navigation : []).filter(
-                                (_, i) => i !== idx
-                              );
+                        {/* Item Label Input */}
+                        <div className="flex-1 min-w-[140px]">
+                          <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
+                            Menu Label
+                          </label>
+                          <input
+                            type="text"
+                            value={item.label}
+                            onChange={(e) => {
+                              const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                              current[idx] = { ...current[idx], label: e.target.value };
                               setCmsData({ ...cmsData, navigation: current });
                               setHasChanges(true);
-                              showToast(`Removed "${item.label}" from navigation`, 'info');
-                            }
-                          }}
-                          title="Delete menu item"
-                          className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 flex items-center justify-center text-xs transition-colors cursor-pointer"
-                        >
-                          ✕
-                        </button>
+                            }}
+                            placeholder="e.g. Services, About, Blog"
+                            className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-medium focus:outline-none focus:border-cyan-400"
+                          />
+                        </div>
+
+                        {/* Item Link/Href Input */}
+                        <div className="flex-[1.5] min-w-[180px]">
+                          <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
+                            Target URL / Anchor Link
+                          </label>
+                          <input
+                            type="text"
+                            value={item.href}
+                            onChange={(e) => {
+                              const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                              current[idx] = { ...current[idx], href: e.target.value };
+                              setCmsData({ ...cmsData, navigation: current });
+                              setHasChanges(true);
+                            }}
+                            placeholder="e.g. /#services, /blog, /about"
+                            className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-lg text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                          />
+                        </div>
+
+                        {/* Actions: Reorder & Delete */}
+                        <div className="flex items-center gap-1.5 self-end md:self-end pt-1">
+                          <label className="flex items-center gap-2 text-[10px] text-neutral-300 cursor-pointer px-2">
+                             <input type="checkbox" checked={!!item.hasDropdown} onChange={(e) => {
+                                const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                                current[idx] = { ...current[idx], hasDropdown: e.target.checked, children: e.target.checked ? (current[idx].children || []) : undefined };
+                                setCmsData({ ...cmsData, navigation: current });
+                                setHasChanges(true);
+                             }} />
+                             Dropdown
+                          </label>
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => {
+                              if (idx <= 0) return;
+                              const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                              const temp = current[idx];
+                              current[idx] = current[idx - 1];
+                              current[idx - 1] = temp;
+                              setCmsData({ ...cmsData, navigation: current });
+                              setHasChanges(true);
+                            }}
+                            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 disabled:opacity-30 text-neutral-300 hover:text-white flex items-center justify-center text-xs transition-colors"
+                          >
+                            ↑
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === (Array.isArray(cmsData.navigation) ? cmsData.navigation.length : 0) - 1}
+                            onClick={() => {
+                              if (idx >= (Array.isArray(cmsData.navigation) ? cmsData.navigation.length : 0) - 1) return;
+                              const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                              const temp = current[idx];
+                              current[idx] = current[idx + 1];
+                              current[idx + 1] = temp;
+                              setCmsData({ ...cmsData, navigation: current });
+                              setHasChanges(true);
+                            }}
+                            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 disabled:opacity-30 text-neutral-300 hover:text-white flex items-center justify-center text-xs transition-colors"
+                          >
+                            ↓
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm(`Delete menu item "${item.label}"?`)) {
+                                const current = (Array.isArray(cmsData.navigation) ? cmsData.navigation : []).filter(
+                                  (_, i) => i !== idx
+                                );
+                                setCmsData({ ...cmsData, navigation: current });
+                                setHasChanges(true);
+                              }
+                            }}
+                            className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 flex items-center justify-center text-xs transition-colors"
+                          >
+                            ✕
+                          </button>
+                        </div>
                       </div>
+
+
+                      {/* Sub-items */}
+                      {item.hasDropdown && (
+                        <div className="ml-8 mt-2 space-y-2 border-l-2 border-cyan-500/20 pl-4">
+                          {(item.children || []).map((child, cIdx) => (
+                             <div key={child.id || `child-${cIdx}`} className="flex gap-2">
+                                <input type="text" value={child.label} onChange={(e) => {
+                                   const current = [...cmsData.navigation];
+                                   const children = [...(current[idx].children || [])];
+                                   children[cIdx] = { ...children[cIdx], label: e.target.value };
+                                   current[idx] = { ...current[idx], children };
+                                   setCmsData({ ...cmsData, navigation: current });
+                                   setHasChanges(true);
+                                }} placeholder="Label" className="px-2 py-1 bg-black/50 border border-white/15 rounded-lg text-white text-[10px]" />
+                                <input type="text" value={child.href} onChange={(e) => {
+                                   const current = [...cmsData.navigation];
+                                   const children = [...(current[idx].children || [])];
+                                   children[cIdx] = { ...children[cIdx], href: e.target.value };
+                                   current[idx] = { ...current[idx], children };
+                                   setCmsData({ ...cmsData, navigation: current });
+                                   setHasChanges(true);
+                                }} placeholder="URL" className="px-2 py-1 bg-black/50 border border-white/15 rounded-lg text-white text-[10px]" />
+                                <button onClick={() => {
+                                   const current = [...cmsData.navigation];
+                                   const children = (current[idx].children || []).filter((_, i) => i !== cIdx);
+                                   current[idx] = { ...current[idx], children, hasDropdown: children.length > 0 };
+                                   setCmsData({ ...cmsData, navigation: current });
+                                   setHasChanges(true);
+                                }} className="text-red-400 text-[10px]">✕</button>
+                             </div>
+                          ))}
+                          <button onClick={() => {
+                              const current = [...cmsData.navigation];
+                              const children = [...(current[idx].children || []), { id: `child-${Date.now()}`, label: 'New Link', href: '#' }];
+                              current[idx] = { ...current[idx], children, hasDropdown: true };
+                              setCmsData({ ...cmsData, navigation: current });
+                              setHasChanges(true);
+                          }} className="text-[10px] text-cyan-400">+ Add Link</button>
+                        </div>
+                      )}
                     </div>
                   ))}
 
@@ -2407,7 +2455,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* WordPress-Style Section-Wise Page Content Builder */}
+      {/* Section-Wise Page Content Builder */}
       {isPageModalOpen && editingPage && (
         <PageSectionBuilder
           page={editingPage}

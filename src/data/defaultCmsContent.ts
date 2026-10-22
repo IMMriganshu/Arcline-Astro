@@ -34,7 +34,16 @@ export const defaultCmsContent: CmsData = {
   navigation: [
     { id: "nav-1", label: "Home", href: "/" },
     { id: "nav-2", label: "About", href: "/#about" },
-    { id: "nav-3", label: "Services", href: "/#services" },
+    {
+      id: "nav-3",
+      label: "Services",
+      href: "/#services",
+      hasDropdown: true,
+      children: [
+        { id: "sub-1", label: "Local SEO", href: "/services/local-seo" },
+        { id: "sub-2", label: "Generative AI", href: "/services/ai-search" },
+      ],
+    },
     { id: "nav-4", label: "Case Studies", href: "/#case-studies" },
     { id: "nav-5", label: "Blog", href: "/#blog" },
   ],

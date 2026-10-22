@@ -21,12 +21,31 @@ const headerCtaLink = siteConfig.headerCtaLink || "#contact";
     <!-- Desktop Navigation Pill (Dynamic from CMS) -->
     <nav class="hidden lg:flex items-center gap-1 bg-[#FCFCFC]/85 backdrop-blur-md px-4 py-2 rounded-full border border-black/8 shadow-xs">
       {navItems.map((item) => (
-        <a
-          href={item.href}
-          class="px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 hover:bg-black/5 transition-colors rounded-full"
-        >
-          {item.label}
-        </a>
+        <div class="relative group">
+          <a
+            href={item.href}
+            class="px-3 py-1.5 text-sm font-medium text-[#030303] hover:text-black/70 hover:bg-black/5 transition-colors rounded-full flex items-center gap-1"
+          >
+            {item.label}
+            {item.hasDropdown && item.children && item.children.length > 0 && (
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            )}
+          </a>
+          {item.hasDropdown && item.children && item.children.length > 0 && (
+            <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-black/10 p-2 hidden group-hover:block z-50">
+              {item.children.map((child) => (
+                <a
+                  href={child.href}
+                  class="block px-3 py-2 text-sm font-medium text-[#030303] hover:bg-neutral-50 rounded-lg transition-colors"
+                >
+                  {child.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
     </nav>
 
