@@ -237,7 +237,7 @@ export const defaultCmsContent: CmsData = {
     { id: "med-1", name: "Bionic Eyeball Showcase Video", url: "/videos/eyeball-showcase.mp4", type: "video", size: "469 KB" },
     { id: "med-2", name: "Title Mask Looping Video", url: "/videos/title-video.mp4", type: "video", size: "1.1 MB" },
     { id: "med-3", name: "Hero Bionic Eyeball Poster", url: "/images/home-hero-image.webp", type: "image", size: "900 KB" },
-    { id: "med-4", name: "Seelutions Official Logo", url: "/images/Final%20seelutions%20logo%20with%20tagline.png", type: "image", size: "40 KB" },
+    { id: "med-4", name: "Seelutions Official Logo", url: "/images/seelutions%20new%20updatedLogo.png", type: "image", size: "15 KB" },
     { id: "med-5", name: "Modern Clinic Consultation", url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=85", type: "image" },
     { id: "med-6", name: "Digital AI Analytics", url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=85", type: "image" },
     { id: "med-7", name: "Surgical Case Review", url: "https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&q=85", type: "image" },
