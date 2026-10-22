@@ -136,8 +136,9 @@ export default function AdminDashboard() {
     if (session === 'authenticated') {
       setIsAuthenticated(true);
     }
-
-    const dedicatedHook = localStorage.getItem('arcline_vercel_hook') || PERMANENT_VERCEL_HOOK;
+    
+    // Check if role is super
+    const role = localStorage.getItem('arcline_admin_role');
     let localData: CmsData | null = null;
     try {
       const local = localStorage.getItem('arcline_cms_content_v1');
@@ -223,13 +224,20 @@ export default function AdminDashboard() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === 'arcline2026' || passwordInput === 'admin' || passwordInput === 'admin123') {
+    if (passwordInput === 'superadmin2026') {
       setIsAuthenticated(true);
       localStorage.setItem('arcline_admin_session', 'authenticated');
+      localStorage.setItem('arcline_admin_role', 'super');
+      setAuthError('');
+      showToast('Welcome, Super Administrator', 'success');
+    } else if (passwordInput === 'arcline2026') {
+      setIsAuthenticated(true);
+      localStorage.setItem('arcline_admin_session', 'authenticated');
+      localStorage.setItem('arcline_admin_role', 'admin');
       setAuthError('');
       showToast('Welcome to Arcline Headless CMS', 'success');
     } else {
-      setAuthError('Invalid administrator passcode. Try "arcline2026"');
+      setAuthError('Invalid administrator passcode.');
     }
   };
 
@@ -2047,6 +2055,7 @@ export default function AdminDashboard() {
                     type="url"
                     placeholder="https://api.vercel.com/v1/integrations/deploy/prj_.../..."
                     value={cmsData.siteConfig.vercelDeployHookUrl || ''}
+                    readOnly={localStorage.getItem('arcline_admin_role') !== 'super'}
                     onChange={(e) => {
                       setCmsData({
                         ...cmsData,
@@ -2054,7 +2063,7 @@ export default function AdminDashboard() {
                       });
                       setHasChanges(true);
                     }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                    className={`w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400 ${localStorage.getItem('arcline_admin_role') !== 'super' ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
                   <span className="text-[11px] text-neutral-500 mt-1 block">
                     Found in Vercel Project Dashboard → Settings → Git → Deploy Hooks.
