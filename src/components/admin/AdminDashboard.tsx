@@ -39,7 +39,7 @@ export default function AdminDashboard() {
               projects: Array.isArray(parsed.projects) && parsed.projects.length > 0 ? parsed.projects : defaultCmsContent.projects,
               testimonials: Array.isArray(parsed.testimonials) && parsed.testimonials.length > 0 ? parsed.testimonials : defaultCmsContent.testimonials,
               media: Array.isArray(parsed.media) && parsed.media.length > 0 ? parsed.media : defaultCmsContent.media,
-              pages: Array.isArray(parsed.pages) ? parsed.pages : defaultCmsContent.pages,
+              pages: Array.isArray(parsed.pages) && parsed.pages.length > 0 ? parsed.pages : defaultCmsContent.pages,
             };
           }
         }
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
             projects: Array.isArray(json.data.projects) && json.data.projects.length > 0 ? json.data.projects : defaultCmsContent.projects,
             testimonials: Array.isArray(json.data.testimonials) && json.data.testimonials.length > 0 ? json.data.testimonials : defaultCmsContent.testimonials,
             media: Array.isArray(json.data.media) && json.data.media.length > 0 ? json.data.media : defaultCmsContent.media,
-            pages: Array.isArray(json.data.pages) ? json.data.pages : defaultCmsContent.pages,
+            pages: Array.isArray(json.data.pages) && json.data.pages.length > 0 ? json.data.pages : defaultCmsContent.pages,
           };
           setCmsData(merged);
           localStorage.setItem('arcline_cms_content_v1', JSON.stringify(merged));
