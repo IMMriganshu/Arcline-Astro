@@ -275,11 +275,36 @@ export default function AdminDashboard() {
         createdBy: 'System Root',
       };
 
-      const finalUsers = [
-        masterSuper,
-        ...fetchedList.filter(
-          (u) => u.id !== 'master-super-admin' && u.email !== 'superadmin@seelutions.com'
-        ),
+      // Built-in Staff Administrator
+      const masterStaff: AdminUser = {
+        id: 'default-staff-admin',
+        name: 'Staff Administrator',
+        email: 'admin@seelutions.com',
+        role: 'admin',
+        passcode: 'arcline2026',
+        status: 'active',
+        createdBy: 'System Root',
+      };
+
+      const hasSuperInDb = fetchedList.some(
+        (u) => u.email?.toLowerCase() === 'superadmin@seelutions.com'
+      );
+      const hasStaffInDb = fetchedList.some(
+        (u) => u.email?.toLowerCase() === 'admin@seelutions.com'
+      );
+
+      const customUsers = fetchedList.filter(
+        (u) =>
+          u.id !== 'master-super-admin' &&
+          u.id !== 'default-staff-admin' &&
+          u.email?.toLowerCase() !== 'superadmin@seelutions.com' &&
+          u.email?.toLowerCase() !== 'admin@seelutions.com'
+      );
+
+      const finalUsers: AdminUser[] = [
+        ...(hasSuperInDb ? [fetchedList.find(u => u.email?.toLowerCase() === 'superadmin@seelutions.com')!] : [masterSuper]),
+        ...(hasStaffInDb ? [fetchedList.find(u => u.email?.toLowerCase() === 'admin@seelutions.com')!] : [masterStaff]),
+        ...customUsers,
       ];
       setAdminUsers(finalUsers);
     } catch (err) {
@@ -312,6 +337,11 @@ export default function AdminDashboard() {
     if (!window.confirm('Are you sure you want to permanently delete this administrator account?')) {
       return;
     }
+    if (userId === 'default-staff-admin') {
+      setAdminUsers((prev) => prev.filter((u) => u.id !== userId));
+      showToast('Administrator account removed successfully.', 'info');
+      return;
+    }
     try {
       await deleteDoc(doc(db, 'admin_users', userId));
       setAdminUsers((prev) => prev.filter((u) => u.id !== userId));
@@ -327,6 +357,13 @@ export default function AdminDashboard() {
       return;
     }
     const newStatus = currentStatus === 'active' ? 'disabled' : 'active';
+    if (userId === 'default-staff-admin') {
+      setAdminUsers((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u))
+      );
+      showToast(`Account status updated to ${newStatus}.`, 'success');
+      return;
+    }
     try {
       await updateDoc(doc(db, 'admin_users', userId), {
         status: newStatus,

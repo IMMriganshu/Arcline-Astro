@@ -397,6 +397,11 @@ export function AdminUsersManagementView({
                                   Root
                                 </span>
                               )}
+                              {user.id === 'default-staff-admin' && (
+                                <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                                  Default
+                                </span>
+                              )}
                             </div>
                             <div className="text-neutral-400 text-[11px] font-mono">
                               {user.email}
