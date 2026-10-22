@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { CmsData, Page, HeroContent, AboutContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem } from '../../lib/types';
+import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 
 interface PageSectionBuilderProps {
@@ -9,42 +10,56 @@ interface PageSectionBuilderProps {
   onClose: () => void;
 }
 
+function safeArray<T>(val: any, fallback: T[] = []): T[] {
+  if (Array.isArray(val)) return [...val];
+  if (val && typeof val === 'object') {
+    const vals = Object.values(val) as T[];
+    if (vals.length > 0) return vals;
+  }
+  return Array.isArray(fallback) ? [...fallback] : [];
+}
+
 export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSectionBuilderProps) {
-  // Working local copies
+  // Working local copies with safe fallbacks
   const [currentPage, setCurrentPage] = useState<Page>({ ...page });
-  const [localHero, setLocalHero] = useState<HeroContent>({ ...cmsData.hero });
-  const [localAbout, setLocalAbout] = useState<AboutContent>({
-    badge: cmsData.aboutContent?.badge || "About Us",
-    title: cmsData.aboutContent?.title || "380% Retainer Growth over 10 Years",
-    subtitle: cmsData.aboutContent?.subtitle || "How Dr. Ryan Diepenbrock (Diepenbrock Facial Cosmetic Surgery — Fort Wayne, IN) Scaled to Regional Market Dominance Across a Decade of Digital Shift.",
-    description: cmsData.aboutContent?.description || "In an industry where practices fire marketing agencies every 6 to 12 months, Dr. Diepenbrock has trusted our search and patient acquisition architecture for a decade. By evolving renewedlook.com from basic local search in 2016 to modern AI Search (AEO) and high-converting procedure hubs today, his monthly reinvestment grew nearly 4x—driven entirely by compounding patient consult revenue.",
-    image: cmsData.aboutContent?.image || "/images/Eyeball-BC.webp",
-    timelineTitle: cmsData.aboutContent?.timelineTitle || "Growth Timeline & Retainer Expansion",
-    timelineSubtitle: cmsData.aboutContent?.timelineSubtitle || "A decade-long trajectory of expanding partnership and compounding patient consult revenue.",
-    milestones: cmsData.aboutContent?.milestones || [
-      { yearBudget: "2016 • $1,000/mo", text: "Foundational Local Search & Core Pages" },
-      { yearBudget: "2018 • $1,500/mo", text: "Procedure Page Architecture & Gallery UX" },
-      { yearBudget: "2021 • $3,000/mo", text: "Mobile-First Conversion & Map Pack Expansion" },
-      { yearBudget: "2024–Present • $3,800/mo", text: "Generative AI Search (GEO) & Entity Dominance" },
-    ],
+  const [localHero, setLocalHero] = useState<HeroContent>(() => ({
+    ...defaultCmsContent.hero,
+    ...(cmsData?.hero || {}),
+  }));
+  const [localAbout, setLocalAbout] = useState<AboutContent>(() => {
+    const base = cmsData?.aboutContent || defaultCmsContent.aboutContent || {
+      badge: "About Us",
+      title: "380% Retainer Growth over 10 Years",
+      subtitle: "How Dr. Ryan Diepenbrock (Diepenbrock Facial Cosmetic Surgery — Fort Wayne, IN) Scaled to Regional Market Dominance Across a Decade of Digital Shift.",
+      description: "In an industry where practices fire marketing agencies every 6 to 12 months, Dr. Diepenbrock has trusted our search and patient acquisition architecture for a decade.",
+      image: "/images/Eyeball-BC.webp",
+      timelineTitle: "Growth Timeline & Retainer Expansion",
+      timelineSubtitle: "A decade-long trajectory of expanding partnership and compounding patient consult revenue.",
+      milestones: [],
+    };
+    return {
+      badge: base.badge || "About Us",
+      title: base.title || "380% Retainer Growth over 10 Years",
+      subtitle: base.subtitle || "",
+      description: base.description || "",
+      image: base.image || "/images/Eyeball-BC.webp",
+      timelineTitle: base.timelineTitle || "Growth Timeline & Retainer Expansion",
+      timelineSubtitle: base.timelineSubtitle || "",
+      milestones: safeArray(base.milestones, defaultCmsContent.aboutContent?.milestones || []),
+    };
   });
-  const [localCta, setLocalCta] = useState<ProjectCtaContent>({
-    badge: cmsData.projectCta?.badge || "PRACTICE DIGITAL AUDIT",
-    headline: cmsData.projectCta?.headline || "Is Your Practice Visible in Modern AI & Google Search?",
-    description: cmsData.projectCta?.description || "Claim a customized, 3-minute video analysis of your practice's digital footprint. We'll walk through your site, identify where high-ticket patient consults are leaking to local competitors, and show you how to fix it.",
-    buttonText: cmsData.projectCta?.buttonText || "Request Your Free 3-Minute Practice Audit",
-    buttonLink: cmsData.projectCta?.buttonLink || "#contact",
-    backgroundImage: cmsData.projectCta?.backgroundImage || "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85",
-  });
-  const [localServices, setLocalServices] = useState<Service[]>([...cmsData.services]);
-  const [localProjects, setLocalProjects] = useState<Project[]>([...cmsData.projects]);
-  const [localTestimonials, setLocalTestimonials] = useState<Testimonial[]>([...cmsData.testimonials]);
-  const [localComparison, setLocalComparison] = useState<ComparisonItem[]>([...cmsData.comparison]);
-  const [localVideo, setLocalVideo] = useState<VideoShowcaseContent>({
-    videoUrl: cmsData.videoShowcase?.videoUrl || "/videos/eyeball-showcase.mp4",
-    titleVideoUrl: cmsData.videoShowcase?.titleVideoUrl || "/videos/title-video.mp4",
-    posterUrl: cmsData.videoShowcase?.posterUrl || "/images/home-hero-image.webp",
-  });
+  const [localCta, setLocalCta] = useState<ProjectCtaContent>(() => ({
+    ...defaultCmsContent.projectCta!,
+    ...(cmsData?.projectCta || {}),
+  }));
+  const [localServices, setLocalServices] = useState<Service[]>(() => safeArray(cmsData?.services, defaultCmsContent.services));
+  const [localProjects, setLocalProjects] = useState<Project[]>(() => safeArray(cmsData?.projects, defaultCmsContent.projects));
+  const [localTestimonials, setLocalTestimonials] = useState<Testimonial[]>(() => safeArray(cmsData?.testimonials, defaultCmsContent.testimonials));
+  const [localComparison, setLocalComparison] = useState<ComparisonItem[]>(() => safeArray(cmsData?.comparison, defaultCmsContent.comparison));
+  const [localVideo, setLocalVideo] = useState<VideoShowcaseContent>(() => ({
+    ...defaultCmsContent.videoShowcase!,
+    ...(cmsData?.videoShowcase || {}),
+  }));
 
   // Active section selector
   const isHome = page.slug === 'home' || page.slug === '';
@@ -522,9 +537,9 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
 
                       <div className="space-y-3">
                         <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider">
-                          Milestones List ({localAbout.milestones.length})
+                          Milestones List ({(localAbout.milestones || []).length})
                         </label>
-                        {localAbout.milestones.map((m, mIdx) => (
+                        {(localAbout.milestones || []).map((m, mIdx) => (
                           <div key={mIdx} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-black/40 rounded-xl border border-white/10">
                             <div>
                               <input
@@ -567,7 +582,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     <p className="text-neutral-600 text-sm leading-relaxed">{localAbout.description}</p>
                     <div className="p-4 bg-neutral-100 rounded-xl space-y-2">
                       <h3 className="font-bold text-sm uppercase">{localAbout.timelineTitle}</h3>
-                      {localAbout.milestones.map((m, idx) => (
+                      {(localAbout.milestones || []).map((m, idx) => (
                         <div key={idx} className="flex justify-between p-2 bg-white rounded-lg text-xs font-medium">
                           <span className="font-bold text-cyan-700">{m.yearBudget}</span>
                           <span>{m.text}</span>
@@ -583,7 +598,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             {(activeSectionId === 'services' || activeSectionId === 'services-header') && (
               <div className="space-y-6">
                 <div className="space-y-4">
-                  {localServices.map((srv, idx) => (
+                  {(localServices || []).map((srv, idx) => (
                     <div key={srv.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-4">
                       <div className="flex items-center justify-between pb-2 border-b border-white/5">
                         <span className="text-xs font-mono font-bold text-cyan-400">Service #{srv.number}</span>
@@ -656,7 +671,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             {/* SECTION 4: CASE STUDY TIMELINE */}
             {(activeSectionId === 'projects' || activeSectionId === 'projects-header') && (
               <div className="space-y-4">
-                {localProjects.map((proj, idx) => (
+                {(localProjects || []).map((proj, idx) => (
                   <div key={proj.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-4">
                     <div className="flex items-center justify-between pb-2 border-b border-white/5">
                       <span className="text-xs font-mono font-bold text-amber-400">Milestone {proj.number}</span>
@@ -728,7 +743,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             {/* SECTION 5: COMPARISON MATRIX */}
             {activeSectionId === 'comparison' && (
               <div className="space-y-4">
-                {localComparison.map((comp, idx) => (
+                {(localComparison || []).map((comp, idx) => (
                   <div key={comp.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-3">
                     <div>
                       <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Evaluation Metric</label>
@@ -782,7 +797,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             {/* SECTION 6: TESTIMONIALS */}
             {activeSectionId === 'testimonials' && (
               <div className="space-y-4">
-                {localTestimonials.map((t, idx) => (
+                {(localTestimonials || []).map((t, idx) => (
                   <div key={t.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
