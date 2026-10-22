@@ -146,11 +146,15 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
 
   return (
     <div className="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-xl flex flex-col overflow-hidden text-neutral-100">
-      {/* Top WordPress-Style Header */}
+      {/* Top Seelutions-Style Header */}
       <header className="h-16 px-6 bg-[#050b1a] border-b border-white/10 flex items-center justify-between flex-shrink-0 z-20">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white text-xs shadow-md">
-            WP
+          <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
+            <img
+              src="/assets/aistudio/image_ee52dcce.png"
+              alt="Seelutions Logo"
+              className="w-full h-full object-contain filter brightness-0 invert"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -159,7 +163,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                 /{currentPage.slug}
               </span>
             </div>
-            <p className="text-[11px] text-neutral-400">WordPress-Style Section-Wise Page Content Builder</p>
+            <p className="text-[11px] text-neutral-400">Seelutions Section-Wise Page Content Builder</p>
           </div>
         </div>
 
