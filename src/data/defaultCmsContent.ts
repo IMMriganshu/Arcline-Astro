@@ -201,7 +201,38 @@ export const defaultCmsContent: CmsData = {
       published: true,
     },
   ],
-  pages: [],
+  pages: [
+    {
+      id: "page-home",
+      slug: "home",
+      title: "Home Page Content",
+      content: "<h2>Welcome to Seelutions</h2><p>Specialized patient acquisition and search authority engineering for plastic & facial cosmetic surgeons.</p>",
+    },
+    {
+      id: "page-about",
+      slug: "about",
+      title: "About Page Content",
+      content: "<h2>About Seelutions</h2><p>We partner exclusively with one board-certified plastic or facial cosmetic surgical practice per metropolitan territory.</p>",
+    },
+    {
+      id: "page-services",
+      slug: "services",
+      title: "Services Page Content",
+      content: "<h2>Our Specialized Services</h2><p>Explore our comprehensive search authority, local Map Pack dominance, and generative AI search optimization pipelines.</p>",
+    },
+    {
+      id: "page-projects",
+      slug: "projects",
+      title: "Case Study / Projects Page Content",
+      content: "<h2>10-Year Practice Growth Case Study</h2><p>Transparent milestones and financial metrics from foundation to AI search dominance.</p>",
+    },
+    {
+      id: "page-blog",
+      slug: "blog",
+      title: "Patient Grower Blog & Editorial Page Content",
+      content: "<h2>Patient Grower Editorial</h2><p>Marketing intelligence and AI search strategy for practice owners.</p>",
+    },
+  ],
   comparison: [
     {
       id: "comp-1",

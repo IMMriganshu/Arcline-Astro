@@ -78,6 +78,22 @@ export async function getArticleBySlug(slug: string) {
 }
 
 /**
+ * Get all website pages
+ */
+export async function getPages() {
+  const data = await getCmsData();
+  return data.pages && data.pages.length > 0 ? data.pages : defaultCmsContent.pages;
+}
+
+/**
+ * Find a page by its slug
+ */
+export async function getPageBySlug(slug: string) {
+  const pages = await getPages();
+  return pages.find((p) => p.slug === slug);
+}
+
+/**
  * Get all services
  */
 export async function getServices() {
