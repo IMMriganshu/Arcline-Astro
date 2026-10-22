@@ -154,6 +154,33 @@ export async function getSiteConfig() {
 }
 
 /**
+ * Get global SEO settings
+ */
+export async function getSeoSettings() {
+  const data = await getCmsData();
+  return data.seoSettings || defaultCmsContent.seoSettings;
+}
+
+/**
+ * Get page SEO metadata by key (e.g., 'home', 'about', 'services', 'projects', 'blog')
+ */
+export async function getPageSeo(key: string) {
+  const data = await getCmsData();
+  if (data.pageSeoMap && data.pageSeoMap[key]) {
+    return data.pageSeoMap[key];
+  }
+  return defaultCmsContent.pageSeoMap?.[key];
+}
+
+/**
+ * Get active redirect rules
+ */
+export async function getRedirects() {
+  const data = await getCmsData();
+  return data.redirects || defaultCmsContent.redirects || [];
+}
+
+/**
  * Get About section content
  */
 export async function getAboutContent() {

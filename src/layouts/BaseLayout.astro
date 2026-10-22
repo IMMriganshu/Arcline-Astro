@@ -3,25 +3,133 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ScrollToTop from "../components/ScrollToTop.astro";
 import ContactModal from "../components/ContactModal.astro";
-import { getSiteConfig } from "../lib/cms";
+import { getCmsData, getSiteConfig, getSeoSettings } from "../lib/cms";
 import "../styles/global.css";
 
 interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  keywords?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+  pageRouteKey?: string;
+  customSchemaData?: any;
 }
 
+const cmsData = await getCmsData();
 const siteConfig = await getSiteConfig();
+const globalSeo = await getSeoSettings();
 
 const {
-  title,
-  description,
-  ogImage = siteConfig.ogImage || "/images/home-hero-image.webp",
+  title: propTitle,
+  description: propDescription,
+  ogImage: propOgImage,
+  keywords: propKeywords,
+  canonicalUrl: propCanonicalUrl,
+  noindex: propNoindex,
+  pageRouteKey,
+  customSchemaData,
 } = Astro.props;
 
-const pageTitle = title || siteConfig.title || siteConfig.name || "Seelutions — Patient Acquisition & Digital Authority Studio";
-const pageDescription = description || siteConfig.description || "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.";
+// Determine route key from path if not explicitly provided
+let key = pageRouteKey;
+if (!key) {
+  const pathname = Astro.url.pathname;
+  if (pathname === '/' || pathname === '') key = 'home';
+  else if (pathname.includes('/about')) key = 'about';
+  else if (pathname.includes('/services')) key = 'services';
+  else if (pathname.includes('/projects')) key = 'projects';
+  else if (pathname.includes('/blog')) key = 'blog';
+  else if (pathname.includes('/404')) key = '404';
+  else key = pathname.replace(/^\//, '');
+}
+
+const pageSeo = cmsData.pageSeoMap?.[key || 'home'];
+
+const pageTitle = propTitle || pageSeo?.title || globalSeo?.defaultTitle || siteConfig.title || siteConfig.name || "Seelutions — Patient Acquisition & Digital Authority Studio";
+const pageDescription = propDescription || pageSeo?.description || globalSeo?.defaultDescription || siteConfig.description || "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.";
+const ogTitle = pageSeo?.ogTitle || pageTitle;
+const ogDescription = pageSeo?.ogDescription || pageDescription;
+const ogImage = propOgImage || pageSeo?.ogImage || globalSeo?.defaultOgImage || siteConfig.ogImage || "/images/home-hero-image.webp";
+const keywords = propKeywords || pageSeo?.keywords || "";
+const isNoindex = propNoindex ?? pageSeo?.noindex ?? false;
+const twitterCard = pageSeo?.twitterCard || "summary_large_image";
+
+const currentUrl = Astro.url.href;
+const canonicalUrl = propCanonicalUrl || pageSeo?.canonicalUrl || currentUrl;
+
+// Construct Schema JSON-LD object
+let schemaJsonObj: any = null;
+
+if (pageSeo?.customSchemaJson) {
+  try {
+    schemaJsonObj = JSON.parse(pageSeo.customSchemaJson);
+  } catch (e) {
+    console.error("Invalid custom JSON-LD schema:", e);
+  }
+}
+
+if (!schemaJsonObj) {
+  if (customSchemaData) {
+    schemaJsonObj = customSchemaData;
+  } else {
+    const schemaType = pageSeo?.schemaType || "MedicalBusiness";
+    const siteOrigin = globalSeo?.siteUrl || Astro.url.origin;
+
+    if (schemaType === "MedicalBusiness" || schemaType === "LocalBusiness") {
+      schemaJsonObj = {
+        "@context": "https://schema.org",
+        "@type": "MedicalBusiness",
+        "name": siteConfig.name || "Seelutions",
+        "url": siteOrigin,
+        "logo": `${siteOrigin}/images/seelutions%20new%20updatedLogo.png`,
+        "image": `${siteOrigin}${ogImage}`,
+        "description": pageDescription,
+        "telephone": siteConfig.phone || "(555) 345-6789",
+        "email": siteConfig.email || "practice@seelutions.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": siteConfig.address || "567 Jac Spruce Crescent",
+          "addressLocality": "Montreal",
+          "addressRegion": "QC",
+          "postalCode": "H1A 2K3",
+          "addressCountry": "CA"
+        },
+        "priceRange": "$$$$",
+        "medicalSpecialty": ["PlasticSurgery", "FacialCosmeticSurgery"]
+      };
+    } else if (schemaType === "MedicalProcedure") {
+      schemaJsonObj = {
+        "@context": "https://schema.org",
+        "@type": "MedicalProcedure",
+        "name": pageTitle,
+        "description": pageDescription,
+        "procedureType": "SurgicalProcedure",
+        "howPerformed": "High-Ticket Surgical Consultation & Patient Acquisition Framework"
+      };
+    } else if (schemaType === "Organization") {
+      schemaJsonObj = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": siteConfig.name || "Seelutions",
+        "url": siteOrigin,
+        "logo": `${siteOrigin}/images/seelutions%20new%20updatedLogo.png`,
+        "description": pageDescription,
+        "email": siteConfig.email || "practice@seelutions.com",
+        "telephone": siteConfig.phone || "(555) 345-6789"
+      };
+    } else {
+      schemaJsonObj = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": pageTitle,
+        "description": pageDescription,
+        "url": canonicalUrl
+      };
+    }
+  }
+}
 ---
 
 <!doctype html>
@@ -35,16 +143,29 @@ const pageDescription = description || siteConfig.description || "Specialized pa
     <!-- SEO Meta Tags -->
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={pageDescription} />
-    <meta property="og:image" content={ogImage} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <link rel="canonical" href={canonicalUrl} />
+    {isNoindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    )}
+
+    <!-- Open Graph Tags -->
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={pageDescription} />
+    <meta property="og:site_name" content={siteConfig.name || "Seelutions"} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Google Font: Urbanist (Non-render-blocking with display=swap) -->
+    <!-- Google Font: Urbanist -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -66,23 +187,9 @@ const pageDescription = description || siteConfig.description || "Specialized pa
     </noscript>
 
     <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "ArchitecturalFirm",
-      "name": siteConfig.name || "Seelutions",
-      "description": pageDescription,
-      "foundingDate": siteConfig.estYear || "2010",
-      "telephone": siteConfig.phone || "+1-555-345-6789",
-      "email": siteConfig.email || "practice@seelutions.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": siteConfig.address || "567 Jac Spruce Crescent",
-        "addressLocality": "Montreal",
-        "addressRegion": "QC",
-        "postalCode": "H1A 2K3",
-        "addressCountry": "CA"
-      }
-    })} />
+    {schemaJsonObj && (
+      <script type="application/ld+json" set:html={JSON.stringify(schemaJsonObj)} />
+    )}
   </head>
   <body class="min-h-screen flex flex-col justify-between selection:bg-black selection:text-white">
     <Header />

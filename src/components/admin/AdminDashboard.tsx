@@ -4,6 +4,7 @@ import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 import { PageSectionBuilder } from './PageSectionBuilder';
 import { AdminUsersManagementView } from './AdminUsersManagementView';
+import { SeoManagerView } from './SeoManagerView';
 import { db } from '../../lib/firebase';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 
@@ -842,7 +843,8 @@ export default function AdminDashboard() {
               { id: 'navigation', label: 'Navigation & Footer', icon: 'M4 6h16M4 12h16M4 18h16' },
               { id: 'submissions', label: 'Form Submissions', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
               { id: 'media', label: 'Media Assets', icon: 'M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z' },
-              { id: 'settings', label: 'SEO & Deploy Settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
+              { id: 'seo', label: 'Complete SEO Suite', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+              { id: 'settings', label: 'Vercel Deploy Hook', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -2373,7 +2375,18 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* TAB: SEO & Deploy Settings */}
+          {/* TAB: Complete SEO Suite */}
+          {activeTab === 'seo' && (
+            <SeoManagerView
+              cmsData={cmsData}
+              setCmsData={setCmsData}
+              setHasChanges={setHasChanges}
+              showToast={showToast}
+              userRole={userRole}
+            />
+          )}
+
+          {/* TAB: Vercel Deploy Settings */}
           {activeTab === 'settings' && (
             <div className="space-y-6">
               <div>

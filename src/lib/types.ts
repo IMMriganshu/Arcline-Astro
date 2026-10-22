@@ -66,6 +66,41 @@ export interface Testimonial {
   rating: number;
 }
 
+export interface PageSeoMetadata {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  canonicalUrl?: string;
+  slug?: string;
+  noindex?: boolean;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: 'summary_large_image' | 'summary';
+  schemaType?: 'MedicalBusiness' | 'MedicalProcedure' | 'MedicalWebPage' | 'Article' | 'FAQPage' | 'LocalBusiness' | 'WebApplication' | 'Organization' | 'Custom';
+  customSchemaJson?: string;
+}
+
+export interface RedirectRule {
+  id: string;
+  fromPath: string;
+  toPath: string;
+  type: 301 | 302;
+  active: boolean;
+  createdAt?: string;
+}
+
+export interface GlobalSeoSettings {
+  siteUrl?: string;
+  defaultTitle?: string;
+  defaultDescription?: string;
+  defaultOgImage?: string;
+  robotsTxtContent?: string;
+  googleSiteVerification?: string;
+  bingSiteVerification?: string;
+  sitemapEnabled?: boolean;
+}
+
 export interface Article {
   id: string;
   slug: string;
@@ -77,6 +112,7 @@ export interface Article {
   content: string;
   image: string;
   published: boolean;
+  seo?: PageSeoMetadata;
 }
 
 export interface ComparisonItem {
@@ -172,6 +208,7 @@ export interface Page {
   title: string;
   content: string; // HTML/Markdown
   sections?: PageSectionItem[];
+  seo?: PageSeoMetadata;
 }
 
 export interface Submission {
@@ -211,6 +248,9 @@ export interface CmsData {
   comparisonContent?: ComparisonSectionContent;
   projectCta?: ProjectCtaContent;
   videoShowcase?: VideoShowcaseContent;
+  seoSettings?: GlobalSeoSettings;
+  pageSeoMap?: Record<string, PageSeoMetadata>;
+  redirects?: RedirectRule[];
   lastPublishedAt?: string;
   version: number;
 }

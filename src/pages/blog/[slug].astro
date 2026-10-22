@@ -16,12 +16,45 @@ const allArticles = await getArticles();
 const relatedArticles = allArticles
   .filter((a) => a.published && a.slug !== article.slug)
   .slice(0, 3);
+const articleSeo = article.seo;
+const articleTitle = articleSeo?.title || `${article.title} — Seelutions Intelligence`;
+const articleDesc = articleSeo?.description || article.excerpt;
+const articleImage = articleSeo?.ogImage || article.image;
+const articleCanonical = articleSeo?.canonicalUrl || Astro.url.href;
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": article.title,
+  "description": articleDesc,
+  "image": articleImage.startsWith('http') ? articleImage : `${Astro.url.origin}${articleImage}`,
+  "datePublished": article.date ? new Date(article.date).toISOString() : new Date().toISOString(),
+  "author": {
+    "@type": "Organization",
+    "name": "Seelutions Studio"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Seelutions",
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${Astro.url.origin}/images/seelutions%20new%20updatedLogo.png`
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": articleCanonical
+  }
+};
 ---
 
 <BaseLayout
-  title={`${article.title} — Seelutions Intelligence`}
-  description={article.excerpt}
-  ogImage={article.image}
+  title={articleTitle}
+  description={articleDesc}
+  ogImage={articleImage}
+  canonicalUrl={articleCanonical}
+  keywords={articleSeo?.keywords}
+  customSchemaData={articleSchema}
 >
   <article class="pt-32 pb-24 bg-[#030712] text-white min-h-screen selection:bg-cyan-500 selection:text-black">
     <div class="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
