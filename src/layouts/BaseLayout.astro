@@ -20,8 +20,8 @@ const {
   ogImage = siteConfig.ogImage || "/images/home-hero-image.webp",
 } = Astro.props;
 
-const pageTitle = title || siteConfig.title || siteConfig.name || "Arcline — Architecture & Design Agency";
-const pageDescription = description || siteConfig.description || "Distinguished architectural agency located in Canada, creating meaningful spaces that stand the test of time.";
+const pageTitle = title || siteConfig.title || siteConfig.name || "Seelutions — Patient Acquisition & Digital Authority Studio";
+const pageDescription = description || siteConfig.description || "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.";
 ---
 
 <!doctype html>
@@ -69,11 +69,11 @@ const pageDescription = description || siteConfig.description || "Distinguished 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ArchitecturalFirm",
-      "name": siteConfig.name || "Arcline Architecture",
+      "name": siteConfig.name || "Seelutions",
       "description": pageDescription,
       "foundingDate": siteConfig.estYear || "2010",
       "telephone": siteConfig.phone || "+1-555-345-6789",
-      "email": siteConfig.email || "yourcompany@gmail.com",
+      "email": siteConfig.email || "practice@seelutions.com",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": siteConfig.address || "567 Jac Spruce Crescent",

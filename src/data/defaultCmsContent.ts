@@ -4,8 +4,8 @@ export const defaultCmsContent: CmsData = {
   version: 1,
   lastPublishedAt: new Date().toISOString(),
   siteConfig: {
-    name: "Arcline",
-    title: "Arcline — Architecture & Design Agency",
+    name: "Seelutions",
+    title: "Seelutions — Patient Acquisition & Digital Authority Studio",
     description: "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.",
     email: "practice@seelutions.com",
     phone: "(555) 345-6789",

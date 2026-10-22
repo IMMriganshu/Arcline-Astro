@@ -44,10 +44,10 @@ export interface Article {
 }
 
 export const siteConfig = {
-  name: "Arcline",
-  title: "Arcline — Architecture & Design Agency",
-  description: "Distinguished architectural agency located in Canada, creating meaningful spaces that stand the test of time.",
-  email: "yourcompany@gmail.com",
+  name: "Seelutions",
+  title: "Seelutions — Patient Acquisition & Digital Authority Studio",
+  description: "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.",
+  email: "practice@seelutions.com",
   phone: "(555) 345-6789",
   address: "567 Jac Spruce Crescent, Montreal, QC H1A 2K3",
   estYear: "EST. 2010",

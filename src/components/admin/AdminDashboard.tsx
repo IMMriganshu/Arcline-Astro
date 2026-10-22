@@ -78,6 +78,8 @@ export default function AdminDashboard() {
               siteConfig: {
                 ...defaultCmsContent.siteConfig,
                 ...(parsed.siteConfig || {}),
+                name: parsed.siteConfig?.name === 'Arcline' ? 'Seelutions' : (parsed.siteConfig?.name || 'Seelutions'),
+                title: parsed.siteConfig?.title?.includes('Arcline') ? parsed.siteConfig.title.replace(/Arcline/g, 'Seelutions') : (parsed.siteConfig?.title || defaultCmsContent.siteConfig.title),
                 vercelDeployHookUrl: dedicatedHook || parsed.siteConfig?.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK,
               },
               comparison: Array.isArray(parsed.comparison) && parsed.comparison.length > 0 ? parsed.comparison : defaultCmsContent.comparison,
@@ -196,6 +198,8 @@ export default function AdminDashboard() {
             siteConfig: {
               ...defaultCmsContent.siteConfig,
               ...(json.data.siteConfig || {}),
+              name: json.data.siteConfig?.name === 'Arcline' ? 'Seelutions' : (json.data.siteConfig?.name || 'Seelutions'),
+              title: json.data.siteConfig?.title?.includes('Arcline') ? json.data.siteConfig.title.replace(/Arcline/g, 'Seelutions') : (json.data.siteConfig?.title || defaultCmsContent.siteConfig.title),
               vercelDeployHookUrl: effectiveHook,
             },
             comparison: Array.isArray(json.data.comparison) && json.data.comparison.length > 0 ? json.data.comparison : defaultCmsContent.comparison,
@@ -424,7 +428,7 @@ export default function AdminDashboard() {
         localStorage.setItem('arcline_admin_session', 'authenticated');
         localStorage.setItem('arcline_admin_role', 'admin');
         localStorage.setItem('arcline_admin_user', JSON.stringify(u));
-        showToast('Welcome to Arcline Headless CMS', 'success');
+        showToast('Welcome to Seelutions Headless CMS', 'success');
         return;
       }
 
@@ -616,7 +620,7 @@ export default function AdminDashboard() {
               />
             </div>
             <h1 className="text-2xl font-bold font-urbanist tracking-tight text-white mb-2">
-              Arcline Headless CMS
+              Seelutions Headless CMS
             </h1>
             <p className="text-xs text-neutral-400 max-w-xs mx-auto">
               Authorized practice administration dashboard for patient acquisition content and live deployment.

@@ -43,7 +43,19 @@ export async function getServerCmsData(): Promise<CmsData> {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return deepMerge(defaultCmsContent, docSnap.data() as CmsData);
+      const remoteData = docSnap.data() as CmsData;
+      if (remoteData?.siteConfig) {
+        if (remoteData.siteConfig.name === 'Arcline') {
+          remoteData.siteConfig.name = 'Seelutions';
+        }
+        if (remoteData.siteConfig.title && remoteData.siteConfig.title.includes('Arcline')) {
+          remoteData.siteConfig.title = remoteData.siteConfig.title.replace(/Arcline/g, 'Seelutions');
+        }
+        if (remoteData.siteConfig.description && remoteData.siteConfig.description.includes('Distinguished architectural agency')) {
+          remoteData.siteConfig.description = defaultCmsContent.siteConfig.description;
+        }
+      }
+      return deepMerge(defaultCmsContent, remoteData);
     }
   } catch (err) {
     console.error('Error reading CMS data from Firestore:', err);
@@ -203,7 +215,14 @@ export function getClientCmsData(): CmsData {
   try {
     const local = localStorage.getItem(CMS_STORAGE_KEY);
     if (local) {
-      return JSON.parse(local);
+      const parsed = JSON.parse(local);
+      if (parsed?.siteConfig) {
+        if (parsed.siteConfig.name === 'Arcline') parsed.siteConfig.name = 'Seelutions';
+        if (parsed.siteConfig.title && parsed.siteConfig.title.includes('Arcline')) {
+          parsed.siteConfig.title = parsed.siteConfig.title.replace(/Arcline/g, 'Seelutions');
+        }
+      }
+      return parsed;
     }
   } catch (e) {
     console.warn('Failed to parse localStorage CMS data:', e);
