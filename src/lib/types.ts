@@ -174,6 +174,16 @@ export interface Page {
   sections?: PageSectionItem[];
 }
 
+export interface Submission {
+  id: string;
+  name: string;
+  website: string;
+  email: string;
+  phone: string;
+  focus: string;
+  createdAt: any;
+}
+
 export interface CmsData {
   siteConfig: SiteConfig;
   hero: HeroContent;

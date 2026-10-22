@@ -1,0 +1,24 @@
+{
+  "entities": {
+    "submission": {
+      "title": "Practice Audit Submission",
+      "description": "Form submission from contact modal",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Doctor or Practice Name", "maxLength": 200 },
+        "website": { "type": "string", "format": "uri", "description": "Practice Website URL", "maxLength": 200 },
+        "email": { "type": "string", "format": "email", "description": "Contact Email", "maxLength": 200 },
+        "phone": { "type": "string", "description": "Contact Phone", "maxLength": 50 },
+        "focus": { "type": "string", "description": "Surgical Focus", "maxLength": 100 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission Timestamp" }
+      },
+      "required": ["name", "website", "email", "phone", "focus", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/submissions/{submissionId}": {
+      "schema": "submission",
+      "description": "User form submissions"
+    }
+  }
+}

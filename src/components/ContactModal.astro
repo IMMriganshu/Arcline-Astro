@@ -126,7 +126,10 @@ import SectionLabel from "./SectionLabel.astro";
   </div>
 </div>
 
-<script>
+<script type="module">
+  import { db } from "../lib/firebase.ts";
+  import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
   const contactModal = document.getElementById('contact-modal');
   const closeModalBtn = document.getElementById('close-contact-modal');
   const contactForm = document.getElementById('contact-form');
@@ -153,14 +156,30 @@ import SectionLabel from "./SectionLabel.astro";
     }
   });
 
-  contactForm?.addEventListener('submit', (e) => {
+  contactForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    contactSuccess?.classList.remove('hidden');
-    setTimeout(() => {
-      contactForm.reset();
-      contactSuccess?.classList.add('hidden');
-      contactModal?.classList.add('hidden');
-      contactModal?.classList.remove('flex');
-    }, 2000);
+    const formData = new FormData(contactForm);
+    const data = {
+      name: formData.get('name'),
+      website: formData.get('website'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      focus: formData.get('focus'),
+      createdAt: serverTimestamp()
+    };
+    
+    try {
+      await addDoc(collection(db, 'submissions'), data);
+      contactSuccess?.classList.remove('hidden');
+      setTimeout(() => {
+        contactForm.reset();
+        contactSuccess?.classList.add('hidden');
+        contactModal?.classList.add('hidden');
+        contactModal?.classList.remove('flex');
+      }, 2000);
+    } catch (error) {
+      console.error("Error submitting form: ", error);
+      alert("There was an error submitting your request. Please try again.");
+    }
   });
 </script>
