@@ -730,7 +730,7 @@ export default function AdminDashboard() {
             </svg>
           </a>
 
-          {/* Trigger Vercel Deploy */}
+          {/* Trigger Live Site Publishing */}
           <button
             onClick={handleDeployVercel}
             disabled={isDeploying}
@@ -739,7 +739,7 @@ export default function AdminDashboard() {
             <svg className={`w-3.5 h-3.5 ${isDeploying ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <span>{isDeploying ? 'Deploying...' : 'Deploy to Vercel'}</span>
+            <span>{isDeploying ? 'Publishing to Live...' : 'Publish to Live Site'}</span>
           </button>
 
           {/* Save All */}
@@ -2386,7 +2386,7 @@ export default function AdminDashboard() {
               <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-4">
                 <h3 className="text-sm font-bold text-cyan-300">Vercel Deploy Webhook Integration</h3>
                 <p className="text-xs text-neutral-400">
-                  To trigger real, automated production rebuilds whenever you hit "Deploy to Vercel", paste your Vercel Deploy Hook URL below:
+                  To trigger real, automated production rebuilds whenever you hit "Publish to Live Site", paste your Vercel Deploy Hook URL below:
                 </p>
 
                 <div>
