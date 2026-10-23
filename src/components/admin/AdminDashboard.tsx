@@ -429,7 +429,7 @@ export default function AdminDashboard() {
         localStorage.setItem('arcline_admin_session', 'authenticated');
         localStorage.setItem('arcline_admin_role', 'admin');
         localStorage.setItem('arcline_admin_user', JSON.stringify(u));
-        showToast('Welcome to Seelutions Headless CMS', 'success');
+        showToast('Welcome to Seelutions CMS', 'success');
         return;
       }
 
@@ -613,15 +613,15 @@ export default function AdminDashboard() {
           <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="text-center mb-8 relative z-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/5 border border-white/10 p-2.5 mb-4 shadow-xl">
+            <div className="inline-flex items-center justify-center p-2 mb-4">
               <img
-                src="/images/seelutions%20new%20updatedLogo.png"
+                src="/images/Final%20seelutions%20logo%20with%20tagline.png"
                 alt="Seelutions Logo"
-                className="w-full h-full object-contain filter brightness-0 invert"
+                className="h-12 w-auto object-contain filter brightness-0 invert"
               />
             </div>
             <h1 className="text-2xl font-bold font-urbanist tracking-tight text-white mb-2">
-              Seelutions Headless CMS
+              Seelutions CMS
             </h1>
             <p className="text-xs text-neutral-400 max-w-xs mx-auto">
               Authorized practice administration dashboard for patient acquisition content and live deployment.
@@ -666,17 +666,6 @@ export default function AdminDashboard() {
               )}
             </button>
           </form>
-
-          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-neutral-400 flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <span className="text-amber-400">👑</span>
-              <span>Super Admin: <code className="text-amber-300 font-mono">superadmin2026</code></span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="text-cyan-400">🛡️</span>
-              <span>Staff Admin: <code className="text-cyan-300 font-mono">arcline2026</code></span>
-            </span>
-          </div>
         </div>
       </div>
     );
