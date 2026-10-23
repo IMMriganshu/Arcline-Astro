@@ -2494,28 +2494,34 @@ export default function AdminDashboard() {
            {activeTab === 'pages' && (
              <div className="space-y-6">
                <div>
-                 <h2 className="text-2xl font-bold font-urbanist text-white">Manage Pages</h2>
-                 <p className="text-xs text-neutral-400">Select any site page below to update its entire body content using the rich text editor.</p>
+                 <h2 className="text-2xl font-bold font-urbanist text-white">Manage Pages &amp; Section Media</h2>
+                 <p className="text-xs text-neutral-400">Select any site page below to update its section text, prose content, and attached media assets (hero videos, banner graphics, gallery images, and avatars).</p>
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                  {cmsData.pages.map((page) => (
                    <div key={page.id} className="bg-neutral-900/60 border border-white/10 hover:border-cyan-500/40 rounded-2xl p-6 backdrop-blur-md flex flex-col justify-between transition-all group">
                      <div>
-                       <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider block mb-1">Site Page</span>
+                       <div className="flex items-center justify-between mb-2">
+                         <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider block">Content &amp; Media</span>
+                         <span className="text-[9px] font-mono text-neutral-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                           🖼️ Media Attached
+                         </span>
+                       </div>
                        <h3 className="text-lg font-bold text-white mb-2 font-urbanist">{page.title}</h3>
                        <code className="text-xs text-neutral-400 bg-black/40 px-2 py-1 rounded-md border border-white/5">/{page.slug}</code>
                      </div>
                      <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-                       <span className="text-xs text-neutral-400">Click to edit body</span>
+                       <span className="text-xs text-neutral-400">Sections, Copy &amp; Media</span>
                        <button
                          onClick={() => {
                            setEditingPage(page);
                            setIsPageModalOpen(true);
                          }}
-                         className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-300 font-semibold text-xs transition-colors cursor-pointer"
+                         className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-300 font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1"
                        >
-                         Edit Content &rarr;
+                         <span>Edit Content &amp; Media</span>
+                         <span>&rarr;</span>
                        </button>
                      </div>
                    </div>

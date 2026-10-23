@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { CmsData, Page, HeroContent, AboutContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent } from '../../lib/types';
+import type { CmsData, Page, HeroContent, AboutContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent, MediaAsset, Article } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 
@@ -17,6 +17,284 @@ function safeArray<T>(val: any, fallback: T[] = []): T[] {
     if (vals.length > 0) return vals;
   }
   return Array.isArray(fallback) ? [...fallback] : [];
+}
+
+/**
+ * Interactive Media Library Picker Modal
+ */
+function MediaLibraryPickerModal({
+  isOpen,
+  onClose,
+  mediaAssets,
+  onSelect,
+  onUploadNew,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  mediaAssets: MediaAsset[];
+  onSelect: (url: string) => void;
+  onUploadNew?: (newAsset: MediaAsset) => void;
+}) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'image' | 'video'>('all');
+  const [newMediaUrl, setNewMediaUrl] = useState('');
+  const [newMediaName, setNewMediaName] = useState('');
+
+  if (!isOpen) return null;
+
+  const filtered = mediaAssets.filter((m) => {
+    const matchesType = filterType === 'all' || m.type === filterType;
+    const matchesSearch =
+      m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.url.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesType && matchesSearch;
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 text-white">
+      <div className="w-full max-w-4xl bg-neutral-900 border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+          <div>
+            <h3 className="text-lg font-bold font-urbanist text-white flex items-center gap-2">
+              <span>🖼️</span> Media Assets Library Picker
+            </h3>
+            <p className="text-xs text-neutral-400">Select any media asset to attach to this section field</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-neutral-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Search & Filter Bar */}
+        <div className="py-4 flex flex-col sm:flex-row gap-3 items-center justify-between border-b border-white/5">
+          <input
+            type="text"
+            placeholder="Search media assets..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full sm:w-64 px-3.5 py-2 bg-black/60 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+          />
+          <div className="flex items-center gap-2">
+            {(['all', 'image', 'video'] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setFilterType(t)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize cursor-pointer transition-colors ${
+                  filterType === t
+                    ? 'bg-cyan-500 text-black shadow-md'
+                    : 'bg-white/5 text-neutral-400 hover:text-white'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Add Custom Asset */}
+        <div className="py-3 px-4 bg-black/40 border border-white/5 rounded-xl my-3 flex flex-col sm:flex-row gap-2 items-end">
+          <div className="flex-1 w-full">
+            <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Asset Name</label>
+            <input
+              type="text"
+              placeholder="e.g. New Clinical Suite Photo"
+              value={newMediaName}
+              onChange={(e) => setNewMediaName(e.target.value)}
+              className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white text-xs focus:outline-none focus:border-cyan-400"
+            />
+          </div>
+          <div className="flex-2 w-full">
+            <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Asset Image/Video URL</label>
+            <input
+              type="text"
+              placeholder="/images/... or https://..."
+              value={newMediaUrl}
+              onChange={(e) => setNewMediaUrl(e.target.value)}
+              className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (newMediaUrl) {
+                const asset: MediaAsset = {
+                  id: `med-${Date.now()}`,
+                  name: newMediaName || 'Custom Uploaded Asset',
+                  url: newMediaUrl,
+                  type: newMediaUrl.endsWith('.mp4') ? 'video' : 'image',
+                };
+                if (onUploadNew) onUploadNew(asset);
+                onSelect(newMediaUrl);
+                onClose();
+              }
+            }}
+            className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs rounded-lg transition-colors cursor-pointer shrink-0"
+          >
+            + Use Custom URL
+          </button>
+        </div>
+
+        {/* Media Grid */}
+        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 py-2 pr-1">
+          {filtered.map((asset) => (
+            <button
+              key={asset.id}
+              onClick={() => {
+                onSelect(asset.url);
+                onClose();
+              }}
+              className="group p-2 bg-black/50 hover:bg-cyan-950/40 border border-white/10 hover:border-cyan-500/50 rounded-xl flex flex-col justify-between transition-all cursor-pointer text-left"
+            >
+              <div className="aspect-video w-full rounded-lg overflow-hidden bg-black/80 border border-white/5 mb-2 relative flex items-center justify-center">
+                {asset.type === 'video' ? (
+                  <div className="text-center p-2">
+                    <span className="text-2xl">🎬</span>
+                    <p className="text-[9px] font-mono text-cyan-400 mt-1">MP4 Video</p>
+                  </div>
+                ) : (
+                  <img
+                    src={asset.url}
+                    alt={asset.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/images/home-hero-image.webp';
+                    }}
+                  />
+                )}
+                <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[8px] uppercase font-bold text-neutral-300">
+                  {asset.type}
+                </span>
+              </div>
+              <p className="font-bold text-xs text-white truncate group-hover:text-cyan-300">{asset.name}</p>
+              <p className="text-[10px] font-mono text-neutral-500 truncate mt-0.5">{asset.url}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Dedicated Media Control Field Component (with thumbnail preview & library picker)
+ */
+function MediaControlField({
+  label,
+  value,
+  onChange,
+  mediaAssets,
+  onAddMediaAsset,
+  type = 'image',
+  placeholder = '/images/... or https://...',
+}: {
+  label: string;
+  value: string;
+  onChange: (newUrl: string) => void;
+  mediaAssets: MediaAsset[];
+  onAddMediaAsset?: (asset: MediaAsset) => void;
+  type?: 'image' | 'video';
+  placeholder?: string;
+}) {
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+
+  // File upload reader helper
+  const handleLocalFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const resultUrl = evt.target?.result as string;
+        if (resultUrl) {
+          const newAsset: MediaAsset = {
+            id: `med-${Date.now()}`,
+            name: file.name,
+            url: resultUrl,
+            type: file.type.startsWith('video') ? 'video' : 'image',
+          };
+          if (onAddMediaAsset) onAddMediaAsset(newAsset);
+          onChange(resultUrl);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="p-4 bg-black/40 border border-white/10 rounded-2xl space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="block text-xs font-semibold text-neutral-200 uppercase tracking-wider flex items-center gap-1.5">
+          <span>{type === 'video' ? '🎬' : '🖼️'}</span>
+          <span>{label}</span>
+        </label>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPickerOpen(true)}
+            className="px-3 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <span>📚 Media Library</span>
+          </button>
+          <label className="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1">
+            <span>📤 Upload File</span>
+            <input
+              type="file"
+              accept={type === 'video' ? 'video/*' : 'image/*'}
+              onChange={handleLocalFileUpload}
+              className="hidden"
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* URL Input */}
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-3.5 py-2 bg-black/60 border border-white/15 rounded-xl text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+      />
+
+      {/* Live Thumbnail / Media Preview Box */}
+      {value && (
+        <div className="flex items-center gap-3 p-2 bg-neutral-950/80 border border-white/10 rounded-xl overflow-hidden">
+          <div className="w-20 h-14 rounded-lg overflow-hidden bg-black/80 border border-white/10 shrink-0 flex items-center justify-center relative">
+            {type === 'video' || value.endsWith('.mp4') ? (
+              <video src={value} className="w-full h-full object-cover" muted loop autoPlay />
+            ) : (
+              <img
+                src={value}
+                alt="Preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/images/home-hero-image.webp';
+                }}
+              />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Live Media Asset Preview</p>
+            <p className="text-xs font-mono text-neutral-300 truncate mt-0.5">{value}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Modal */}
+      <MediaLibraryPickerModal
+        isOpen={isPickerOpen}
+        onClose={() => setIsPickerOpen(false)}
+        mediaAssets={mediaAssets}
+        onSelect={(selectedUrl) => onChange(selectedUrl)}
+        onUploadNew={(newAsset) => {
+          if (onAddMediaAsset) onAddMediaAsset(newAsset);
+        }}
+      />
+    </div>
+  );
 }
 
 export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSectionBuilderProps) {
@@ -74,10 +352,12 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       seelutionsItems: safeArray(base.seelutionsItems, defaultCmsContent.comparisonContent?.seelutionsItems || []),
     };
   });
+  const [localArticles, setLocalArticles] = useState<Article[]>(() => safeArray(cmsData?.articles, defaultCmsContent.articles));
   const [localVideo, setLocalVideo] = useState<VideoShowcaseContent>(() => ({
     ...defaultCmsContent.videoShowcase!,
     ...(cmsData?.videoShowcase || {}),
   }));
+  const [localMedia, setLocalMedia] = useState<MediaAsset[]>(() => safeArray(cmsData?.media, defaultCmsContent.media));
 
   // Active section selector
   const isHome = page.slug === 'home' || page.slug === '';
@@ -91,27 +371,31 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
   const [activeViewMode, setActiveViewMode] = useState<'editor' | 'preview'>('editor');
   const [hasChanges, setHasChanges] = useState<boolean>(false);
 
+  const handleAddNewMediaAsset = (asset: MediaAsset) => {
+    setLocalMedia((prev) => [...prev, asset]);
+    setHasChanges(true);
+  };
+
   // Sections definition by page
   const sectionsList = [
     ...(isHome ? [
-      { id: 'hero', name: 'Hero & Masked Typography', icon: '⚡', description: 'Headline, subheadline, CTAs and video masks' },
+      { id: 'hero', name: 'Hero & Masked Typography', icon: '⚡', description: 'Headline, subheadline, CTAs, video masks and background media' },
       { id: 'about', name: 'About Us & Practice Growth', icon: '🏢', description: 'Editorial narrative, eyeball aesthetic & retainer milestones' },
       { id: 'comparison', name: 'Why Traditional Models Fail Plastic Surgeons', icon: '⚖️', description: 'COMPARING: Rented Clicks vs. Owned Authority & Seelutions Growth Blueprint' },
-      { id: 'services', name: 'Selected Services (01–05)', icon: '💼', description: '5 core surgical acquisition services and descriptions' },
+      { id: 'services', name: 'Selected Services (01–05)', icon: '💼', description: '5 core surgical acquisition services, copy and cover images' },
       { id: 'projects', name: '10-Year Case Study Timeline', icon: '📈', description: 'Practice growth trajectory from 2016 to modern AI search' },
-      { id: 'video', name: 'Architectural Video Showcase', icon: '🎥', description: 'Cinematic looping showcase video and modal player' },
-      { id: 'testimonials', name: 'Surgeon Testimonials', icon: '⭐️', description: 'Client reviews, credentials, star ratings & quotes' },
+      { id: 'video', name: 'Architectural Video Showcase', icon: '🎥', description: 'Cinematic looping showcase video and poster frame media' },
+      { id: 'testimonials', name: 'Surgeon Testimonials', icon: '⭐', description: 'Client reviews, credentials, star ratings & surgeon avatars' },
       { id: 'blog', name: 'Patient Grower Editorial', icon: '📰', description: 'AI search & practice economics intelligence articles' },
-      { id: 'cta', name: 'Practice Digital Audit CTA', icon: '🎯', description: 'Dark high-conversion audit consultation banner' },
+      { id: 'cta', name: 'Practice Digital Audit CTA', icon: '🎯', description: 'Dark high-conversion audit consultation banner & background image' },
     ] : []),
     ...(isAbout ? [
-      { id: 'about', name: 'About Narrative & Statement', icon: '🏢', description: '380% retainer growth statement and surgical story' },
-      { id: 'about-timeline', name: 'Retainer Growth Milestones', icon: '📈', description: 'A decade of evolving partnership milestones' },
+      { id: 'about', name: 'About Narrative & Aesthetic', icon: '🏢', description: 'Editorial narrative & visual aesthetic media' },
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
     ] : []),
     ...(isServices ? [
       { id: 'services-header', name: 'Capabilities Header', icon: '💼', description: 'Services overview headline and intro' },
-      { id: 'services', name: 'Services Offerings (01–05)', icon: '🛠️', description: 'The 5 surgical marketing and search service pillars' },
+      { id: 'services', name: 'Services Offerings (01–05)', icon: '🛠️', description: 'The 5 surgical marketing service pillars and cover photos' },
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
     ] : []),
     ...(isProjects ? [
@@ -124,7 +408,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       { id: 'blog', name: 'Intelligence Articles', icon: '✍️', description: 'Editorial case studies and AI search articles' },
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
     ] : []),
-    { id: 'body', name: 'Custom Page Body (Rich Text)', icon: '📝', description: 'Semantic HTML, headers, images, captions and prose block' },
+    { id: 'body', name: 'Custom Page Body (Rich Text & Media)', icon: '📝', description: 'Semantic HTML, headers, images, captions and media prose block' },
   ];
 
   const handleSaveAll = () => {
@@ -136,34 +420,36 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       services: localServices,
       projects: localProjects,
       testimonials: localTestimonials,
+      articles: localArticles,
       comparison: localComparison,
       comparisonContent: localComparisonContent,
       videoShowcase: localVideo,
+      media: localMedia,
       pages: cmsData.pages.map((p) => (p.id === currentPage.id ? currentPage : p)),
     };
     onSave(currentPage, updatedCmsData);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-xl flex flex-col overflow-hidden text-neutral-100">
-      {/* Top Seelutions-Style Header */}
+    <div className="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-xl flex flex-col overflow-hidden text-neutral-100 font-sans">
+      {/* Top Header */}
       <header className="h-16 px-6 bg-[#050b1a] border-b border-white/10 flex items-center justify-between flex-shrink-0 z-20">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
+          <div className="h-8 w-auto flex items-center justify-center p-1">
             <img
-              src="/assets/aistudio/image_ee52dcce.png"
+              src="/images/Final%20seelutions%20logo%20with%20tagline.png"
               alt="Seelutions Logo"
-              className="w-full h-full object-contain filter brightness-0 invert"
+              className="h-full w-auto object-contain filter brightness-0 invert"
             />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-white font-urbanist">{currentPage.title}</h2>
-              <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400">
+              <h2 className="text-base font-bold text-white font-urbanist">{currentPage.title} Content &amp; Media</h2>
+              <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 font-mono">
                 /{currentPage.slug}
               </span>
             </div>
-            <p className="text-[11px] text-neutral-400">Seelutions Section-Wise Page Content Builder</p>
+            <p className="text-[11px] text-neutral-400">Seelutions Section-Wise Page Content &amp; Media Assets Editor</p>
           </div>
         </div>
 
@@ -192,7 +478,6 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             </button>
           </div>
 
-          {/* Cancel button */}
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-neutral-300 transition-colors cursor-pointer"
@@ -200,7 +485,6 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             Cancel
           </button>
 
-          {/* Save Page button */}
           <button
             onClick={handleSaveAll}
             className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
@@ -213,15 +497,15 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
         </div>
       </header>
 
-      {/* Main Builder Body: Left Sections Navigator + Right Section Editor */}
+      {/* Main Builder Body */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sections Sidebar (Gutenberg / Elementor block outline style) */}
+        {/* Left Sections Sidebar */}
         <aside className="w-80 bg-[#050b1a]/70 border-r border-white/10 flex flex-col flex-shrink-0 overflow-y-auto">
           <div className="p-4 border-b border-white/5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400">
-              Page Structure &amp; Sections
+              PAGE STRUCTURE &amp; SECTIONS
             </span>
-            <p className="text-xs text-neutral-400 mt-0.5">Click any section to edit its content</p>
+            <p className="text-xs text-neutral-400 mt-0.5">Click any section to edit its content and media</p>
           </div>
 
           <div className="p-3 space-y-1.5">
@@ -257,7 +541,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
           </div>
         </aside>
 
-        {/* Right Content Editor / Live Preview Container */}
+        {/* Right Content & Media Editor */}
         <main className="flex-1 overflow-y-auto bg-[#030712] p-6 lg:p-8">
           <div className="max-w-5xl mx-auto space-y-6">
             
@@ -265,7 +549,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400">
-                  Editing Section
+                  EDITING SECTION
                 </span>
                 <h3 className="text-2xl font-bold font-urbanist text-white">
                   {sectionsList.find((s) => s.id === activeSectionId)?.name}
@@ -357,7 +641,50 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* HERO MEDIA CONTROLS */}
+                    <div className="pt-4 border-t border-white/10 space-y-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                        Hero Section Media &amp; Video Assets
+                      </h4>
+
+                      <MediaControlField
+                        label="Hero Banner Poster Frame Image"
+                        value={localHero.bannerPosterUrl || '/images/home-hero-image.webp'}
+                        onChange={(url) => {
+                          setLocalHero({ ...localHero, bannerPosterUrl: url });
+                          setHasChanges(true);
+                        }}
+                        mediaAssets={localMedia}
+                        onAddMediaAsset={handleAddNewMediaAsset}
+                        type="image"
+                      />
+
+                      <MediaControlField
+                        label="Hero Background Looping Video (MP4)"
+                        value={localHero.bannerVideoUrl || '/videos/eyeball-showcase.mp4'}
+                        onChange={(url) => {
+                          setLocalHero({ ...localHero, bannerVideoUrl: url });
+                          setHasChanges(true);
+                        }}
+                        mediaAssets={localMedia}
+                        onAddMediaAsset={handleAddNewMediaAsset}
+                        type="video"
+                      />
+
+                      <MediaControlField
+                        label="Title Typography Mask Video (MP4)"
+                        value={localHero.titleVideoUrl || '/videos/title-video.mp4'}
+                        onChange={(url) => {
+                          setLocalHero({ ...localHero, titleVideoUrl: url });
+                          setHasChanges(true);
+                        }}
+                        mediaAssets={localMedia}
+                        onAddMediaAsset={handleAddNewMediaAsset}
+                        type="video"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-white/10">
                       <div>
                         <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
                           Primary CTA Button Text
@@ -448,36 +775,33 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
               <div className="space-y-6">
                 {activeViewMode === 'editor' ? (
                   <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                          Section Label Badge
-                        </label>
-                        <input
-                          type="text"
-                          value={localAbout.badge}
-                          onChange={(e) => {
-                            setLocalAbout({ ...localAbout, badge: e.target.value });
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                          Visual Aesthetic Image URL
-                        </label>
-                        <input
-                          type="text"
-                          value={localAbout.image}
-                          onChange={(e) => {
-                            setLocalAbout({ ...localAbout, image: e.target.value });
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Section Label Badge
+                      </label>
+                      <input
+                        type="text"
+                        value={localAbout.badge}
+                        onChange={(e) => {
+                          setLocalAbout({ ...localAbout, badge: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                      />
                     </div>
+
+                    {/* About Section Media Control */}
+                    <MediaControlField
+                      label="Visual Aesthetic Image / Eyeball Graphic"
+                      value={localAbout.image || '/images/Eyeball-BC.webp'}
+                      onChange={(url) => {
+                        setLocalAbout({ ...localAbout, image: url });
+                        setHasChanges(true);
+                      }}
+                      mediaAssets={localMedia}
+                      onAddMediaAsset={handleAddNewMediaAsset}
+                      type="image"
+                    />
 
                     <div>
                       <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
@@ -603,14 +927,360 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     <h2 className="text-3xl font-bold">{localAbout.title}</h2>
                     <p className="text-lg font-medium text-neutral-800">{localAbout.subtitle}</p>
                     <p className="text-neutral-600 text-sm leading-relaxed">{localAbout.description}</p>
-                    <div className="p-4 bg-neutral-100 rounded-xl space-y-2">
-                      <h3 className="font-bold text-sm uppercase">{localAbout.timelineTitle}</h3>
-                      {(localAbout.milestones || []).map((m, idx) => (
-                        <div key={idx} className="flex justify-between p-2 bg-white rounded-lg text-xs font-medium">
-                          <span className="font-bold text-cyan-700">{m.yearBudget}</span>
-                          <span>{m.text}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* SECTION: COMPARISON (WHY TRADITIONAL MODELS FAIL PLASTIC SURGEONS) */}
+            {activeSectionId === 'comparison' && (
+              <div className="space-y-6">
+                {activeViewMode === 'editor' ? (
+                  <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-6">
+                    {/* Header Controls */}
+                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                      <div>
+                        <h3 className="text-sm font-bold text-cyan-300 font-urbanist flex items-center gap-2">
+                          <span>⚖️</span>
+                          <span>Why Traditional Models Fail Plastic Surgeons Content</span>
+                        </h3>
+                        <p className="text-xs text-neutral-400 mt-0.5">
+                          Update comparison headlines, traditional vs Seelutions points, and metric comparison table.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Badge & Headline */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                          Section Eyebrow Badge
+                        </label>
+                        <input
+                          type="text"
+                          value={localComparisonContent.badge}
+                          onChange={(e) => {
+                            setLocalComparisonContent({ ...localComparisonContent, badge: e.target.value });
+                            setHasChanges(true);
+                          }}
+                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                          placeholder="Rented Clicks vs. Owned Authority"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                          Section Main Headline
+                        </label>
+                        <input
+                          type="text"
+                          value={localComparisonContent.headline}
+                          onChange={(e) => {
+                            setLocalComparisonContent({ ...localComparisonContent, headline: e.target.value });
+                            setHasChanges(true);
+                          }}
+                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
+                          placeholder="Why Traditional Models Fail Plastic Surgeons"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Column 1: Traditional Agencies */}
+                    <div className="p-4 bg-red-950/20 border border-red-500/20 rounded-2xl space-y-4">
+                      <div className="flex items-center justify-between pb-2 border-b border-red-500/20">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-red-400 flex items-center gap-2">
+                          <span>❌</span>
+                          <span>Column 1: Traditional Models / Agencies Title</span>
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [
+                              ...(localComparisonContent.traditionalItems || []),
+                              { id: `trad-${Date.now()}`, title: 'New Flaw', description: 'Description of traditional model flaw' },
+                            ];
+                            setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                            setHasChanges(true);
+                          }}
+                          className="px-2.5 py-1 text-[11px] font-bold bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 rounded-lg cursor-pointer"
+                        >
+                          + Add Flaw Card
+                        </button>
+                      </div>
+
+                      <input
+                        type="text"
+                        value={localComparisonContent.traditionalTitle}
+                        onChange={(e) => {
+                          setLocalComparisonContent({ ...localComparisonContent, traditionalTitle: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2 bg-black/50 border border-red-500/30 rounded-xl text-white text-xs font-bold"
+                        placeholder="Traditional Agencies (Rented Clicks)"
+                      />
+
+                      <div className="space-y-3">
+                        {(localComparisonContent.traditionalItems || []).map((item, idx) => (
+                          <div key={item.id || idx} className="p-3 bg-black/60 border border-red-500/20 rounded-xl space-y-2 relative group">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono text-red-400 font-bold">Flaw #{idx + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = localComparisonContent.traditionalItems.filter((_, i) => i !== idx);
+                                  setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                                  setHasChanges(true);
+                                }}
+                                className="text-xs text-neutral-400 hover:text-red-400 cursor-pointer"
+                                title="Remove item"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) => {
+                                const updated = [...localComparisonContent.traditionalItems];
+                                updated[idx] = { ...updated[idx], title: e.target.value };
+                                setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                                setHasChanges(true);
+                              }}
+                              className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-white text-xs font-semibold"
+                              placeholder="Title (e.g. Rented Clicks)"
+                            />
+                            <textarea
+                              rows={2}
+                              value={item.description}
+                              onChange={(e) => {
+                                const updated = [...localComparisonContent.traditionalItems];
+                                updated[idx] = { ...updated[idx], description: e.target.value };
+                                setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
+                                setHasChanges(true);
+                              }}
+                              className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-neutral-300 text-xs leading-relaxed"
+                              placeholder="Description..."
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Column 2: Seelutions Model */}
+                    <div className="p-4 bg-cyan-950/20 border border-cyan-500/20 rounded-2xl space-y-4">
+                      <div className="flex items-center justify-between pb-2 border-b border-cyan-500/20">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+                          <span>✨</span>
+                          <span>Column 2: Seelutions Blueprint Title</span>
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [
+                              ...(localComparisonContent.seelutionsItems || []),
+                              { id: `seel-${Date.now()}`, title: 'New Advantage', description: 'Description of Seelutions advantage' },
+                            ];
+                            setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                            setHasChanges(true);
+                          }}
+                          className="px-2.5 py-1 text-[11px] font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 rounded-lg cursor-pointer"
+                        >
+                          + Add Advantage Card
+                        </button>
+                      </div>
+
+                      <input
+                        type="text"
+                        value={localComparisonContent.seelutionsTitle}
+                        onChange={(e) => {
+                          setLocalComparisonContent({ ...localComparisonContent, seelutionsTitle: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2 bg-black/50 border border-cyan-500/30 rounded-xl text-white text-xs font-bold"
+                        placeholder="The Seelutions Growth Blueprint"
+                      />
+
+                      <div className="space-y-3">
+                        {(localComparisonContent.seelutionsItems || []).map((item, idx) => (
+                          <div key={item.id || idx} className="p-3 bg-black/60 border border-cyan-500/20 rounded-xl space-y-2 relative group">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono text-cyan-400 font-bold">Advantage #{idx + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = localComparisonContent.seelutionsItems.filter((_, i) => i !== idx);
+                                  setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                                  setHasChanges(true);
+                                }}
+                                className="text-xs text-neutral-400 hover:text-cyan-400 cursor-pointer"
+                                title="Remove item"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) => {
+                                const updated = [...localComparisonContent.seelutionsItems];
+                                updated[idx] = { ...updated[idx], title: e.target.value };
+                                setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                                setHasChanges(true);
+                              }}
+                              className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-white text-xs font-semibold"
+                              placeholder="Title (e.g. Owned Search Equity)"
+                            />
+                            <textarea
+                              rows={2}
+                              value={item.description}
+                              onChange={(e) => {
+                                const updated = [...localComparisonContent.seelutionsItems];
+                                updated[idx] = { ...updated[idx], description: e.target.value };
+                                setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
+                                setHasChanges(true);
+                              }}
+                              className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-neutral-300 text-xs leading-relaxed"
+                              placeholder="Description..."
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Metric Comparison Matrix */}
+                    <div className="pt-4 border-t border-white/10 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                            Side-by-Side Metric Comparison Table Rows
+                          </h4>
+                          <p className="text-[11px] text-neutral-400 mt-0.5">
+                            Detailed line-by-line metrics comparing traditional models vs Seelutions organic authority.
+                          </p>
                         </div>
-                      ))}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newRow: ComparisonItem = {
+                              id: `comp-${Date.now()}`,
+                              metric: 'New Comparison Metric',
+                              rentedClicks: 'Traditional agency performance',
+                              organicAuthority: 'Seelutions performance',
+                            };
+                            setLocalComparison([...localComparison, newRow]);
+                            setHasChanges(true);
+                          }}
+                          className="px-3 py-1.5 text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl cursor-pointer"
+                        >
+                          + Add Comparison Metric Row
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {(localComparison || []).map((row, idx) => (
+                          <div key={row.id || idx} className="p-4 bg-black/40 border border-white/10 rounded-xl space-y-3">
+                            <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                              <span className="text-xs font-bold font-mono text-cyan-400">Metric Row #{idx + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = localComparison.filter((_, i) => i !== idx);
+                                  setLocalComparison(updated);
+                                  setHasChanges(true);
+                                }}
+                                className="text-xs text-neutral-400 hover:text-red-400 cursor-pointer"
+                              >
+                                Delete Row
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div>
+                                <label className="block text-[10px] uppercase font-semibold text-neutral-400 mb-1">
+                                  Metric Name
+                                </label>
+                                <input
+                                  type="text"
+                                  value={row.metric}
+                                  onChange={(e) => {
+                                    const updated = [...localComparison];
+                                    updated[idx].metric = e.target.value;
+                                    setLocalComparison(updated);
+                                    setHasChanges(true);
+                                  }}
+                                  className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white text-xs font-bold"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] uppercase font-semibold text-red-400 mb-1">
+                                  Traditional Model
+                                </label>
+                                <input
+                                  type="text"
+                                  value={row.rentedClicks}
+                                  onChange={(e) => {
+                                    const updated = [...localComparison];
+                                    updated[idx].rentedClicks = e.target.value;
+                                    setLocalComparison(updated);
+                                    setHasChanges(true);
+                                  }}
+                                  className="w-full px-3 py-1.5 bg-black/60 border border-red-500/30 rounded-lg text-neutral-200 text-xs"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] uppercase font-semibold text-cyan-400 mb-1">
+                                  Seelutions Authority
+                                </label>
+                                <input
+                                  type="text"
+                                  value={row.organicAuthority}
+                                  onChange={(e) => {
+                                    const updated = [...localComparison];
+                                    updated[idx].organicAuthority = e.target.value;
+                                    setLocalComparison(updated);
+                                    setHasChanges(true);
+                                  }}
+                                  className="w-full px-3 py-1.5 bg-black/60 border border-cyan-500/30 rounded-lg text-neutral-200 text-xs"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* Preview Mode */
+                  <div className="bg-neutral-950 text-white p-8 rounded-2xl border border-white/10 space-y-8">
+                    <div className="text-center space-y-2">
+                      <span className="text-xs uppercase font-mono font-bold text-cyan-400 tracking-wider">
+                        {localComparisonContent.badge}
+                      </span>
+                      <h2 className="text-3xl font-black font-urbanist">{localComparisonContent.headline}</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="p-6 bg-red-950/20 border border-red-500/20 rounded-2xl space-y-4">
+                        <h3 className="text-lg font-bold text-red-400">{localComparisonContent.traditionalTitle}</h3>
+                        <div className="space-y-3">
+                          {(localComparisonContent.traditionalItems || []).map((item, idx) => (
+                            <div key={idx} className="p-3 bg-black/40 rounded-xl">
+                              <h4 className="font-bold text-xs text-white">{item.title}</h4>
+                              <p className="text-xs text-neutral-400 mt-1">{item.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="p-6 bg-cyan-950/20 border border-cyan-500/20 rounded-2xl space-y-4">
+                        <h3 className="text-lg font-bold text-cyan-400">{localComparisonContent.seelutionsTitle}</h3>
+                        <div className="space-y-3">
+                          {(localComparisonContent.seelutionsItems || []).map((item, idx) => (
+                            <div key={idx} className="p-3 bg-black/40 rounded-xl">
+                              <h4 className="font-bold text-xs text-white">{item.title}</h4>
+                              <p className="text-xs text-neutral-400 mt-1">{item.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -657,6 +1327,22 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                           />
                         </div>
                       </div>
+
+                      {/* Service Media Image Picker */}
+                      <MediaControlField
+                        label={`Service #${srv.number} Cover Photo`}
+                        value={srv.image || '/images/home-hero-image.webp'}
+                        onChange={(url) => {
+                          const updated = [...localServices];
+                          updated[idx].image = url;
+                          setLocalServices(updated);
+                          setHasChanges(true);
+                        }}
+                        mediaAssets={localMedia}
+                        onAddMediaAsset={handleAddNewMediaAsset}
+                        type="image"
+                      />
+
                       <div>
                         <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Description</label>
                         <textarea
@@ -671,18 +1357,81 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                           className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
                         />
                       </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* SECTION 4: PROJECTS / CASE STUDIES */}
+            {(activeSectionId === 'projects' || activeSectionId === 'projects-header') && (
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  {(localProjects || []).map((prj, idx) => (
+                    <div key={prj.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                        <span className="text-xs font-mono font-bold text-cyan-400">Case Study #{prj.number}</span>
+                        <span className="text-xs text-neutral-500">{prj.category}</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Case Title</label>
+                          <input
+                            type="text"
+                            value={prj.title}
+                            onChange={(e) => {
+                              const updated = [...localProjects];
+                              updated[idx].title = e.target.value;
+                              setLocalProjects(updated);
+                              setHasChanges(true);
+                            }}
+                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Category / Surgery Focus</label>
+                          <input
+                            type="text"
+                            value={prj.category}
+                            onChange={(e) => {
+                              const updated = [...localProjects];
+                              updated[idx].category = e.target.value;
+                              setLocalProjects(updated);
+                              setHasChanges(true);
+                            }}
+                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Project Case Cover Media Picker */}
+                      <MediaControlField
+                        label={`Case Study #${prj.number} Cover Image`}
+                        value={prj.image || '/images/home-hero-image.webp'}
+                        onChange={(url) => {
+                          const updated = [...localProjects];
+                          updated[idx].image = url;
+                          setLocalProjects(updated);
+                          setHasChanges(true);
+                        }}
+                        mediaAssets={localMedia}
+                        onAddMediaAsset={handleAddNewMediaAsset}
+                        type="image"
+                      />
+
                       <div>
-                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Image URL</label>
-                        <input
-                          type="text"
-                          value={srv.image}
+                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Description / Growth Metric</label>
+                        <textarea
+                          rows={2}
+                          value={prj.description}
                           onChange={(e) => {
-                            const updated = [...localServices];
-                            updated[idx].image = e.target.value;
-                            setLocalServices(updated);
+                            const updated = [...localProjects];
+                            updated[idx].description = e.target.value;
+                            setLocalProjects(updated);
                             setHasChanges(true);
                           }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
+                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
                         />
                       </div>
                     </div>
@@ -691,333 +1440,48 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
               </div>
             )}
 
-            {/* SECTION 4: CASE STUDY TIMELINE */}
-            {(activeSectionId === 'projects' || activeSectionId === 'projects-header') && (
-              <div className="space-y-4">
-                {(localProjects || []).map((proj, idx) => (
-                  <div key={proj.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-4">
-                    <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                      <span className="text-xs font-mono font-bold text-amber-400">Milestone {proj.number}</span>
-                      <span className="text-xs text-neutral-500">{proj.year}</span>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Year Tag</label>
-                        <input
-                          type="text"
-                          value={proj.number}
-                          onChange={(e) => {
-                            const updated = [...localProjects];
-                            updated[idx].number = e.target.value;
-                            setLocalProjects(updated);
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Title &amp; Budget</label>
-                        <input
-                          type="text"
-                          value={proj.title}
-                          onChange={(e) => {
-                            const updated = [...localProjects];
-                            updated[idx].title = e.target.value;
-                            setLocalProjects(updated);
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Category Strategy</label>
-                      <input
-                        type="text"
-                        value={proj.category}
-                        onChange={(e) => {
-                          const updated = [...localProjects];
-                          updated[idx].category = e.target.value;
-                          setLocalProjects(updated);
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Outcome Narrative</label>
-                      <textarea
-                        rows={2}
-                        value={proj.description}
-                        onChange={(e) => {
-                          const updated = [...localProjects];
-                          updated[idx].description = e.target.value;
-                          setLocalProjects(updated);
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* SECTION 5: VIDEO SHOWCASE */}
+            {activeSectionId === 'video' && (
+              <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                  Architectural Video Showcase Media
+                </h4>
 
-            {/* SECTION 5: WHY TRADITIONAL MODELS FAIL PLASTIC SURGEONS (COMPARISON) */}
-            {activeSectionId === 'comparison' && (
-              <div className="space-y-6">
-                {activeViewMode === 'editor' ? (
-                  <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-6">
-                    {/* Header Controls */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-white/10">
-                      <div>
-                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                          Eyebrow Tag / Section Badge
-                        </label>
-                        <input
-                          type="text"
-                          value={localComparisonContent.badge}
-                          onChange={(e) => {
-                            setLocalComparisonContent({ ...localComparisonContent, badge: e.target.value });
-                            setHasChanges(true);
-                          }}
-                          placeholder="Rented Clicks vs. Owned Authority"
-                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                          Section Main Headline
-                        </label>
-                        <input
-                          type="text"
-                          value={localComparisonContent.headline}
-                          onChange={(e) => {
-                            setLocalComparisonContent({ ...localComparisonContent, headline: e.target.value });
-                            setHasChanges(true);
-                          }}
-                          placeholder="Why Traditional Models Fail Plastic Surgeons"
-                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold focus:outline-none focus:border-cyan-400"
-                        />
-                      </div>
-                    </div>
+                <MediaControlField
+                  label="Showcase Video Poster Frame Image"
+                  value={localVideo.posterUrl || '/images/home-hero-image.webp'}
+                  onChange={(url) => {
+                    setLocalVideo({ ...localVideo, posterUrl: url });
+                    setHasChanges(true);
+                  }}
+                  mediaAssets={localMedia}
+                  onAddMediaAsset={handleAddNewMediaAsset}
+                  type="image"
+                />
 
-                    {/* 2-Column Comparison Editor */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {/* Left: Traditional Agencies (Rented Clicks) */}
-                      <div className="p-5 bg-black/40 border border-red-500/20 rounded-2xl space-y-4">
-                        <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                          <label className="block text-xs font-bold text-red-400 uppercase tracking-wider">
-                            Left Column Title
-                          </label>
-                          <span className="text-[10px] text-neutral-500 font-mono">
-                            {(localComparisonContent.traditionalItems || []).length} Points
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={localComparisonContent.traditionalTitle}
-                          onChange={(e) => {
-                            setLocalComparisonContent({ ...localComparisonContent, traditionalTitle: e.target.value });
-                            setHasChanges(true);
-                          }}
-                          placeholder="Traditional Agencies (Rented Clicks)"
-                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-red-400"
-                        />
+                <MediaControlField
+                  label="Cinematic Showcase Video (MP4)"
+                  value={localVideo.videoUrl || '/videos/eyeball-showcase.mp4'}
+                  onChange={(url) => {
+                    setLocalVideo({ ...localVideo, videoUrl: url });
+                    setHasChanges(true);
+                  }}
+                  mediaAssets={localMedia}
+                  onAddMediaAsset={handleAddNewMediaAsset}
+                  type="video"
+                />
 
-                        <div className="space-y-3 pt-2">
-                          {(localComparisonContent.traditionalItems || []).map((item, idx) => (
-                            <div key={item.id || idx} className="p-3 bg-neutral-900/80 border border-white/10 rounded-xl space-y-2">
-                              <div className="flex items-center justify-between">
-                                <label className="text-[10px] uppercase font-bold text-neutral-400">
-                                  Point #{idx + 1} Title
-                                </label>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const updated = (localComparisonContent.traditionalItems || []).filter((_, i) => i !== idx);
-                                    setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
-                                    setHasChanges(true);
-                                  }}
-                                  className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
-                                >
-                                  Remove
-                                </button>
-                              </div>
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => {
-                                  const updated = [...(localComparisonContent.traditionalItems || [])];
-                                  updated[idx].title = e.target.value;
-                                  setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
-                                  setHasChanges(true);
-                                }}
-                                placeholder="e.g. Rented Clicks, Generic Templates"
-                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white text-xs font-semibold focus:outline-none focus:border-red-400"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => {
-                                  const updated = [...(localComparisonContent.traditionalItems || [])];
-                                  updated[idx].description = e.target.value;
-                                  setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
-                                  setHasChanges(true);
-                                }}
-                                placeholder="Explanation of traditional agency weakness..."
-                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-neutral-300 text-xs leading-relaxed focus:outline-none focus:border-red-400"
-                              />
-                            </div>
-                          ))}
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = [
-                                ...(localComparisonContent.traditionalItems || []),
-                                { id: `trad-${Date.now()}`, title: 'New Failure Point', description: 'Description of traditional model flaw...' },
-                              ];
-                              setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
-                              setHasChanges(true);
-                            }}
-                            className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
-                          >
-                            + Add Traditional Point
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Right: The Seelutions Growth Blueprint */}
-                      <div className="p-5 bg-black/40 border border-emerald-500/20 rounded-2xl space-y-4">
-                        <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                          <label className="block text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                            Right Column Title
-                          </label>
-                          <span className="text-[10px] text-neutral-500 font-mono">
-                            {(localComparisonContent.seelutionsItems || []).length} Points
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={localComparisonContent.seelutionsTitle}
-                          onChange={(e) => {
-                            setLocalComparisonContent({ ...localComparisonContent, seelutionsTitle: e.target.value });
-                            setHasChanges(true);
-                          }}
-                          placeholder="The Seelutions Growth Blueprint"
-                          className="w-full px-3 py-2 bg-neutral-900 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-emerald-400"
-                        />
-
-                        <div className="space-y-3 pt-2">
-                          {(localComparisonContent.seelutionsItems || []).map((item, idx) => (
-                            <div key={item.id || idx} className="p-3 bg-neutral-900/80 border border-white/10 rounded-xl space-y-2">
-                              <div className="flex items-center justify-between">
-                                <label className="text-[10px] uppercase font-bold text-neutral-400">
-                                  Point #{idx + 1} Title
-                                </label>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const updated = (localComparisonContent.seelutionsItems || []).filter((_, i) => i !== idx);
-                                    setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
-                                    setHasChanges(true);
-                                  }}
-                                  className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
-                                >
-                                  Remove
-                                </button>
-                              </div>
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => {
-                                  const updated = [...(localComparisonContent.seelutionsItems || [])];
-                                  updated[idx].title = e.target.value;
-                                  setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
-                                  setHasChanges(true);
-                                }}
-                                placeholder="e.g. Owned Search Equity, High-Ticket Gallery UX"
-                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-emerald-300 text-xs font-semibold focus:outline-none focus:border-emerald-400"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => {
-                                  const updated = [...(localComparisonContent.seelutionsItems || [])];
-                                  updated[idx].description = e.target.value;
-                                  setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
-                                  setHasChanges(true);
-                                }}
-                                placeholder="Explanation of Seelutions compounding advantage..."
-                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-neutral-300 text-xs leading-relaxed focus:outline-none focus:border-emerald-400"
-                              />
-                            </div>
-                          ))}
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = [
-                                ...(localComparisonContent.seelutionsItems || []),
-                                { id: `seel-${Date.now()}`, title: 'New Growth Advantage', description: 'Description of Seelutions advantage...' },
-                              ];
-                              setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
-                              setHasChanges(true);
-                            }}
-                            className="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
-                          >
-                            + Add Seelutions Blueprint Point
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  /* LIVE PREVIEW OF "WHY TRADITIONAL MODELS FAIL PLASTIC SURGEONS" */
-                  <div className="bg-white text-black p-8 md:p-12 rounded-3xl space-y-8">
-                    <div className="text-center space-y-3">
-                      <div className="inline-block px-3 py-1 rounded-full bg-neutral-100 text-[#8DC541] text-xs font-bold uppercase tracking-wider">
-                        — {localComparisonContent.badge}
-                      </div>
-                      <h2 className="text-3xl md:text-4xl font-black text-black tracking-tight">
-                        {localComparisonContent.headline}
-                      </h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
-                      {/* Left: Traditional (Rented Clicks) */}
-                      <div className="bg-neutral-50 rounded-3xl p-6 md:p-8 border border-neutral-200">
-                        <h3 className="text-xl font-black text-neutral-500 mb-6">
-                          {localComparisonContent.traditionalTitle}
-                        </h3>
-                        <div className="space-y-4">
-                          {(localComparisonContent.traditionalItems || []).map((item, idx) => (
-                            <div key={idx} className="p-5 bg-white rounded-2xl border border-neutral-100 shadow-xs">
-                              <h4 className="font-black text-base text-neutral-900 mb-1">{item.title}</h4>
-                              <p className="text-neutral-600 text-xs leading-relaxed">{item.description}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Right: Seelutions Blueprint */}
-                      <div className="bg-neutral-900 rounded-3xl p-6 md:p-8 border border-neutral-800 text-white">
-                        <h3 className="text-xl font-black text-[#8DC541] mb-6">
-                          {localComparisonContent.seelutionsTitle}
-                        </h3>
-                        <div className="space-y-4">
-                          {(localComparisonContent.seelutionsItems || []).map((item, idx) => (
-                            <div key={idx} className="p-5 bg-neutral-800 rounded-2xl border border-neutral-700 shadow-xs">
-                              <h4 className="font-black text-base text-white mb-1">{item.title}</h4>
-                              <p className="text-neutral-300 text-xs leading-relaxed">{item.description}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <MediaControlField
+                  label="Title Mask Video (MP4)"
+                  value={localVideo.titleVideoUrl || '/videos/title-video.mp4'}
+                  onChange={(url) => {
+                    setLocalVideo({ ...localVideo, titleVideoUrl: url });
+                    setHasChanges(true);
+                  }}
+                  mediaAssets={localMedia}
+                  onAddMediaAsset={handleAddNewMediaAsset}
+                  type="video"
+                />
               </div>
             )}
 
@@ -1025,7 +1489,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
             {activeSectionId === 'testimonials' && (
               <div className="space-y-4">
                 {(localTestimonials || []).map((t, idx) => (
-                  <div key={t.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-3">
+                  <div key={t.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Doctor Name &amp; Credentials</label>
@@ -1056,6 +1520,22 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         />
                       </div>
                     </div>
+
+                    {/* Surgeon Avatar Media Field */}
+                    <MediaControlField
+                      label={`Surgeon Avatar Photo (${t.author || 'Doctor'})`}
+                      value={t.avatar || '/images/home-hero-image.webp'}
+                      onChange={(url) => {
+                        const updated = [...localTestimonials];
+                        updated[idx].avatar = url;
+                        setLocalTestimonials(updated);
+                        setHasChanges(true);
+                      }}
+                      mediaAssets={localMedia}
+                      onAddMediaAsset={handleAddNewMediaAsset}
+                      type="image"
+                    />
+
                     <div>
                       <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Testimonial Quote</label>
                       <textarea
@@ -1072,6 +1552,127 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* SECTION: BLOG / PATIENT GROWER EDITORIAL */}
+            {(activeSectionId === 'blog' || activeSectionId === 'blog-header') && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-2">
+                      <span>📰</span>
+                      <span>Patient Grower Editorial Articles &amp; Media</span>
+                    </h4>
+                    <p className="text-xs text-neutral-400 mt-0.5">
+                      Update intelligence articles, editorial headlines, excerpts, and cover photos.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newArt: Article = {
+                        id: `art-${Date.now()}`,
+                        slug: `new-article-${Date.now()}`,
+                        category: 'Practice Growth',
+                        date: 'Oct 2024',
+                        readTime: '5 Min Read',
+                        title: 'New Editorial Article Title',
+                        excerpt: 'Article summary excerpt...',
+                        content: '<h2>Article Section Title</h2><p>Article body content...</p>',
+                        image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=85',
+                        published: true,
+                      };
+                      setLocalArticles([...localArticles, newArt]);
+                      setHasChanges(true);
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 rounded-xl cursor-pointer"
+                  >
+                    + Add New Article
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {(localArticles || []).map((art, idx) => (
+                    <div key={art.id || idx} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                        <span className="text-xs font-mono font-bold text-cyan-400">Article #{idx + 1} ({art.slug})</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = localArticles.filter((_, i) => i !== idx);
+                            setLocalArticles(updated);
+                            setHasChanges(true);
+                          }}
+                          className="text-xs text-neutral-400 hover:text-red-400 cursor-pointer"
+                        >
+                          Delete Article
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="md:col-span-2">
+                          <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Article Headline / Title</label>
+                          <input
+                            type="text"
+                            value={art.title}
+                            onChange={(e) => {
+                              const updated = [...localArticles];
+                              updated[idx].title = e.target.value;
+                              setLocalArticles(updated);
+                              setHasChanges(true);
+                            }}
+                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Category</label>
+                          <input
+                            type="text"
+                            value={art.category}
+                            onChange={(e) => {
+                              const updated = [...localArticles];
+                              updated[idx].category = e.target.value;
+                              setLocalArticles(updated);
+                              setHasChanges(true);
+                            }}
+                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Cover Photo Media Control */}
+                      <MediaControlField
+                        label={`Article #${idx + 1} Cover Image`}
+                        value={art.image || '/images/home-hero-image.webp'}
+                        onChange={(url) => {
+                          const updated = [...localArticles];
+                          updated[idx].image = url;
+                          setLocalArticles(updated);
+                          setHasChanges(true);
+                        }}
+                        mediaAssets={localMedia}
+                        onAddMediaAsset={handleAddNewMediaAsset}
+                        type="image"
+                      />
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Excerpt Summary</label>
+                        <textarea
+                          rows={2}
+                          value={art.excerpt}
+                          onChange={(e) => {
+                            const updated = [...localArticles];
+                            updated[idx].excerpt = e.target.value;
+                            setLocalArticles(updated);
+                            setHasChanges(true);
+                          }}
+                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -1092,6 +1693,20 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
                   />
                 </div>
+
+                {/* Consultation CTA Background Image Media Control */}
+                <MediaControlField
+                  label="Digital Audit Banner Background Image"
+                  value={localCta.backgroundImage || 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85'}
+                  onChange={(url) => {
+                    setLocalCta({ ...localCta, backgroundImage: url });
+                    setHasChanges(true);
+                  }}
+                  mediaAssets={localMedia}
+                  onAddMediaAsset={handleAddNewMediaAsset}
+                  type="image"
+                />
+
                 <div>
                   <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
                     Headline
@@ -1106,9 +1721,10 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
                   />
                 </div>
+
                 <div>
                   <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Description Paragraph
+                    Description &amp; Offer
                   </label>
                   <textarea
                     rows={3}
@@ -1120,6 +1736,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
                   />
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
@@ -1132,12 +1749,12 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         setLocalCta({ ...localCta, buttonText: e.target.value });
                         setHasChanges(true);
                       }}
-                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                      Button Link
+                      Button Link Target
                     </label>
                     <input
                       type="text"
@@ -1153,56 +1770,25 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
               </div>
             )}
 
-            {/* SECTION 8: VIDEO SHOWCASE */}
-            {activeSectionId === 'video' && (
-              <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Video Showcase MP4 URL
-                  </label>
-                  <input
-                    type="text"
-                    value={localVideo.videoUrl}
-                    onChange={(e) => {
-                      setLocalVideo({ ...localVideo, videoUrl: e.target.value });
-                      setHasChanges(true);
-                    }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Video Poster Image URL
-                  </label>
-                  <input
-                    type="text"
-                    value={localVideo.posterUrl}
-                    onChange={(e) => {
-                      setLocalVideo({ ...localVideo, posterUrl: e.target.value });
-                      setHasChanges(true);
-                    }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* SECTION 9: RICH CUSTOM HTML / EDITORIAL BODY */}
+            {/* CUSTOM PAGE BODY (RICH TEXT & MEDIA EMBED) */}
             {activeSectionId === 'body' && (
-              <div className="space-y-4">
-                <div className="p-4 bg-cyan-950/40 border border-cyan-500/20 rounded-xl text-xs text-neutral-300">
-                  Use this WordPress-style Rich Article Builder to craft and format custom semantic sections, headings (H1–H6), blockquotes, lists, images with captions, and hyperlinks.
+              <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                    Custom Page Rich Text Body &amp; Media Embeds
+                  </h4>
+                  <span className="text-[10px] text-neutral-400">Semantic HTML and Media</span>
                 </div>
+
                 <ArticleContentBuilder
                   value={currentPage.content || ''}
-                  onChange={(content) => {
-                    setCurrentPage({ ...currentPage, content });
+                  onChange={(newContent) => {
+                    setCurrentPage({ ...currentPage, content: newContent });
                     setHasChanges(true);
                   }}
                 />
               </div>
             )}
-
           </div>
         </main>
       </div>
