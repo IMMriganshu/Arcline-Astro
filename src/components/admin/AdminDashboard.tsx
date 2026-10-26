@@ -2253,64 +2253,146 @@ export default function AdminDashboard() {
           {activeTab === 'submissions' && <SubmissionsView submissions={submissions} />}
           {activeTab === 'media' && (
             <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold font-urbanist text-white">Media Assets Library</h2>
-                <p className="text-xs text-neutral-400">Browse and manage videos, posters, logos, and clinical imagery.</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold font-urbanist text-white">Media Assets Library</h2>
+                  <p className="text-xs text-neutral-400">Upload, browse, and manage videos, posters, logos, and clinical imagery for live deployment.</p>
+                </div>
               </div>
 
-              {/* Add New Media Form */}
-              <div className="p-5 bg-neutral-900/80 border border-white/10 rounded-2xl flex flex-col md:flex-row gap-3 items-end">
-                <div className="flex-1 w-full">
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1">Asset Name</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Surgical Suite Video"
-                    value={newMediaName}
-                    onChange={(e) => setNewMediaName(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
-                  />
+              {/* Direct File Upload & Drag-and-Drop Dropzone */}
+              <div className="bg-neutral-900/90 border border-cyan-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden group">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white font-urbanist">Upload New Media File to Live Server</h3>
+                      <p className="text-xs text-neutral-400 mt-0.5">Select image or video files from your computer. Files are stored persistently in CMS state.</p>
+                    </div>
+                  </div>
+
+                  <label className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all cursor-pointer flex items-center gap-2 shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Choose &amp; Upload Media</span>
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        if (files.length === 0) return;
+
+                        let addedCount = 0;
+                        files.forEach((file) => {
+                          const reader = new FileReader();
+                          reader.onload = (evt) => {
+                            const resultDataUrl = evt.target?.result as string;
+                            if (resultDataUrl) {
+                              const isVideo = file.type.startsWith('video') || file.name.match(/\.(mp4|mov|webm)$/i);
+                              const newAsset: MediaAsset = {
+                                id: `med-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+                                name: file.name,
+                                url: resultDataUrl,
+                                type: isVideo ? 'video' : 'image',
+                              };
+                              
+                              setCmsData((prev) => {
+                                const updatedMedia = [newAsset, ...prev.media];
+                                const updatedCms = { ...prev, media: updatedMedia };
+                                localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updatedCms));
+                                return updatedCms;
+                              });
+                              setHasChanges(true);
+                              addedCount++;
+                              if (addedCount === files.length) {
+                                showToast(`Successfully uploaded ${files.length} file(s) to Media Library! Click "Publish to Live Site" to sync live server.`, 'success');
+                              }
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        });
+                        e.target.value = '';
+                      }}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
-                <div className="flex-2 w-full">
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1">Asset URL</label>
-                  <input
-                    type="text"
-                    placeholder="https://... or /videos/..."
-                    value={newMediaUrl}
-                    onChange={(e) => setNewMediaUrl(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
-                  />
+
+                {/* Drag and Drop Zone Area */}
+                <div className="mt-4 border-2 border-dashed border-white/15 hover:border-cyan-400/60 rounded-xl p-6 text-center bg-black/30 transition-colors">
+                  <p className="text-xs text-neutral-300 font-medium">
+                    Drag &amp; drop images (<code className="text-cyan-300 font-mono">.jpg, .png, .webp, .svg</code>) or videos (<code className="text-cyan-300 font-mono">.mp4, .mov</code>) into the field or click <span className="text-cyan-400 font-bold">Choose &amp; Upload Media</span>
+                  </p>
                 </div>
-                <div className="w-full md:w-32">
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1">Type</label>
-                  <select
-                    value={newMediaType}
-                    onChange={(e) => setNewMediaType(e.target.value as 'image' | 'video')}
-                    className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+              </div>
+
+              {/* Add New Media via URL Form */}
+              <div className="p-5 bg-neutral-900/80 border border-white/10 rounded-2xl space-y-3">
+                <span className="text-xs font-bold text-neutral-300 uppercase tracking-wider block">Add External Asset via URL / Path</span>
+                <div className="flex flex-col md:flex-row gap-3 items-end">
+                  <div className="flex-1 w-full">
+                    <label className="block text-xs font-semibold text-neutral-400 mb-1">Asset Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Dr. Diepenbrock Portrait Photo"
+                      value={newMediaName}
+                      onChange={(e) => setNewMediaName(e.target.value)}
+                      className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div className="flex-2 w-full">
+                    <label className="block text-xs font-semibold text-neutral-400 mb-1">Asset Path / URL</label>
+                    <input
+                      type="text"
+                      placeholder="/images/Dr.%20Diepenbrock.jpg or https://..."
+                      value={newMediaUrl}
+                      onChange={(e) => setNewMediaUrl(e.target.value)}
+                      className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                  <div className="w-full md:w-32">
+                    <label className="block text-xs font-semibold text-neutral-400 mb-1">Type</label>
+                    <select
+                      value={newMediaType}
+                      onChange={(e) => setNewMediaType(e.target.value as 'image' | 'video')}
+                      className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    >
+                      <option value="image">Image</option>
+                      <option value="video">Video</option>
+                    </select>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (newMediaName && newMediaUrl) {
+                        const newAsset: MediaAsset = {
+                          id: `med-${Date.now()}`,
+                          name: newMediaName,
+                          url: newMediaUrl,
+                          type: newMediaType,
+                        };
+                        setCmsData({
+                          ...cmsData,
+                          media: [newAsset, ...cmsData.media],
+                        });
+                        setNewMediaName('');
+                        setNewMediaUrl('');
+                        setHasChanges(true);
+                        showToast(`Media asset "${newMediaName}" added!`, 'success');
+                      } else {
+                        showToast('Please enter both asset name and asset URL', 'error');
+                      }
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs transition-colors shrink-0 cursor-pointer"
                   >
-                    <option value="image">Image</option>
-                    <option value="video">Video</option>
-                  </select>
+                    + Add Asset Link
+                  </button>
                 </div>
-                <button
-                  onClick={() => {
-                    if (newMediaName && newMediaUrl) {
-                      setCmsData({
-                        ...cmsData,
-                        media: [
-                          ...cmsData.media,
-                          { id: `med-${Date.now()}`, name: newMediaName, url: newMediaUrl, type: newMediaType },
-                        ],
-                      });
-                      setNewMediaName('');
-                      setNewMediaUrl('');
-                      setHasChanges(true);
-                      showToast('Media asset added', 'success');
-                    }
-                  }}
-                  className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs transition-colors shrink-0 cursor-pointer"
-                >
-                  + Add Asset
-                </button>
               </div>
 
               {/* Media Grid */}
@@ -2320,13 +2402,7 @@ export default function AdminDashboard() {
                     <div>
                       <div className="aspect-video w-full rounded-xl overflow-hidden bg-black/50 border border-white/5 mb-3 flex items-center justify-center relative">
                         {asset.type === 'video' ? (
-                          <div className="text-center p-3">
-                            <svg className="w-8 h-8 text-cyan-400 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span className="text-[10px] text-neutral-400 font-mono">MP4 Video</span>
-                          </div>
+                          <video src={asset.url} controls={false} className="w-full h-full object-cover" />
                         ) : (
                           <img src={asset.url} alt={asset.name} className="w-full h-full object-cover" />
                         )}
@@ -2342,7 +2418,7 @@ export default function AdminDashboard() {
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(asset.url);
-                          showToast('URL copied to clipboard!', 'info');
+                          showToast('Asset URL copied to clipboard!', 'info');
                         }}
                         className="text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
                       >
@@ -2352,6 +2428,7 @@ export default function AdminDashboard() {
                         onClick={() => {
                           setCmsData({ ...cmsData, media: cmsData.media.filter((m) => m.id !== asset.id) });
                           setHasChanges(true);
+                          showToast('Asset removed from library', 'info');
                         }}
                         className="text-[11px] text-red-400 hover:text-red-300 cursor-pointer"
                       >
