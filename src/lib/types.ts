@@ -164,6 +164,7 @@ export interface AboutContent {
   subtitle: string;
   description: string;
   image: string;
+  videoUrl?: string;
   timelineTitle: string;
   timelineSubtitle: string;
   milestones: AboutMilestone[];

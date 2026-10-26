@@ -323,6 +323,7 @@ export const defaultCmsContent: CmsData = {
     subtitle: "How Dr. Ryan Diepenbrock (Diepenbrock Facial Cosmetic Surgery — Fort Wayne, IN) Scaled to Regional Market Dominance Across a Decade of Digital Shift.",
     description: "In an industry where practices fire marketing agencies every 6 to 12 months, Dr. Diepenbrock has trusted our search and patient acquisition architecture for a decade. By evolving renewedlook.com from basic local search in 2016 to modern AI Search (AEO) and high-converting procedure hubs today, his monthly reinvestment grew nearly 4x—driven entirely by compounding patient consult revenue.",
     image: "/images/Eyeball-BC.webp",
+    videoUrl: "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
     timelineTitle: "Growth Timeline & Retainer Expansion",
     timelineSubtitle: "A decade-long trajectory of expanding partnership and compounding patient consult revenue.",
     milestones: [

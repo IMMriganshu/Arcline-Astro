@@ -792,7 +792,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
 
                     {/* About Section Media Control */}
                     <MediaControlField
-                      label="Visual Aesthetic Image / Eyeball Graphic"
+                      label="Visual Poster Image / Eyeball Graphic"
                       value={localAbout.image || '/images/Eyeball-BC.webp'}
                       onChange={(url) => {
                         setLocalAbout({ ...localAbout, image: url });
@@ -801,6 +801,18 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       mediaAssets={localMedia}
                       onAddMediaAsset={handleAddNewMediaAsset}
                       type="image"
+                    />
+
+                    <MediaControlField
+                      label="Dr. Diepenbrock Video Testimonial (MOV / MP4)"
+                      value={localAbout.videoUrl || '/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov'}
+                      onChange={(url) => {
+                        setLocalAbout({ ...localAbout, videoUrl: url });
+                        setHasChanges(true);
+                      }}
+                      mediaAssets={localMedia}
+                      onAddMediaAsset={handleAddNewMediaAsset}
+                      type="video"
                     />
 
                     <div>
