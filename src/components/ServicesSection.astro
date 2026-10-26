@@ -33,14 +33,6 @@ const servicesData = await getServices();
 
         return (
           <div data-animate="fade-up" data-animate-delay={String(index + 1)} class="group relative py-8 md:py-16 border-b border-black/10 transition-colors duration-300 hover:bg-neutral-50/50">
-            <!-- Giant Faint Background Numeral -->
-            <div
-              class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-7xl sm:text-8xl md:text-9xl font-black text-black/[0.04] select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
-              aria-hidden="true"
-            >
-              {service.number}
-            </div>
-
             <div class={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10 ${isEven ? 'lg:flex-row-reverse' : ''}`}>
               <!-- Layout A (Even indices: Image on Left, Text on Right) -->
               {!isEven ? (

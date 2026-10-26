@@ -615,7 +615,7 @@ export default function AdminDashboard() {
           <div className="text-center mb-8 relative z-10">
             <div className="inline-flex items-center justify-center p-2 mb-4">
               <img
-                src="/images/Final%20seelutions%20logo%20with%20tagline.png"
+                src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
                 alt="Seelutions Logo"
                 className="h-12 w-auto object-contain filter brightness-0 invert"
               />
@@ -695,7 +695,7 @@ export default function AdminDashboard() {
           <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
               <img
-                src="/images/seelutions%20new%20updatedLogo.png"
+                src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
                 alt="Seelutions Logo"
                 className="w-full h-full object-contain filter brightness-0 invert"
               />

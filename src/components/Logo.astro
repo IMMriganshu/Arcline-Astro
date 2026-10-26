@@ -10,17 +10,23 @@ interface Props {
 const { variant = "dark", size = "md", class: className = "", tagline, fetchpriority = "auto" } = Astro.props;
 
 const isLight = variant === "light";
-const textColor = isLight ? "text-white" : "text-[#030303]";
 
 const iconSizes = {
   sm: "h-8",
-  md: "h-12",
-  lg: "h-16",
+  md: "h-10 sm:h-12",
+  lg: "h-14 sm:h-16",
 };
 ---
 
 <a href="/" class={`inline-flex items-center group select-none ${className}`}>
   <div class={`${iconSizes[size]} w-auto flex items-center`}>
-    <img src="/images/Final%20seelutions%20logo%20with%20tagline.png" alt="Seelutions Logo" fetchpriority={fetchpriority} class="h-full w-auto object-contain" width="343" height="84" />
+    <img
+      src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
+      alt="Seelutions Logo — be seen. be chosen."
+      fetchpriority={fetchpriority}
+      class={`h-full w-auto object-contain transition-opacity group-hover:opacity-90 ${isLight ? "filter brightness-0 invert" : ""}`}
+      width="343"
+      height="84"
+    />
   </div>
 </a>
