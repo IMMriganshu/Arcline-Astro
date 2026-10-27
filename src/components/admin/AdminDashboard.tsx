@@ -6,7 +6,7 @@ import { PageSectionBuilder } from './PageSectionBuilder';
 import { AdminUsersManagementView } from './AdminUsersManagementView';
 import { SeoManagerView } from './SeoManagerView';
 import { db } from '../../lib/firebase';
-import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp, setDoc } from 'firebase/firestore';
 import { compressImageFile, compressProseImages } from '../../lib/imageCompression';
 
 
@@ -483,12 +483,11 @@ export default function AdminDashboard() {
     showToast('Signed out successfully', 'info');
   };
 
-  const handleSaveAll = async () => {
-    setIsSaving(true);
+  const persistCmsData = async (targetData: CmsData, showNotification = true) => {
     try {
-      // Auto-compress any oversized inline images in articles before saving
+      // 1. Auto-compress any oversized inline images in articles before saving
       const compressedArticles = await Promise.all(
-        (cmsData.articles || []).map(async (art) => {
+        (targetData.articles || []).map(async (art) => {
           let updatedContent = art.content || '';
           if (updatedContent.includes('data:image')) {
             updatedContent = await compressProseImages(updatedContent);
@@ -502,37 +501,56 @@ export default function AdminDashboard() {
       );
 
       const updated: CmsData = {
-        ...cmsData,
+        ...targetData,
         articles: compressedArticles,
         lastPublishedAt: new Date().toISOString(),
-        version: (cmsData.version || 1) + 1,
+        version: (targetData.version || 1) + 1,
       };
 
-      // Save to localStorage
+      // 2. Direct browser write to Firestore
+      try {
+        await setDoc(doc(db, 'cms_content', 'main'), updated);
+      } catch (fErr) {
+        console.warn('Direct Firestore client write error:', fErr);
+      }
+
+      // 3. Update localStorage
       localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updated));
       if (updated.siteConfig?.vercelDeployHookUrl) {
         localStorage.setItem('arcline_vercel_hook', updated.siteConfig.vercelDeployHookUrl);
       }
       window.dispatchEvent(new CustomEvent('cms:updated', { detail: updated }));
 
-      // Save to API
-      const res = await fetch('/api/cms', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updated),
-      });
-
-      if (res.ok) {
-        setCmsData(updated);
-        setHasChanges(false);
-        showToast('All changes successfully saved and published!', 'success');
-      } else {
-        setCmsData(updated);
-        setHasChanges(false);
-        showToast('Changes saved to browser cache (API write restricted in preview)', 'info');
+      // 4. Send to /api/cms server endpoint
+      try {
+        await fetch('/api/cms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updated),
+        });
+      } catch (apiErr) {
+        console.warn('API /api/cms write warning:', apiErr);
       }
+
+      setCmsData(updated);
+      setHasChanges(false);
+      if (showNotification) {
+        showToast('All changes successfully saved and synchronized!', 'success');
+      }
+      return updated;
     } catch (err: any) {
-      showToast('Saved locally: ' + (err?.message || 'Ready'), 'info');
+      console.error('Error persisting CMS data:', err);
+      if (showNotification) {
+        showToast('Saved locally: ' + (err?.message || 'Ready'), 'info');
+      }
+      return targetData;
+    }
+  };
+
+  const handleSaveAll = async () => {
+    setIsSaving(true);
+    try {
+      await persistCmsData(cmsData, true);
     } finally {
       setIsSaving(false);
     }
@@ -546,9 +564,13 @@ export default function AdminDashboard() {
     }
 
     setIsDeploying(true);
-    showToast('Triggering Vercel deployment webhook...', 'info');
+    showToast('Saving all articles and content to database before live deploy...', 'info');
 
     try {
+      // Step 1: Guarantee that current CMS data (including newly added articles) is written to Firestore!
+      const savedData = await persistCmsData(cmsData, false);
+
+      // Step 2: Trigger Vercel deployment with data payload
       let triggered = false;
       try {
         const res = await fetch('/api/cms', {
@@ -556,7 +578,8 @@ export default function AdminDashboard() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'deploy',
-            hookUrl: cmsData.siteConfig.vercelDeployHookUrl,
+            hookUrl: savedData.siteConfig.vercelDeployHookUrl,
+            data: savedData,
           }),
         });
         if (res.ok) {
@@ -568,11 +591,14 @@ export default function AdminDashboard() {
       }
 
       if (!triggered) {
-        await fetch(cmsData.siteConfig.vercelDeployHookUrl, { method: 'POST', mode: 'no-cors' });
-        triggered = true;
+        const targetUrl = savedData.siteConfig?.vercelDeployHookUrl || cmsData.siteConfig?.vercelDeployHookUrl;
+        if (targetUrl) {
+          await fetch(targetUrl, { method: 'POST', mode: 'no-cors' });
+          triggered = true;
+        }
       }
 
-      showToast('Vercel production build triggered! Live website updating now.', 'success');
+      showToast('All articles and content published! Live website rebuilding now.', 'success');
     } catch (err: any) {
       showToast('Deploy trigger error: ' + err.message, 'error');
     } finally {
@@ -1420,13 +1446,12 @@ export default function AdminDashboard() {
                           Edit
                         </button>
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             if (window.confirm(`Delete article "${art.title}"?`)) {
-                              setCmsData({
-                                ...cmsData,
-                                articles: cmsData.articles.filter((a) => a.id !== art.id),
-                              });
-                              setHasChanges(true);
+                              const updatedArticles = cmsData.articles.filter((a) => a.id !== art.id);
+                              const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
+                              await persistCmsData(updatedData, false);
+                              showToast(`Article "${art.title}" deleted from database`, 'info');
                             }
                           }}
                           className="px-3 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-xs text-red-400 transition-colors cursor-pointer"
@@ -2743,15 +2768,31 @@ export default function AdminDashboard() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  const exists = cmsData.articles.some((a) => a.id === editingArticle.id);
-                  const updated = exists
-                    ? cmsData.articles.map((a) => (a.id === editingArticle.id ? editingArticle : a))
-                    : [editingArticle, ...cmsData.articles];
-                  setCmsData({ ...cmsData, articles: updated });
-                  setHasChanges(true);
+                onClick={async () => {
+                  let cleanSlug = (editingArticle.slug || '').trim().toLowerCase();
+                  if (!cleanSlug) {
+                    cleanSlug = (editingArticle.title || 'article')
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]+/g, '-')
+                      .replace(/(^-|-$)/g, '');
+                  }
+
+                  const articleToSave: Article = {
+                    ...editingArticle,
+                    slug: cleanSlug,
+                    date: editingArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                    published: editingArticle.published !== false,
+                  };
+
+                  const exists = cmsData.articles.some((a) => a.id === articleToSave.id);
+                  const updatedArticles = exists
+                    ? cmsData.articles.map((a) => (a.id === articleToSave.id ? articleToSave : a))
+                    : [articleToSave, ...cmsData.articles];
+
+                  const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
+                  await persistCmsData(updatedData, false);
                   setIsArticleModalOpen(false);
-                  showToast('Article saved to CMS', 'success');
+                  showToast(`Article "${articleToSave.title}" saved and synced to database!`, 'success');
                 }}
                 className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
               >

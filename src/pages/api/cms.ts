@@ -17,6 +17,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Check if this is a deploy trigger request
     if (body.action === 'deploy') {
+      if (body.data) {
+        await saveServerCmsData(body.data);
+      }
       const deployResult = await triggerVercelDeploy(body.hookUrl);
       return new Response(JSON.stringify(deployResult), {
         status: deployResult.success ? 200 : 400,
