@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { compressImageFile } from '../../lib/imageCompression';
 
 interface ArticleContentBuilderProps {
   value: string;
@@ -14,6 +15,7 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
   const [imageUrl, setImageUrl] = useState('');
   const [imageAlt, setImageAlt] = useState('');
   const [imageCaption, setImageCaption] = useState('');
+  const [isCompressingImage, setIsCompressingImage] = useState(false);
 
   // Link modal state
   const [linkUrl, setLinkUrl] = useState('');
@@ -111,6 +113,25 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
     setImageAlt('');
     setImageCaption('');
     setShowImageModal(false);
+  };
+
+  const handleLocalImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    setIsCompressingImage(true);
+    try {
+      const compressedDataUrl = await compressImageFile(file, 1200, 1200, 0.8);
+      setImageUrl(compressedDataUrl);
+      if (!imageAlt) {
+        setImageAlt(file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "));
+      }
+    } catch (err) {
+      console.error('Image compression error:', err);
+    } finally {
+      setIsCompressingImage(false);
+      e.target.value = '';
+    }
   };
 
   const handleConfirmLink = (e: React.FormEvent) => {
@@ -423,23 +444,51 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
               </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">
-                Image Source URL <span className="text-red-400">*</span>
+            {/* Upload File Direct Picker */}
+            <div className="p-3 bg-cyan-950/30 border border-cyan-500/30 rounded-xl space-y-2">
+              <label className="block text-xs font-bold text-cyan-300">
+                Option A: Choose Local Image File (Auto-Compressed WebP)
               </label>
-              <input
-                type="url"
-                required
-                placeholder="https://images.unsplash.com/... or /images/..."
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white text-xs font-mono focus:border-cyan-500"
-              />
+              <label className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 rounded-lg text-xs font-semibold text-cyan-200 cursor-pointer transition-colors">
+                <svg className="w-4 h-4 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                <span>{isCompressingImage ? 'Compressing Image...' : 'Select Local Image File'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLocalImageSelect}
+                  className="hidden"
+                  disabled={isCompressingImage}
+                />
+              </label>
+              <p className="text-[10px] text-neutral-400 leading-tight">
+                Automatically resizes and optimizes image into a lightweight WebP (~40KB) that publishes reliably to the live site.
+              </p>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-neutral-300 mb-1">
-                Alt Text (SEO & Accessibility) <span className="text-red-400">*</span>
+                Option B: Or Enter Image Source URL / Path <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="https://images.unsplash.com/... or /images/... or data:image/..."
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white text-xs font-mono focus:border-cyan-500 truncate"
+              />
+              {imageUrl && imageUrl.startsWith('data:image') && (
+                <span className="text-[10px] text-emerald-400 mt-1 block">
+                  ✓ Compressed Image Loaded ({Math.round(imageUrl.length / 1024)} KB)
+                </span>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                Alt Text (SEO &amp; Accessibility) <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
@@ -474,7 +523,8 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
+                disabled={isCompressingImage || !imageUrl.trim()}
+                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-black font-semibold text-xs cursor-pointer"
               >
                 Insert Figure
               </button>

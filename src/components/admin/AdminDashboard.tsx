@@ -7,6 +7,7 @@ import { AdminUsersManagementView } from './AdminUsersManagementView';
 import { SeoManagerView } from './SeoManagerView';
 import { db } from '../../lib/firebase';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { compressImageFile, compressProseImages } from '../../lib/imageCompression';
 
 
 
@@ -485,8 +486,24 @@ export default function AdminDashboard() {
   const handleSaveAll = async () => {
     setIsSaving(true);
     try {
+      // Auto-compress any oversized inline images in articles before saving
+      const compressedArticles = await Promise.all(
+        (cmsData.articles || []).map(async (art) => {
+          let updatedContent = art.content || '';
+          if (updatedContent.includes('data:image')) {
+            updatedContent = await compressProseImages(updatedContent);
+          }
+          let updatedImg = art.image || '';
+          if (updatedImg.startsWith('data:image') && updatedImg.length > 200000) {
+            updatedImg = await compressImageFile(updatedImg, 1200, 1200, 0.8);
+          }
+          return { ...art, content: updatedContent, image: updatedImg };
+        })
+      );
+
       const updated: CmsData = {
         ...cmsData,
+        articles: compressedArticles,
         lastPublishedAt: new Date().toISOString(),
         version: (cmsData.version || 1) + 1,
       };
@@ -2289,16 +2306,25 @@ export default function AdminDashboard() {
                         if (files.length === 0) return;
 
                         let addedCount = 0;
-                        files.forEach((file) => {
-                          const reader = new FileReader();
-                          reader.onload = (evt) => {
-                            const resultDataUrl = evt.target?.result as string;
-                            if (resultDataUrl) {
-                              const isVideo = file.type.startsWith('video') || file.name.match(/\.(mp4|mov|webm)$/i);
+                        files.forEach(async (file) => {
+                          try {
+                            const isVideo = file.type.startsWith('video') || file.name.match(/\.(mp4|mov|webm)$/i);
+                            let resultUrl = '';
+                            if (isVideo) {
+                              resultUrl = await new Promise((res) => {
+                                const r = new FileReader();
+                                r.onload = (evt) => res((evt.target?.result as string) || '');
+                                r.readAsDataURL(file);
+                              });
+                            } else {
+                              resultUrl = await compressImageFile(file, 1200, 1200, 0.8);
+                            }
+
+                            if (resultUrl) {
                               const newAsset: MediaAsset = {
                                 id: `med-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
                                 name: file.name,
-                                url: resultDataUrl,
+                                url: resultUrl,
                                 type: isVideo ? 'video' : 'image',
                               };
                               
@@ -2311,11 +2337,12 @@ export default function AdminDashboard() {
                               setHasChanges(true);
                               addedCount++;
                               if (addedCount === files.length) {
-                                showToast(`Successfully uploaded ${files.length} file(s) to Media Library! Click "Publish to Live Site" to sync live server.`, 'success');
+                                showToast(`Successfully uploaded & compressed ${files.length} file(s)! Click "Publish to Live Site" to sync live server.`, 'success');
                               }
                             }
-                          };
-                          reader.readAsDataURL(file);
+                          } catch (err) {
+                            console.error('Failed to compress/upload file:', err);
+                          }
                         });
                         e.target.value = '';
                       }}
