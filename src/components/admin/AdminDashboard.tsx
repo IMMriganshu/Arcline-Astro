@@ -1519,30 +1519,52 @@ export default function AdminDashboard() {
                           Edit
                         </button>
                         <button
+                          type="button"
                           onClick={async () => {
                             if (window.confirm(`Delete article "${art.title}"?`)) {
-                              const updatedArticles = cmsData.articles.filter((a) => a.id !== art.id);
+                              const updatedArticles = (cmsData.articles || []).filter((a) => {
+                                if (art.id && a.id === art.id) return false;
+                                if (art.slug && a.slug === art.slug) return false;
+                                return true;
+                              });
                               const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
                               
-                              // Delete from Firestore individual docs collection
+                              // 1. Immediately update local state so article disappears instantly
+                              setCmsData(updatedData);
+                              setHasChanges(true);
+
+                              // 2. Immediately update localStorage
                               try {
-                                await deleteDoc(doc(db, 'cms_articles', art.id));
-                                if (art.slug) await deleteDoc(doc(db, 'cms_articles', art.slug));
+                                localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updatedData));
+                              } catch {}
+
+                              // 3. Delete from Firestore individual docs collection (both id and slug)
+                              try {
+                                if (art.id) await deleteDoc(doc(db, 'cms_articles', art.id));
+                                if (art.slug && art.slug !== art.id) await deleteDoc(doc(db, 'cms_articles', art.slug));
                               } catch (dErr) {
                                 console.warn('Direct cms_articles delete warning:', dErr);
                               }
 
-                              // Delete via server endpoint
+                              // 4. Delete via server endpoint
                               try {
                                 await fetch('/api/cms', {
                                   method: 'POST',
                                   headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ action: 'delete_article', articleId: art.id, data: updatedData }),
+                                  body: JSON.stringify({ action: 'delete_article', articleId: art.id, slug: art.slug, data: updatedData }),
                                 });
-                              } catch {}
+                              } catch (apiErr) {
+                                console.warn('Server delete_article warning:', apiErr);
+                              }
 
-                              await persistCmsData(updatedData, false);
-                              showToast(`Article "${art.title}" deleted from database`, 'info');
+                              // 5. Persist the updated CMS content
+                              try {
+                                await persistCmsData(updatedData, false);
+                              } catch (pErr) {
+                                console.warn('persistCmsData warning on delete:', pErr);
+                              }
+
+                              showToast(`Article "${art.title}" deleted successfully`, 'info');
                             }
                           }}
                           className="px-3 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-xs text-red-400 transition-colors cursor-pointer"

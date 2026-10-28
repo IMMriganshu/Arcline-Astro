@@ -30,8 +30,12 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Delete single article action
-    if (body.action === 'delete_article' && body.articleId) {
-      await deleteServerArticle(body.articleId);
+    if (body.action === 'delete_article') {
+      const artId = body.articleId || body.id;
+      const slug = body.slug;
+      if (artId || slug) {
+        await deleteServerArticle(artId, slug);
+      }
       if (body.data) {
         await saveServerCmsData(body.data);
       }

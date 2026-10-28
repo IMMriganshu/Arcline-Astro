@@ -286,14 +286,21 @@ export async function saveServerCmsData(data: CmsData): Promise<boolean> {
 /**
  * Server-side helper to delete an individual article from Firestore
  */
-export async function deleteServerArticle(articleId: string): Promise<boolean> {
+export async function deleteServerArticle(articleId: string, slug?: string): Promise<boolean> {
+  let success = false;
   try {
-    await deleteDoc(doc(db, 'cms_articles', articleId));
-    return true;
+    if (articleId) {
+      await deleteDoc(doc(db, 'cms_articles', articleId));
+      success = true;
+    }
+    if (slug && slug !== articleId) {
+      await deleteDoc(doc(db, 'cms_articles', slug));
+      success = true;
+    }
   } catch (err) {
-    console.warn('Error deleting article from cms_articles:', articleId, err);
-    return false;
+    console.warn('Error deleting article from cms_articles:', articleId, slug, err);
   }
+  return success;
 }
 
 
