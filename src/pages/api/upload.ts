@@ -4,6 +4,8 @@ import { doc, setDoc } from 'firebase/firestore';
 
 export const prerender = false;
 
+const CHUNK_SIZE = 450000; // ~450KB per chunk to comfortably stay under Firestore's 1,048,576 byte limit
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type') || '';
@@ -39,15 +41,36 @@ export const POST: APIRoute = async ({ request }) => {
     const cleanName = filename.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/\.[^/.]+$/, '');
     const id = `img-${Date.now()}-${cleanName.slice(0, 20)}`;
 
-    const docData = {
-      id,
-      filename,
-      mimeType,
-      dataUrl,
-      createdAt: new Date().toISOString(),
-    };
+    if (dataUrl.length > 700000) {
+      // Chunked storage to prevent exceeding Firestore 1MB limit
+      const totalChunks = Math.ceil(dataUrl.length / CHUNK_SIZE);
+      await setDoc(doc(db, 'media_uploads', id), {
+        id,
+        filename,
+        mimeType,
+        isChunked: true,
+        totalChunks,
+        createdAt: new Date().toISOString(),
+      });
 
-    await setDoc(doc(db, 'media_uploads', id), docData);
+      for (let i = 0; i < totalChunks; i++) {
+        const chunk = dataUrl.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+        await setDoc(doc(db, 'media_uploads', id, 'chunks', String(i)), {
+          index: i,
+          chunk,
+        });
+      }
+    } else {
+      // Direct single-document storage
+      const docData = {
+        id,
+        filename,
+        mimeType,
+        dataUrl,
+        createdAt: new Date().toISOString(),
+      };
+      await setDoc(doc(db, 'media_uploads', id), docData);
+    }
 
     const publicUrl = `/api/images/${id}`;
 

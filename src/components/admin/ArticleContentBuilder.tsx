@@ -257,22 +257,35 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
   /**
    * Clean pasted rich text from Google Docs, Word, ChatGPT
    */
-  const handlePasteVisual = (e: React.ClipboardEvent<HTMLDivElement>) => {
+  const handlePasteVisual = async (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
     const html = e.clipboardData.getData('text/html');
     const text = e.clipboardData.getData('text/plain');
 
     if (html) {
       // Clean HTML tags and remove style/class attributes that mess up dark theme
-      const cleanHtml = html
+      let cleanHtml = html
         .replace(/style="[^"]*"/gi, '')
         .replace(/class="[^"]*"/gi, '')
         .replace(/<font[^>]*>/gi, '')
         .replace(/<\/font>/gi, '')
         .replace(/<span[^>]*>/gi, '')
         .replace(/<\/span>/gi, '');
+
+      if (cleanHtml.includes('data:image')) {
+        cleanHtml = await processHtmlAndUploadImages(cleanHtml);
+      }
       insertHtmlVisual(cleanHtml);
     } else if (text) {
+      // If someone pastes raw base64 image data directly
+      if (text.startsWith('data:image')) {
+        try {
+          const serverUrl = await uploadDataUrlToServer(text.trim(), 'pasted-figure.webp');
+          insertHtmlVisual(`<figure class="my-8"><img src="${serverUrl}" alt="Pasted figure" class="w-full rounded-2xl shadow-xl" /></figure><p></p>`);
+          return;
+        } catch {}
+      }
+
       // Split plain text into paragraphs
       const paragraphs = text
         .split(/\n\n+/)

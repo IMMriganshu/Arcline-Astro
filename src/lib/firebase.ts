@@ -1,5 +1,10 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeFirestore, getFirestore, setLogLevel } from "firebase/firestore";
+
+// Suppress internal gRPC idle stream cancellation notices
+try {
+  setLogLevel('error');
+} catch {}
 
 const firebaseConfig = {
   apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
@@ -10,5 +15,17 @@ const firebaseConfig = {
   appId: import.meta.env.PUBLIC_FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, 'ai-studio-arcbesarchitectu-e848cfe6-483d-46f7-8ddc-25160dc1e05c');
+const DATABASE_ID = 'ai-studio-arcbesarchitectu-e848cfe6-483d-46f7-8ddc-25160dc1e05c';
+
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+
+let firestoreDb;
+try {
+  firestoreDb = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  }, DATABASE_ID);
+} catch {
+  firestoreDb = getFirestore(app, DATABASE_ID);
+}
+
+export const db = firestoreDb;

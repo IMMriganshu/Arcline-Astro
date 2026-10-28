@@ -7,7 +7,7 @@ import { AdminUsersManagementView } from './AdminUsersManagementView';
 import { SeoManagerView } from './SeoManagerView';
 import { db } from '../../lib/firebase';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp, setDoc } from 'firebase/firestore';
-import { compressImageFile, compressProseImages, uploadDataUrlToServer, processHtmlAndUploadImages } from '../../lib/imageCompression';
+import { compressImageFile, compressProseImages, uploadDataUrlToServer, processHtmlAndUploadImages, sanitizeArticleForFirestore } from '../../lib/imageCompression';
 
 
 
@@ -117,6 +117,7 @@ export default function AdminDashboard() {
   // Blog article editing modal state
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [isArticleModalOpen, setIsArticleModalOpen] = useState<boolean>(false);
+  const [isSavingArticle, setIsSavingArticle] = useState<boolean>(false);
 
   // Service editing modal state
   const [editingService, setEditingService] = useState<Service | null>(null);
@@ -582,10 +583,14 @@ export default function AdminDashboard() {
         console.warn('Direct Firestore client write error:', fErr);
       }
 
-      // 4. Update localStorage
-      localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updated));
-      if (updated.siteConfig?.vercelDeployHookUrl) {
-        localStorage.setItem('arcline_vercel_hook', updated.siteConfig.vercelDeployHookUrl);
+      // 4. Update localStorage safely
+      try {
+        localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updated));
+        if (updated.siteConfig?.vercelDeployHookUrl) {
+          localStorage.setItem('arcline_vercel_hook', updated.siteConfig.vercelDeployHookUrl);
+        }
+      } catch (storageErr) {
+        console.warn('localStorage save warning (Firestore is primary source):', storageErr);
       }
       window.dispatchEvent(new CustomEvent('cms:updated', { detail: updated }));
 
@@ -2897,66 +2902,79 @@ export default function AdminDashboard() {
                 Cancel
               </button>
               <button
+                type="button"
+                disabled={isSavingArticle}
                 onClick={async () => {
-                  let cleanSlug = (editingArticle.slug || '').trim().toLowerCase();
-                  if (!cleanSlug) {
-                    cleanSlug = (editingArticle.title || 'article')
-                      .toLowerCase()
-                      .replace(/[^a-z0-9]+/g, '-')
-                      .replace(/(^-|-$)/g, '');
+                  if (!editingArticle) return;
+                  if (!editingArticle.title?.trim()) {
+                    showToast('Please enter an article title', 'error');
+                    return;
                   }
 
-                  let coverImg = editingArticle.image || '';
-                  if (coverImg.startsWith('data:image')) {
-                    showToast('Uploading cover image to server...', 'info');
-                    coverImg = await uploadDataUrlToServer(coverImg, `cover-${cleanSlug}.webp`);
-                  }
-
-                  let articleContent = editingArticle.content || '';
-                  if (articleContent.includes('data:image')) {
-                    showToast('Uploading article figures to server...', 'info');
-                    articleContent = await processHtmlAndUploadImages(articleContent);
-                  }
-
-                  const articleToSave: Article = {
-                    ...editingArticle,
-                    image: coverImg,
-                    content: articleContent,
-                    slug: cleanSlug,
-                    date: editingArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-                    published: editingArticle.published !== false,
-                  };
-
-                  // 1. Direct write to individual Firestore doc for absolute persistence
+                  setIsSavingArticle(true);
                   try {
-                    await setDoc(doc(db, 'cms_articles', articleToSave.id), articleToSave);
-                  } catch (colErr) {
-                    console.warn('Direct cms_articles write warning:', colErr);
+                    showToast('Optimizing images and saving article...', 'info');
+
+                    // Sanitize article: compress cover image and all inline HTML images/data URLs to lightweight server URLs (<100KB)
+                    const articleToSave = await sanitizeArticleForFirestore(editingArticle);
+
+                    // 1. Direct write to individual Firestore doc for absolute persistence
+                    try {
+                      await setDoc(doc(db, 'cms_articles', articleToSave.id), articleToSave);
+                    } catch (colErr: any) {
+                      console.warn('Direct cms_articles Firestore write warning:', colErr);
+                    }
+
+                    // 2. Update local state immediately so user sees article right away
+                    const exists = cmsData.articles.some((a) => a.id === articleToSave.id);
+                    const updatedArticles = exists
+                      ? cmsData.articles.map((a) => (a.id === articleToSave.id ? articleToSave : a))
+                      : [articleToSave, ...cmsData.articles];
+
+                    const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
+                    setCmsData(updatedData);
+
+                    // 3. Persist to main CMS content
+                    try {
+                      await persistCmsData(updatedData, false);
+                    } catch (pErr: any) {
+                      console.warn('persistCmsData warning:', pErr);
+                    }
+
+                    // 4. Direct server save_article endpoint call
+                    try {
+                      await fetch('/api/cms', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'save_article', article: articleToSave, data: updatedData }),
+                      });
+                    } catch (apiErr: any) {
+                      console.warn('API /api/cms save warning:', apiErr);
+                    }
+
+                    setIsArticleModalOpen(false);
+                    setEditingArticle(null);
+                    showToast(`Article "${articleToSave.title}" saved and synced successfully!`, 'success');
+                  } catch (err: any) {
+                    console.error('Error saving article:', err);
+                    showToast('Could not save article: ' + (err?.message || 'Check connection'), 'error');
+                  } finally {
+                    setIsSavingArticle(false);
                   }
-
-                  const exists = cmsData.articles.some((a) => a.id === articleToSave.id);
-                  const updatedArticles = exists
-                    ? cmsData.articles.map((a) => (a.id === articleToSave.id ? articleToSave : a))
-                    : [articleToSave, ...cmsData.articles];
-
-                  const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
-                  await persistCmsData(updatedData, false);
-
-                  // 2. Direct server save_article endpoint call
-                  try {
-                    await fetch('/api/cms', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ action: 'save_article', article: articleToSave, data: updatedData }),
-                    });
-                  } catch {}
-
-                  setIsArticleModalOpen(false);
-                  showToast(`Article "${articleToSave.title}" saved and synced to database!`, 'success');
                 }}
-                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer shadow-lg shadow-cyan-500/20"
+                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-black font-semibold text-xs cursor-pointer shadow-lg shadow-cyan-500/20 flex items-center gap-2"
               >
-                Save Article
+                {isSavingArticle ? (
+                  <>
+                    <svg className="animate-spin w-3.5 h-3.5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Saving Article...</span>
+                  </>
+                ) : (
+                  <span>Save Article</span>
+                )}
               </button>
             </div>
           </div>

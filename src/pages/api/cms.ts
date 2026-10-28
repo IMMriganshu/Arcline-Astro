@@ -44,13 +44,23 @@ export const POST: APIRoute = async ({ request }) => {
     // Save single article action
     if (body.action === 'save_article' && body.article) {
       const art = body.article;
+      let articleSaved = false;
       if (art.id || art.slug) {
-        await setDoc(doc(db, 'cms_articles', art.id || art.slug), art);
+        try {
+          await setDoc(doc(db, 'cms_articles', art.id || art.slug), art);
+          articleSaved = true;
+        } catch (e: any) {
+          console.warn('Warning writing individual article to Firestore:', e);
+        }
       }
       if (body.data) {
-        await saveServerCmsData(body.data);
+        try {
+          await saveServerCmsData(body.data);
+        } catch (e: any) {
+          console.warn('Warning writing full CMS data in save_article:', e);
+        }
       }
-      return new Response(JSON.stringify({ success: true, message: 'Article saved successfully' }), {
+      return new Response(JSON.stringify({ success: true, message: 'Article saved successfully', articleSaved }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });

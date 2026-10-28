@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { db } from '../../../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
 
 export const prerender = false;
 
@@ -21,6 +21,25 @@ export const GET: APIRoute = async ({ params }) => {
 
     const data = snap.data();
     let dataUrl: string = data.dataUrl || '';
+
+    // If chunked, fetch and reassemble chunks
+    if (data.isChunked) {
+      try {
+        const chunksSnap = await getDocs(collection(db, 'media_uploads', id, 'chunks'));
+        const chunkList: { index: number; chunk: string }[] = [];
+        chunksSnap.forEach((cDoc) => {
+          const cd = cDoc.data();
+          chunkList.push({
+            index: typeof cd.index === 'number' ? cd.index : parseInt(cDoc.id, 10),
+            chunk: cd.chunk || '',
+          });
+        });
+        chunkList.sort((a, b) => a.index - b.index);
+        dataUrl = chunkList.map((c) => c.chunk).join('');
+      } catch (chunkErr) {
+        console.error('Error fetching image chunks:', id, chunkErr);
+      }
+    }
 
     if (!dataUrl) {
       return new Response('Empty image data', { status: 404 });
