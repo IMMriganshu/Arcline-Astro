@@ -1,0 +1,320 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionLabel from "../../components/SectionLabel.astro";
+import Button from "../../components/Button.astro";
+import ProjectCTA from "../../components/ProjectCTA.astro";
+
+export const prerender = false;
+
+const { serviceSlug } = Astro.params;
+
+const childServicesMap: Record<string, {
+  titleTag: string;
+  metaDescription: string;
+  h1: string;
+  badge: string;
+  problemTitle: string;
+  problemText: string;
+  infrastructureTitle: string;
+  infrastructureItems: { title: string; desc: string }[];
+  surgeonValueTitle: string;
+  surgeonValueText: string;
+  ctaButtonText: string;
+  image: string;
+  slug: string;
+}> = {
+  "local-seo-google-maps": {
+    titleTag: "Local SEO & Google Maps for Plastic Surgeons | seelutions",
+    metaDescription: "Dominate Google's local 3-pack and capture high-intent patients searching for surgical procedures in your primary metropolitan market.",
+    h1: "Local SEO & Google Map Pack Dominance for Plastic Surgeons",
+    badge: "LOCAL SEO & GOOGLE MAPS",
+    problemTitle: "The Hyper-Local Search Challenge",
+    problemText: "Aesthetic patients search with hyper-local intent (e.g., 'facelift surgeon near me' or 'best rhinoplasty in [City]'). Missing the top 3 spots on Google Maps means losing consultations to local competitors regardless of your clinical skill.",
+    infrastructureTitle: "Our Local Search Infrastructure",
+    infrastructureItems: [
+      {
+        title: "Google Business Profile (GBP) Optimization",
+        desc: "Rigorous category auditing, procedure service menus, and geo-tagged visual assets designed to secure top map rankings."
+      },
+      {
+        title: "Geo-Targeted Procedure Architecture",
+        desc: "City-specific landing pages and localized schema markup targeting high-income suburbs within your surgical radius."
+      },
+      {
+        title: "Entity & Citation Synchronization",
+        desc: "Clean, unified medical directory listings across Healthgrades, Vitals, RealSelf, and local registries."
+      }
+    ],
+    surgeonValueTitle: "Surgeon-Specific Value",
+    surgeonValueText: "Filtering for procedure-driven patients—not low-ticket foot traffic, but patients ready to book $10k–$30k surgical consultations.",
+    ctaButtonText: "Schedule a Local Search Audit for Your Practice",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85",
+    slug: "local-seo-google-maps"
+  },
+  "local-seo": {
+    titleTag: "Local SEO & Google Maps for Plastic Surgeons | seelutions",
+    metaDescription: "Dominate Google's local 3-pack and capture high-intent patients searching for surgical procedures in your primary metropolitan market.",
+    h1: "Local SEO & Google Map Pack Dominance for Plastic Surgeons",
+    badge: "LOCAL SEO & GOOGLE MAPS",
+    problemTitle: "The Hyper-Local Search Challenge",
+    problemText: "Aesthetic patients search with hyper-local intent (e.g., 'facelift surgeon near me' or 'best rhinoplasty in [City]'). Missing the top 3 spots on Google Maps means losing consultations to local competitors regardless of your clinical skill.",
+    infrastructureTitle: "Our Local Search Infrastructure",
+    infrastructureItems: [
+      {
+        title: "Google Business Profile (GBP) Optimization",
+        desc: "Rigorous category auditing, procedure service menus, and geo-tagged visual assets designed to secure top map rankings."
+      },
+      {
+        title: "Geo-Targeted Procedure Architecture",
+        desc: "City-specific landing pages and localized schema markup targeting high-income suburbs within your surgical radius."
+      },
+      {
+        title: "Entity & Citation Synchronization",
+        desc: "Clean, unified medical directory listings across Healthgrades, Vitals, RealSelf, and local registries."
+      }
+    ],
+    surgeonValueTitle: "Surgeon-Specific Value",
+    surgeonValueText: "Filtering for procedure-driven patients—not low-ticket foot traffic, but patients ready to book $10k–$30k surgical consultations.",
+    ctaButtonText: "Schedule a Local Search Audit for Your Practice",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85",
+    slug: "local-seo-google-maps"
+  },
+  "ai-search-overviews": {
+    titleTag: "AI Search & Overviews for Plastic & Cosmetic Surgeons | seelutions",
+    metaDescription: "Position your surgical practice as the cited authority in Google AI Overviews, ChatGPT, and generative search engines.",
+    h1: "Generative Engine Optimization (GEO) & AI Search for Plastic Surgeons",
+    badge: "AI SEARCH & OVERVIEWS",
+    problemTitle: "The Generative Search Shift",
+    problemText: "Generative engines like Google AI Overviews and ChatGPT are replacing standard search results for clinical queries (e.g., recovery timelines, revision risks, candidacy). If your practice isn't cited by AI, you are invisible to the next generation of patients.",
+    infrastructureTitle: "Our AI Search Infrastructure",
+    infrastructureItems: [
+      {
+        title: "Medical Entity & Authority Schema",
+        desc: "Structuring physician credentials, board certifications, and procedural experience so LLMs recognize you as a verified medical source."
+      },
+      {
+        title: "Clinical Answer Engine Architecture",
+        desc: "Content structured to answer patient questions about surgical technique, anesthesia, and healing protocols in formats search engines crawl for AI Overviews."
+      },
+      {
+        title: "Brand Entity Citation",
+        desc: "Building high-authority mentions across medical publications and industry registries to anchor your brand in language model databases."
+      }
+    ],
+    surgeonValueTitle: "Surgeon-Specific Value",
+    surgeonValueText: "Securing the top conversational recommendation before the patient ever visits a directory site.",
+    ctaButtonText: "Assess Your Practice’s AI Search Visibility",
+    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=85",
+    slug: "ai-search-overviews"
+  },
+  "ai-search": {
+    titleTag: "AI Search & Overviews for Plastic & Cosmetic Surgeons | seelutions",
+    metaDescription: "Position your surgical practice as the cited authority in Google AI Overviews, ChatGPT, and generative search engines.",
+    h1: "Generative Engine Optimization (GEO) & AI Search for Plastic Surgeons",
+    badge: "AI SEARCH & OVERVIEWS",
+    problemTitle: "The Generative Search Shift",
+    problemText: "Generative engines like Google AI Overviews and ChatGPT are replacing standard search results for clinical queries (e.g., recovery timelines, revision risks, candidacy). If your practice isn't cited by AI, you are invisible to the next generation of patients.",
+    infrastructureTitle: "Our AI Search Infrastructure",
+    infrastructureItems: [
+      {
+        title: "Medical Entity & Authority Schema",
+        desc: "Structuring physician credentials, board certifications, and procedural experience so LLMs recognize you as a verified medical source."
+      },
+      {
+        title: "Clinical Answer Engine Architecture",
+        desc: "Content structured to answer patient questions about surgical technique, anesthesia, and healing protocols in formats search engines crawl for AI Overviews."
+      },
+      {
+        title: "Brand Entity Citation",
+        desc: "Building high-authority mentions across medical publications and industry registries to anchor your brand in language model databases."
+      }
+    ],
+    surgeonValueTitle: "Surgeon-Specific Value",
+    surgeonValueText: "Securing the top conversational recommendation before the patient ever visits a directory site.",
+    ctaButtonText: "Assess Your Practice’s AI Search Visibility",
+    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=85",
+    slug: "ai-search-overviews"
+  },
+  "web-design-conversion-optimization": {
+    titleTag: "Website Design & Conversion for Plastic Surgeons | seelutions",
+    metaDescription: "Luxury, HIPAA-compliant websites designed to showcase surgical artistry and turn procedure research into booked consultations.",
+    h1: "Bespoke Website Design & Conversion Optimization for Plastic Surgeons",
+    badge: "WEB DESIGN & CRO",
+    problemTitle: "The Aesthetic Credibility Gap",
+    problemText: "A dated, slow, or template-heavy website devalues high-end surgical work. Patients judging a $20,000 procedure will evaluate your aesthetic eye based on your digital presence.",
+    infrastructureTitle: "Our Web & Conversion Infrastructure",
+    infrastructureItems: [
+      {
+        title: "Editorial Before-and-After Galleries",
+        desc: "Fast-loading, filterable case galleries that highlight surgical results cleanly across all mobile devices."
+      },
+      {
+        title: "High-Intent Consultation Funnels",
+        desc: "Frictionless inquiry flows designed to pre-qualify prospective patients before they reach your front desk."
+      },
+      {
+        title: "Sub-Second Performance & Medical Aesthetics",
+        desc: "Luxury typography, clean layouts, and strict mobile responsiveness optimized for Core Web Vitals."
+      }
+    ],
+    surgeonValueTitle: "Surgeon-Specific Value",
+    surgeonValueText: "Turning passive gallery browsing into scheduled surgical consults.",
+    ctaButtonText: "Request a Website Conversion Review",
+    image: "https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1200&q=85",
+    slug: "web-design-conversion-optimization"
+  },
+  "google-ads-paid-search": {
+    titleTag: "Google Ads & Paid Search for Plastic Surgeons | seelutions",
+    metaDescription: "Targeted, high-intent Google Ads campaigns engineered to fill your surgical calendar with qualified, high-ticket procedure consults.",
+    h1: "Targeted Google Ads & Paid Search Acquisition for Plastic Surgeons",
+    badge: "GOOGLE ADS & PAID SEARCH",
+    problemTitle: "Eliminating Paid Ad Waste",
+    problemText: "Most paid campaigns waste thousands of dollars on broad keywords, price-shoppers, and non-surgical clicks, driving up ad spend without booking actual operating room hours.",
+    infrastructureTitle: "Our Paid Acquisition Infrastructure",
+    infrastructureItems: [
+      {
+        title: "Negative Keyword Scrubbing",
+        desc: "Eliminating cheap search terms ('cheap', 'discount', 'free consult') to focus exclusively on affluent, qualified patients."
+      },
+      {
+        title: "Procedure-Dedicated Landing Pages",
+        desc: "High-converting, single-procedure landing pages built specifically for paid traffic to prevent ad waste."
+      },
+      {
+        title: "Call Tracking & Consultation Attribution",
+        desc: "Tracking every phone call and form fill directly to scheduled operating room revenue."
+      }
+    ],
+    surgeonValueTitle: "Surgeon-Specific Value",
+    surgeonValueText: "Immediate, measurable consultation volume to keep surgical schedules consistently booked weeks in advance.",
+    ctaButtonText: "Get a Paid Search Strategy for Your Market",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=85",
+    slug: "google-ads-paid-search"
+  }
+};
+
+const service = childServicesMap[serviceSlug || ''] || childServicesMap['local-seo-google-maps'];
+---
+
+<BaseLayout
+  title={service.titleTag}
+  description={service.metaDescription}
+>
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white relative overflow-hidden">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text={service.badge} />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div class="lg:col-span-7">
+          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-[#030303] mb-6 leading-[1.1]">
+            {service.h1}
+          </h1>
+
+          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-8">
+            {service.metaDescription}
+          </p>
+
+          <div data-animate="fade-up-sm" data-animate-delay="2" class="flex flex-wrap gap-4">
+            <Button href="/#contact" variant="black" showIcon={true} iconType="arrow-right">
+              {service.ctaButtonText}
+            </Button>
+            <Button href="/services" variant="outline" showIcon={false}>
+              ← Back to All Services
+            </Button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5" data-animate="scale-in">
+          <div class="relative overflow-hidden rounded-3xl shadow-2xl border border-neutral-200 group bg-neutral-900">
+            <img
+              src={service.image}
+              alt={service.h1}
+              class="w-full h-[440px] object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 text-white">
+              <span class="text-xs font-bold uppercase tracking-wider text-cyan-400 block mb-1">seelutions Architecture</span>
+              <p class="text-lg font-bold">{service.badge}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1: The Problem / Shift -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-b border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center">
+      <div class="mb-3 inline-block">
+        <SectionLabel text="THE BUSINESS REALITY" />
+      </div>
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#030303] tracking-tight mb-6">
+        {service.problemTitle}
+      </h2>
+      <p class="text-lg sm:text-xl text-neutral-700 leading-relaxed font-medium">
+        "{service.problemText}"
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 2: Our Infrastructure (Pillars / Capabilities) -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="mb-3 inline-block">
+          <SectionLabel text="ENGINEERED INFRASTRUCTURE" />
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#030303] tracking-tight mb-4">
+          {service.infrastructureTitle}
+        </h2>
+        <p class="text-neutral-600 text-base sm:text-lg">
+          Proprietary systems built exclusively for high-ticket plastic surgery practices.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {service.infrastructureItems.map((item, index) => (
+          <div data-animate="fade-up" class="bg-neutral-50 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-black tracking-widest px-3 py-1 rounded-full bg-cyan-100 text-cyan-900 inline-block mb-6">
+                0{index + 1}
+              </span>
+              <h3 class="text-xl font-bold text-[#030303] mb-3 tracking-tight">
+                {item.title}
+              </h3>
+              <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Surgeon-Specific Value & CTA Block -->
+  <section class="py-16 md:py-24 bg-neutral-950 text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(6,182,212,0.15),transparent_50%)] pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center relative z-10">
+      <div class="mb-3 inline-block">
+        <span class="px-3.5 py-1.5 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+          Surgeon-Specific Value
+        </span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-6 text-white">
+        {service.surgeonValueText}
+      </h2>
+
+      <div class="pt-8">
+        <Button href="/#contact" variant="white" showIcon={true} iconType="arrow-right">
+          {service.ctaButtonText}
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <ProjectCTA />
+</BaseLayout>

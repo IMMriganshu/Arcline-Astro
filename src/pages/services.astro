@@ -1,30 +1,259 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionLabel from "../components/SectionLabel.astro";
-import ServicesSection from "../components/ServicesSection.astro";
+import Button from "../components/Button.astro";
 import ProjectCTA from "../components/ProjectCTA.astro";
+import { getAboutContent } from "../lib/cms";
+
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
+
+const about = await getAboutContent();
+const thumbnailImage = about.image || "/images/dr-diepenbrock-thumbnail.jpg";
+const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov";
+
+const coreServices = [
+  {
+    title: "Local SEO & Google Maps",
+    description: "Occupy the top 3 local Map Pack positions for high-value surgical intent searches in your metro area. We optimize your Google Business Profile, citations, reviews, and schema markup.",
+    linkText: "Explore Local SEO & Google Maps →",
+    href: "/services/local-seo-google-maps/",
+    number: "01",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=85",
+  },
+  {
+    title: "AI Search & Overviews",
+    description: "Position your practice as the premier authority in ChatGPT, Perplexity, and Google AI Overviews. We structure your digital entity so generative search engines cite your practice.",
+    linkText: "Explore AI Search & Overviews →",
+    href: "/services/ai-search-overviews/",
+    number: "02",
+    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=85",
+  },
+  {
+    title: "Web Design & Conversion Optimization",
+    description: "High-end procedure hubs and gallery UX engineered to turn high-ticket patients into consultations. Stop using generic contact forms; build immersive patient conversion journeys.",
+    linkText: "Explore Web Design & CRO →",
+    href: "/services/web-design-conversion-optimization/",
+    number: "03",
+    image: "https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&q=85",
+  },
+  {
+    title: "Google Ads & Paid Search",
+    description: "Stop renting unprofitable $35 clicks. We deploy surgical-intent paid search campaigns calibrated to capture patients actively searching for rhinoplasty, facelift, and breast procedures.",
+    linkText: "Explore Google Ads & Paid Search →",
+    href: "/services/google-ads-paid-search/",
+    number: "04",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=85",
+  },
+];
 ---
 
 <BaseLayout
-  title="Services — seelutions"
-  description="Explore our specialized architectural, interior design, landscape, and renovation services."
+  title="Growth & Search Marketing Services for Plastic Surgeons | seelutions"
+  description="Explore seelutions' specialized search, AI visibility, web design, and paid patient acquisition services engineered for plastic and facial cosmetic surgeons."
 >
-  <div class="pt-32 pb-8 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-    <div class="mb-4">
-      <SectionLabel text="OUR CAPABILITIES" />
+  <!-- Primary Page Header & Hero Section with Founder Video -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden bg-white">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text="SPECIALIZED SEARCH & GROWTH SERVICES" />
+      </div>
+
+      <!-- Two-Column Split Layout Above the Fold -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center mb-16">
+        
+        <!-- Column 1 (Left): H1, Intro Copy, CTA -->
+        <div class="lg:col-span-7 flex flex-col justify-center">
+          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25xl] font-black tracking-tight text-[#030303] leading-[1.12] mb-6">
+            Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons
+          </h1>
+          
+          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-6">
+            For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons to replace rented ad spend with compounding digital authority and high-margin surgical consults.
+          </p>
+
+          <p data-animate="fade-up-sm" data-animate-delay="2" class="text-base text-neutral-600 leading-relaxed mb-8">
+            Explore our four core pillars designed to dominate local map packs, capture AI search citations, convert luxury procedure seekers, and drive profitable patient pipelines.
+          </p>
+
+          <div data-animate="fade-up-sm" data-animate-delay="3" class="flex flex-wrap items-center gap-4">
+            <Button href="/#contact" variant="black" showIcon={true} iconType="arrow-right">
+              Request Practice Audit
+            </Button>
+            <Button href="/#services" variant="outline" showIcon={false}>
+              Explore 4 Pillars ↓
+            </Button>
+          </div>
+        </div>
+
+        <!-- Column 2 (Right): Embedded 60-Second Founder/Testimonial Introduction Video -->
+        <div class="lg:col-span-5 flex flex-col" data-animate="scale-in">
+          <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-neutral-200/90 w-full bg-neutral-950 flex flex-col justify-center min-h-[400px] sm:min-h-[440px] h-full group">
+            
+            <!-- Video Element (Strictly OFF Autoplay, click-to-play, controls enabled) -->
+            <video
+              id="services-founder-video"
+              playsinline
+              controls
+              preload="metadata"
+              poster={thumbnailImage}
+              class="w-full h-full object-cover object-top rounded-2xl md:rounded-3xl bg-neutral-950"
+              aria-label="How seelutions Scaled Surgical Consultations — Founder & Practice Video"
+            >
+              <source src={videoSource} type="video/quicktime" />
+              <source src={videoSource} type="video/mp4" />
+              <track
+                kind="subtitles"
+                label="English"
+                srclang="en"
+                src="/captions/diepenbrock-captions.vtt"
+                default
+              />
+              Your browser does not support playing this video.
+            </video>
+
+            <!-- Custom Static Thumbnail & High-Trust Click-to-Play Overlay -->
+            <button
+              id="services-video-overlay"
+              type="button"
+              class="absolute inset-0 z-30 w-full h-full text-left p-0 border-0 cursor-pointer overflow-hidden rounded-2xl md:rounded-3xl transition-all duration-300 focus:outline-none group/thumb"
+              aria-label="Click to play founder video introduction"
+            >
+              <img
+                src={thumbnailImage}
+                alt="Dr. Ryan Diepenbrock & seelutions Founder Introduction"
+                class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/thumb:scale-102"
+                loading="eager"
+              />
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40 pointer-events-none"></div>
+
+              <div class="absolute top-4 left-4 right-4 flex items-center justify-between gap-2 pointer-events-none">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-lg">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                  <span>Founder Overview (1:00)</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-neutral-200 text-[11px] font-medium shadow-md">
+                  <span class="px-1.5 py-0.5 rounded bg-neutral-700 text-[9px] font-bold text-white">CC</span>
+                  <span>Captions Ready</span>
+                </span>
+              </div>
+
+              <!-- Prominent Centered Play Button -->
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="relative flex items-center justify-center">
+                  <div class="absolute w-24 h-24 rounded-full bg-red-600/30 animate-ping group-hover/thumb:bg-red-600/50"></div>
+                  <div class="absolute w-20 h-20 rounded-full bg-red-600/40"></div>
+                  <div class="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-gradient-to-tr from-red-600 to-red-500 shadow-2xl flex items-center justify-center text-white transform transition-transform duration-300 ease-out group-hover/thumb:scale-110 group-active/thumb:scale-95 border-2 border-white/40">
+                    <svg class="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-0.5" viewBox="0 0 24 24">
+                      <polygon points="6 3 20 12 6 21 6 3"></polygon>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom Floating Quote -->
+              <div class="absolute bottom-4 left-4 right-4 pointer-events-none">
+                <div class="p-3.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-white shadow-xl flex items-center justify-between gap-3">
+                  <div class="min-w-0">
+                    <p class="text-xs sm:text-sm font-bold text-white truncate leading-tight">
+                      "By my side for over 10 years."
+                    </p>
+                    <p class="text-[11px] text-neutral-300 truncate mt-0.5">
+                      How seelutions scaled surgical practices nationwide
+                    </p>
+                  </div>
+                  <div class="shrink-0 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold shadow-md">
+                    Play Video
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
+  </section>
 
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#030303] mb-6 max-w-4xl">
-      Comprehensive Architectural & Environmental Design Services
-    </h1>
+  <!-- Core Services Section: 4-Card Silo Grid with Internal Links -->
+  <section id="services" class="py-16 md:py-24 bg-neutral-50 border-t border-b border-neutral-200">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <div class="mb-3 inline-block">
+          <SectionLabel text="THE FOUR PILLARS" />
+        </div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-[#030303] tracking-tight mb-4">
+          Core Services & Specialized Architecture
+        </h2>
+        <p class="text-neutral-600 text-base sm:text-lg">
+          Each service pillar is engineered specifically for plastic and facial cosmetic surgery practices seeking regional market leadership.
+        </p>
+      </div>
 
-    <p class="text-lg text-neutral-600 max-w-2xl leading-relaxed mb-12">
-      From initial site feasibility and zoning permits to bespoke millwork design and construction oversight, we provide end-to-end expertise.
-    </p>
-  </div>
+      <!-- 4-Card Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
+        {coreServices.map((srv) => (
+          <div data-animate="fade-up" class="bg-white border border-neutral-200/90 rounded-2xl md:rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
+            <div>
+              <div class="flex items-center justify-between mb-6">
+                <span class="text-xs font-black tracking-widest px-3 py-1 rounded-full bg-cyan-100 text-cyan-900">
+                  {srv.number}
+                </span>
+                <span class="w-8 h-8 rounded-full bg-neutral-100 group-hover:bg-cyan-600 group-hover:text-white transition-colors flex items-center justify-center text-xs font-bold">
+                  ↗
+                </span>
+              </div>
 
-  <ServicesSection />
+              <h2 class="text-xl sm:text-2xl font-black text-[#030303] tracking-tight mb-3 group-hover:text-cyan-700 transition-colors">
+                {srv.title}
+              </h2>
+
+              <p class="text-neutral-600 text-sm sm:text-base leading-relaxed mb-6">
+                {srv.description}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-neutral-100">
+              <a
+                href={srv.href}
+                class="inline-flex items-center gap-2 text-sm font-bold text-[#030303] group-hover:text-cyan-600 transition-colors"
+              >
+                <span>{srv.linkText}</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bottom Section / Call to Action -->
   <ProjectCTA />
 </BaseLayout>
+
+<script>
+  function setupServicesVideo() {
+    const video = document.getElementById('services-founder-video') as HTMLVideoElement | null;
+    const overlay = document.getElementById('services-video-overlay');
+
+    if (!video || !overlay) return;
+
+    video.autoplay = false;
+    video.pause();
+
+    overlay.addEventListener('click', () => {
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      video.muted = false;
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    });
+  }
+
+  setupServicesVideo();
+  document.addEventListener('astro:page-load', setupServicesVideo);
+</script>
