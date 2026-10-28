@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { CmsData, Page, HeroContent, AboutContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent, MediaAsset, Article } from '../../lib/types';
+import type { CmsData, Page, HeroContent, AboutContent, ServicesHeroContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent, MediaAsset, Article } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 
@@ -326,6 +326,24 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       milestones: safeArray(base.milestones, defaultCmsContent.aboutContent?.milestones || []),
     };
   });
+  const [localServicesHero, setLocalServicesHero] = useState<ServicesHeroContent>(() => {
+    const base = cmsData?.servicesHero || defaultCmsContent.servicesHero || {
+      badge: "SPECIALIZED SEARCH & GROWTH SERVICES",
+      title: "Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons",
+      subtitle: "For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons to replace rented ad spend with compounding digital authority and high-margin surgical consults.",
+      description: "Explore our four core pillars designed to dominate local map packs, capture AI search citations, convert luxury procedure seekers, and drive profitable patient pipelines.",
+      image: "/images/dr-diepenbrock-thumbnail.jpg",
+      videoUrl: "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
+    };
+    return {
+      badge: base.badge || "SPECIALIZED SEARCH & GROWTH SERVICES",
+      title: base.title || "Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons",
+      subtitle: base.subtitle || "For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons.",
+      description: base.description || "Explore our four core pillars designed to dominate local map packs and capture AI search citations.",
+      image: base.image || "/images/dr-diepenbrock-thumbnail.jpg",
+      videoUrl: base.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
+    };
+  });
   const [localCta, setLocalCta] = useState<ProjectCtaContent>(() => ({
     ...defaultCmsContent.projectCta!,
     ...(cmsData?.projectCta || {}),
@@ -394,8 +412,9 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
     ] : []),
     ...(isServices ? [
+      { id: 'services-hero', name: 'Services Hero & Founder Video', icon: '⚡', description: 'Services H1 headline, introductory copy, CTA and founder video / thumbnail' },
       { id: 'services-header', name: 'Capabilities Header', icon: '💼', description: 'Services overview headline and intro' },
-      { id: 'services', name: 'Services Offerings (01–05)', icon: '🛠️', description: 'The 5 surgical marketing service pillars and cover photos' },
+      { id: 'services', name: 'Services Offerings (01–04)', icon: '🛠️', description: 'The 4 surgical marketing service pillars and cover photos' },
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
     ] : []),
     ...(isProjects ? [
@@ -416,6 +435,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       ...cmsData,
       hero: localHero,
       aboutContent: localAbout,
+      servicesHero: localServicesHero,
       projectCta: localCta,
       services: localServices,
       projects: localProjects,
@@ -765,6 +785,110 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         {localHero.secondaryCtaText}
                       </span>
                     </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* SECTION: SERVICES HERO */}
+            {activeSectionId === 'services-hero' && (
+              <div className="space-y-6">
+                {activeViewMode === 'editor' ? (
+                  <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Section Label Badge
+                      </label>
+                      <input
+                        type="text"
+                        value={localServicesHero.badge}
+                        onChange={(e) => {
+                          setLocalServicesHero({ ...localServicesHero, badge: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                      />
+                    </div>
+
+                    <MediaControlField
+                      label="Founder Video Poster / Static Thumbnail"
+                      value={localServicesHero.image || '/images/dr-diepenbrock-thumbnail.jpg'}
+                      onChange={(url) => {
+                        setLocalServicesHero({ ...localServicesHero, image: url });
+                        setHasChanges(true);
+                      }}
+                      mediaAssets={localMedia}
+                      onAddMediaAsset={handleAddNewMediaAsset}
+                      type="image"
+                    />
+
+                    <MediaControlField
+                      label="Founder Video (MOV / MP4)"
+                      value={localServicesHero.videoUrl || '/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov'}
+                      onChange={(url) => {
+                        setLocalServicesHero({ ...localServicesHero, videoUrl: url });
+                        setHasChanges(true);
+                      }}
+                      mediaAssets={localMedia}
+                      onAddMediaAsset={handleAddNewMediaAsset}
+                      type="video"
+                    />
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Main H1 Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={localServicesHero.title}
+                        onChange={(e) => {
+                          setLocalServicesHero({ ...localServicesHero, title: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Subtitle / Introductory Paragraph
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={localServicesHero.subtitle}
+                        onChange={(e) => {
+                          setLocalServicesHero({ ...localServicesHero, subtitle: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Secondary Description
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={localServicesHero.description}
+                        onChange={(e) => {
+                          setLocalServicesHero({ ...localServicesHero, description: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-black border border-white/15 rounded-2xl p-8 space-y-4">
+                    <span className="text-xs font-mono text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30">
+                      {localServicesHero.badge}
+                    </span>
+                    <h1 className="text-4xl font-black text-white font-urbanist tracking-tighter">
+                      {localServicesHero.title}
+                    </h1>
+                    <p className="text-white text-base font-medium">{localServicesHero.subtitle}</p>
+                    <p className="text-neutral-400 text-sm leading-relaxed">{localServicesHero.description}</p>
                   </div>
                 )}
               </div>

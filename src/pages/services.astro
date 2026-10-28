@@ -3,14 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionLabel from "../components/SectionLabel.astro";
 import Button from "../components/Button.astro";
 import ProjectCTA from "../components/ProjectCTA.astro";
-import { getAboutContent } from "../lib/cms";
+import { getServicesHeroContent } from "../lib/cms";
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
 
-const about = await getAboutContent();
-const thumbnailImage = about.image || "/images/dr-diepenbrock-thumbnail.jpg";
-const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov";
+const servicesHero = await getServicesHeroContent();
+const thumbnailImage = servicesHero.image || "/images/dr-diepenbrock-thumbnail.jpg";
+const videoSource = servicesHero.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov";
 
 const coreServices = [
   {
@@ -56,7 +56,7 @@ const coreServices = [
   <section class="pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden bg-white">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
       <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text="SPECIALIZED SEARCH & GROWTH SERVICES" />
+        <SectionLabel text={servicesHero.badge || "SPECIALIZED SEARCH & GROWTH SERVICES"} />
       </div>
 
       <!-- Two-Column Split Layout Above the Fold -->
@@ -65,15 +65,15 @@ const coreServices = [
         <!-- Column 1 (Left): H1, Intro Copy, CTA -->
         <div class="lg:col-span-7 flex flex-col justify-center">
           <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25xl] font-black tracking-tight text-[#030303] leading-[1.12] mb-6">
-            Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons
+            {servicesHero.title}
           </h1>
           
           <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-6">
-            For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons to replace rented ad spend with compounding digital authority and high-margin surgical consults.
+            {servicesHero.subtitle}
           </p>
 
           <p data-animate="fade-up-sm" data-animate-delay="2" class="text-base text-neutral-600 leading-relaxed mb-8">
-            Explore our four core pillars designed to dominate local map packs, capture AI search citations, convert luxury procedure seekers, and drive profitable patient pipelines.
+            {servicesHero.description}
           </p>
 
           <div data-animate="fade-up-sm" data-animate-delay="3" class="flex flex-wrap items-center gap-4">

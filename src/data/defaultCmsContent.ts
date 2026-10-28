@@ -317,6 +317,14 @@ export const defaultCmsContent: CmsData = {
     badge: "Specialized Search Authority for Plastic & Facial Surgeons",
     disclaimer: "We partner exclusively with one board-certified plastic or facial cosmetic surgical practice per metropolitan territory.",
   },
+  servicesHero: {
+    badge: "SPECIALIZED SEARCH & GROWTH SERVICES",
+    title: "Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons",
+    subtitle: "For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons to replace rented ad spend with compounding digital authority and high-margin surgical consults.",
+    description: "Explore our four core pillars designed to dominate local map packs, capture AI search citations, convert luxury procedure seekers, and drive profitable patient pipelines.",
+    image: "/images/dr-diepenbrock-thumbnail.jpg",
+    videoUrl: "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
+  },
   aboutContent: {
     badge: "About Us",
     title: "380% Retainer Growth over 10 Years",

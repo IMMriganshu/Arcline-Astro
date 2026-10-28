@@ -240,6 +240,14 @@ export async function getRedirects() {
 }
 
 /**
+ * Get Services Hero content
+ */
+export async function getServicesHeroContent() {
+  const data = await getCmsData();
+  return data.servicesHero || defaultCmsContent.servicesHero!;
+}
+
+/**
  * Get About section content
  */
 export async function getAboutContent() {

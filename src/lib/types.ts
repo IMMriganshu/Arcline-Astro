@@ -233,6 +233,15 @@ export interface AdminUser {
   createdBy?: string;
 }
 
+export interface ServicesHeroContent {
+  badge: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  videoUrl: string;
+}
+
 export interface CmsData {
   siteConfig: SiteConfig;
   hero: HeroContent;
@@ -246,6 +255,7 @@ export interface CmsData {
   footer: FooterContent;
   media: MediaAsset[];
   aboutContent?: AboutContent;
+  servicesHero?: ServicesHeroContent;
   comparisonContent?: ComparisonSectionContent;
   projectCta?: ProjectCtaContent;
   videoShowcase?: VideoShowcaseContent;
