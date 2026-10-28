@@ -248,6 +248,14 @@ export async function getServicesHeroContent() {
 }
 
 /**
+ * Get Child Service Content by slug
+ */
+export async function getChildServiceContent(slug: string) {
+  const data = await getCmsData();
+  return data.childServices?.[slug] || defaultCmsContent.childServices?.[slug] || defaultCmsContent.childServices!["local-seo-google-maps"];
+}
+
+/**
  * Get About section content
  */
 export async function getAboutContent() {

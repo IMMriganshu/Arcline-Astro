@@ -325,6 +325,116 @@ export const defaultCmsContent: CmsData = {
     image: "/images/dr-diepenbrock-thumbnail.jpg",
     videoUrl: "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
   },
+  childServices: {
+    "local-seo-google-maps": {
+      slug: "local-seo-google-maps",
+      titleTag: "Local SEO & Google Maps for Plastic Surgeons | seelutions",
+      metaDescription: "Dominate Google's local 3-pack and capture high-intent patients searching for surgical procedures in your primary metropolitan market.",
+      h1: "Local SEO & Google Map Pack Dominance for Plastic Surgeons",
+      badge: "LOCAL SEO & GOOGLE MAPS",
+      problemTitle: "The Hyper-Local Search Challenge",
+      problemText: "Aesthetic patients search with hyper-local intent (e.g., 'facelift surgeon near me' or 'best rhinoplasty in [City]'). Missing the top 3 spots on Google Maps means losing consultations to local competitors regardless of your clinical skill.",
+      infrastructureTitle: "Our Local Search Infrastructure",
+      infrastructureItems: [
+        {
+          title: "Google Business Profile (GBP) Optimization",
+          desc: "Rigorous category auditing, procedure service menus, and geo-tagged visual assets designed to secure top map rankings."
+        },
+        {
+          title: "Geo-Targeted Procedure Architecture",
+          desc: "City-specific landing pages and localized schema markup targeting high-income suburbs within your surgical radius."
+        },
+        {
+          title: "Entity & Citation Synchronization",
+          desc: "Clean, unified medical directory listings across Healthgrades, Vitals, RealSelf, and local registries."
+        }
+      ],
+      surgeonValueText: "Filtering for procedure-driven patients—not low-ticket foot traffic, but patients ready to book $10k–$30k surgical consultations.",
+      ctaButtonText: "Schedule a Local Search Audit for Your Practice",
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85",
+    },
+    "ai-search-overviews": {
+      slug: "ai-search-overviews",
+      titleTag: "AI Search & Overviews for Plastic & Cosmetic Surgeons | seelutions",
+      metaDescription: "Position your surgical practice as the cited authority in Google AI Overviews, ChatGPT, and generative search engines.",
+      h1: "Generative Engine Optimization (GEO) & AI Search for Plastic Surgeons",
+      badge: "AI SEARCH & OVERVIEWS",
+      problemTitle: "The Generative Search Shift",
+      problemText: "Generative engines like Google AI Overviews and ChatGPT are replacing standard search results for clinical queries (e.g., recovery timelines, revision risks, candidacy). If your practice isn't cited by AI, you are invisible to the next generation of patients.",
+      infrastructureTitle: "Our AI Search Infrastructure",
+      infrastructureItems: [
+        {
+          title: "Medical Entity & Authority Schema",
+          desc: "Structuring physician credentials, board certifications, and procedural experience so LLMs recognize you as a verified medical source."
+        },
+        {
+          title: "Clinical Answer Engine Architecture",
+          desc: "Content structured to answer patient questions about surgical technique, anesthesia, and healing protocols in formats search engines crawl for AI Overviews."
+        },
+        {
+          title: "Brand Entity Citation",
+          desc: "Building high-authority mentions across medical publications and industry registries to anchor your brand in language model databases."
+        }
+      ],
+      surgeonValueText: "Securing the top conversational recommendation before the patient ever visits a directory site.",
+      ctaButtonText: "Assess Your Practice’s AI Search Visibility",
+      image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=85",
+    },
+    "web-design-conversion-optimization": {
+      slug: "web-design-conversion-optimization",
+      titleTag: "Website Design & Conversion for Plastic Surgeons | seelutions",
+      metaDescription: "Luxury, HIPAA-compliant websites designed to showcase surgical artistry and turn procedure research into booked consultations.",
+      h1: "Bespoke Website Design & Conversion Optimization for Plastic Surgeons",
+      badge: "WEB DESIGN & CRO",
+      problemTitle: "The Aesthetic Credibility Gap",
+      problemText: "A dated, slow, or template-heavy website devalues high-end surgical work. Patients judging a $20,000 procedure will evaluate your aesthetic eye based on your digital presence.",
+      infrastructureTitle: "Our Web & Conversion Infrastructure",
+      infrastructureItems: [
+        {
+          title: "Editorial Before-and-After Galleries",
+          desc: "Fast-loading, filterable case galleries that highlight surgical results cleanly across all mobile devices."
+        },
+        {
+          title: "High-Intent Consultation Funnels",
+          desc: "Frictionless inquiry flows designed to pre-qualify prospective patients before they reach your front desk."
+        },
+        {
+          title: "Sub-Second Performance & Medical Aesthetics",
+          desc: "Luxury typography, clean layouts, and strict mobile responsiveness optimized for Core Web Vitals."
+        }
+      ],
+      surgeonValueText: "Turning passive gallery browsing into scheduled surgical consults.",
+      ctaButtonText: "Request a Website Conversion Review",
+      image: "https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1200&q=85",
+    },
+    "google-ads-paid-search": {
+      slug: "google-ads-paid-search",
+      titleTag: "Google Ads & Paid Search for Plastic Surgeons | seelutions",
+      metaDescription: "Targeted, high-intent Google Ads campaigns engineered to fill your surgical calendar with qualified, high-ticket procedure consults.",
+      h1: "Targeted Google Ads & Paid Search Acquisition for Plastic Surgeons",
+      badge: "GOOGLE ADS & PAID SEARCH",
+      problemTitle: "Eliminating Paid Ad Waste",
+      problemText: "Most paid campaigns waste thousands of dollars on broad keywords, price-shoppers, and non-surgical clicks, driving up ad spend without booking actual operating room hours.",
+      infrastructureTitle: "Our Paid Acquisition Infrastructure",
+      infrastructureItems: [
+        {
+          title: "Negative Keyword Scrubbing",
+          desc: "Eliminating cheap search terms ('cheap', 'discount', 'free consult') to focus exclusively on affluent, qualified patients."
+        },
+        {
+          title: "Procedure-Dedicated Landing Pages",
+          desc: "High-converting, single-procedure landing pages built specifically for paid traffic to prevent ad waste."
+        },
+        {
+          title: "Call Tracking & Consultation Attribution",
+          desc: "Tracking every phone call and form fill directly to scheduled operating room revenue."
+        }
+      ],
+      surgeonValueText: "Immediate, measurable consultation volume to keep surgical schedules consistently booked weeks in advance.",
+      ctaButtonText: "Get a Paid Search Strategy for Your Market",
+      image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=85",
+    }
+  },
   aboutContent: {
     badge: "About Us",
     title: "380% Retainer Growth over 10 Years",

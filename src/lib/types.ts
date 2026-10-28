@@ -242,6 +242,26 @@ export interface ServicesHeroContent {
   videoUrl: string;
 }
 
+export interface ChildServiceInfrastructureItem {
+  title: string;
+  desc: string;
+}
+
+export interface ChildServiceContent {
+  slug: string;
+  titleTag: string;
+  metaDescription: string;
+  h1: string;
+  badge: string;
+  problemTitle: string;
+  problemText: string;
+  infrastructureTitle: string;
+  infrastructureItems: ChildServiceInfrastructureItem[];
+  surgeonValueText: string;
+  ctaButtonText: string;
+  image: string;
+}
+
 export interface CmsData {
   siteConfig: SiteConfig;
   hero: HeroContent;
@@ -256,6 +276,7 @@ export interface CmsData {
   media: MediaAsset[];
   aboutContent?: AboutContent;
   servicesHero?: ServicesHeroContent;
+  childServices?: Record<string, ChildServiceContent>;
   comparisonContent?: ComparisonSectionContent;
   projectCta?: ProjectCtaContent;
   videoShowcase?: VideoShowcaseContent;

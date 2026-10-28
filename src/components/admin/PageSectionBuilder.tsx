@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { CmsData, Page, HeroContent, AboutContent, ServicesHeroContent, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent, MediaAsset, Article } from '../../lib/types';
+import type { CmsData, Page, HeroContent, AboutContent, ServicesHeroContent, ChildServiceContent, ChildServiceInfrastructureItem, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent, MediaAsset, Article } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 
@@ -377,6 +377,40 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
   }));
   const [localMedia, setLocalMedia] = useState<MediaAsset[]>(() => safeArray(cmsData?.media, defaultCmsContent.media));
 
+  const isChildService = page.slug && page.slug.startsWith('services/');
+  const childServiceKey = isChildService ? page.slug.replace('services/', '') : 'local-seo-google-maps';
+
+  const [localChildService, setLocalChildService] = useState<ChildServiceContent>(() => {
+    const base = cmsData?.childServices?.[childServiceKey] || defaultCmsContent.childServices?.[childServiceKey] || (defaultCmsContent.childServices ? defaultCmsContent.childServices["local-seo-google-maps"] : null) || {
+      slug: childServiceKey,
+      titleTag: "",
+      metaDescription: "",
+      h1: "",
+      badge: "",
+      problemTitle: "",
+      problemText: "",
+      infrastructureTitle: "",
+      infrastructureItems: [],
+      surgeonValueText: "",
+      ctaButtonText: "",
+      image: "",
+    };
+    return {
+      slug: base.slug || childServiceKey,
+      titleTag: base.titleTag || "",
+      metaDescription: base.metaDescription || "",
+      h1: base.h1 || "",
+      badge: base.badge || "",
+      problemTitle: base.problemTitle || "",
+      problemText: base.problemText || "",
+      infrastructureTitle: base.infrastructureTitle || "",
+      infrastructureItems: safeArray(base.infrastructureItems, []),
+      surgeonValueText: base.surgeonValueText || "",
+      ctaButtonText: base.ctaButtonText || "",
+      image: base.image || "",
+    };
+  });
+
   // Active section selector
   const isHome = page.slug === 'home' || page.slug === '';
   const isAbout = page.slug === 'about';
@@ -384,7 +418,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
   const isProjects = page.slug === 'projects';
   const isBlog = page.slug === 'blog';
 
-  const defaultSection = isHome ? 'hero' : isAbout ? 'about' : isServices ? 'services' : isProjects ? 'projects' : isBlog ? 'blog' : 'body';
+  const defaultSection = isHome ? 'hero' : isAbout ? 'about' : isServices ? 'services' : isProjects ? 'projects' : isBlog ? 'blog' : isChildService ? 'child-hero' : 'body';
   const [activeSectionId, setActiveSectionId] = useState<string>(defaultSection);
   const [activeViewMode, setActiveViewMode] = useState<'editor' | 'preview'>('editor');
   const [hasChanges, setHasChanges] = useState<boolean>(false);
@@ -417,6 +451,12 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       { id: 'services', name: 'Services Offerings (01–04)', icon: '🛠️', description: 'The 4 surgical marketing service pillars and cover photos' },
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
     ] : []),
+    ...(isChildService ? [
+      { id: 'child-hero', name: 'Child Service Hero & Image', icon: '⚡', description: 'H1 headline, badge, SEO meta tags, and hero preview image' },
+      { id: 'child-problem', name: 'The Business Reality (Problem)', icon: '⚠️', description: 'Surgical business pain point and problem statement' },
+      { id: 'child-infrastructure', name: 'Engineered Infrastructure (Pillars)', icon: '🛠️', description: '3 core infrastructure capability pillars' },
+      { id: 'child-value', name: 'Surgeon-Specific Value & CTA', icon: '🎯', description: 'Surgeon value proposition and CTA button copy' },
+    ] : []),
     ...(isProjects ? [
       { id: 'projects-header', name: 'Case Study Overview', icon: '📈', description: '10-year practice case study headline' },
       { id: 'projects', name: 'Growth Milestones Grid', icon: '🏆', description: 'Year-by-year budget & procedure strategy milestones' },
@@ -436,6 +476,10 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       hero: localHero,
       aboutContent: localAbout,
       servicesHero: localServicesHero,
+      childServices: {
+        ...(cmsData.childServices || {}),
+        [childServiceKey]: localChildService,
+      },
       projectCta: localCta,
       services: localServices,
       projects: localProjects,
@@ -891,6 +935,153 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     <p className="text-neutral-400 text-sm leading-relaxed">{localServicesHero.description}</p>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* SECTION: CHILD SERVICE HERO */}
+            {activeSectionId === 'child-hero' && (
+              <div className="space-y-6">
+                <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Section Badge</label>
+                    <input
+                      type="text"
+                      value={localChildService.badge}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, badge: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Main H1 Headline</label>
+                    <input
+                      type="text"
+                      value={localChildService.h1}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, h1: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Meta Description / Hero Subtitle</label>
+                    <textarea
+                      rows={3}
+                      value={localChildService.metaDescription}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, metaDescription: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                    />
+                  </div>
+                  <MediaControlField
+                    label="Hero Showcase Image"
+                    value={localChildService.image}
+                    onChange={(url) => { setLocalChildService({ ...localChildService, image: url }); setHasChanges(true); }}
+                    mediaAssets={localMedia}
+                    onAddMediaAsset={handleAddNewMediaAsset}
+                    type="image"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* SECTION: CHILD SERVICE PROBLEM */}
+            {activeSectionId === 'child-problem' && (
+              <div className="space-y-6">
+                <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Problem / Reality Title</label>
+                    <input
+                      type="text"
+                      value={localChildService.problemTitle}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, problemTitle: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Problem Statement Text</label>
+                    <textarea
+                      rows={4}
+                      value={localChildService.problemText}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, problemText: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION: CHILD SERVICE INFRASTRUCTURE */}
+            {activeSectionId === 'child-infrastructure' && (
+              <div className="space-y-6">
+                <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Infrastructure Section Heading</label>
+                    <input
+                      type="text"
+                      value={localChildService.infrastructureTitle}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, infrastructureTitle: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
+                    />
+                  </div>
+                  <div className="space-y-4 pt-2">
+                    <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider">3 Core Pillars</h4>
+                    {localChildService.infrastructureItems.map((item, idx) => (
+                      <div key={idx} className="p-4 bg-black/40 border border-white/10 rounded-xl space-y-3">
+                        <div>
+                          <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Pillar #{idx + 1} Title</label>
+                          <input
+                            type="text"
+                            value={item.title}
+                            onChange={(e) => {
+                              const updated = [...localChildService.infrastructureItems];
+                              updated[idx].title = e.target.value;
+                              setLocalChildService({ ...localChildService, infrastructureItems: updated });
+                              setHasChanges(true);
+                            }}
+                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-lg text-white text-xs font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Pillar Description</label>
+                          <textarea
+                            rows={2}
+                            value={item.desc}
+                            onChange={(e) => {
+                              const updated = [...localChildService.infrastructureItems];
+                              updated[idx].desc = e.target.value;
+                              setLocalChildService({ ...localChildService, infrastructureItems: updated });
+                              setHasChanges(true);
+                            }}
+                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-lg text-white text-xs leading-relaxed"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SECTION: CHILD SERVICE VALUE & CTA */}
+            {activeSectionId === 'child-value' && (
+              <div className="space-y-6">
+                <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Surgeon-Specific Value Proposition</label>
+                    <textarea
+                      rows={3}
+                      value={localChildService.surgeonValueText}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, surgeonValueText: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">CTA Button Text</label>
+                    <input
+                      type="text"
+                      value={localChildService.ctaButtonText}
+                      onChange={(e) => { setLocalChildService({ ...localChildService, ctaButtonText: e.target.value }); setHasChanges(true); }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-sm font-bold"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
