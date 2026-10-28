@@ -219,6 +219,30 @@ export const defaultCmsContent: CmsData = {
       title: "Patient Grower Blog & Editorial Page Content",
       content: "<h2>Patient Grower Editorial</h2><p>Marketing intelligence and AI search strategy for practice owners.</p>",
     },
+    {
+      id: "page-local-seo",
+      slug: "services/local-seo-google-maps",
+      title: "Local SEO & Google Maps Page",
+      content: "<h2>Local SEO & Google Map Pack Dominance</h2><p>Occupy the top 3 local Map Pack positions for high-value surgical intent searches in your metro area.</p>",
+    },
+    {
+      id: "page-ai-search",
+      slug: "services/ai-search-overviews",
+      title: "AI Search & Overviews Page",
+      content: "<h2>Generative Engine Optimization (GEO) & AI Search</h2><p>Position your practice as the cited authority in Google AI Overviews, ChatGPT, and generative search engines.</p>",
+    },
+    {
+      id: "page-web-design",
+      slug: "services/web-design-conversion-optimization",
+      title: "Web Design & Conversion Optimization Page",
+      content: "<h2>Bespoke Website Design & CRO</h2><p>Luxury, HIPAA-compliant websites designed to showcase surgical artistry and turn procedure research into booked consultations.</p>",
+    },
+    {
+      id: "page-google-ads",
+      slug: "services/google-ads-paid-search",
+      title: "Google Ads & Paid Search Page",
+      content: "<h2>Targeted Google Ads & Paid Search Acquisition</h2><p>Targeted, high-intent Google Ads campaigns engineered to fill your surgical calendar with qualified, high-ticket procedure consults.</p>",
+    },
   ],
   comparison: [
     {
