@@ -93,37 +93,92 @@ export async function compressImageFile(
 }
 
 /**
- * Scan HTML prose content for oversized inline base64 image strings and compress them.
+ * Upload a data URL or image file to /api/upload to obtain a lightweight, permanent server URL (/api/images/...).
  */
-export async function compressProseImages(htmlContent: string): Promise<string> {
+export async function uploadDataUrlToServer(
+  dataUrlOrFile: string | File,
+  filename = 'content-image.jpg'
+): Promise<string> {
+  // If it's already a clean server or web URL, keep it
+  if (typeof dataUrlOrFile === 'string' && !dataUrlOrFile.startsWith('data:')) {
+    return dataUrlOrFile;
+  }
+
+  try {
+    let dataUrl = '';
+    let name = filename;
+    let type = 'image/jpeg';
+
+    if (typeof dataUrlOrFile === 'string') {
+      dataUrl = dataUrlOrFile;
+      const typeMatch = dataUrl.match(/data:([^;]+);/);
+      if (typeMatch) type = typeMatch[1];
+    } else {
+      name = dataUrlOrFile.name || filename;
+      type = dataUrlOrFile.type || type;
+      dataUrl = await compressImageFile(dataUrlOrFile, 1400, 1400, 0.85);
+    }
+
+    // Call server upload endpoint
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file: dataUrl, name, type }),
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.url) {
+        return json.url;
+      }
+    }
+  } catch (err) {
+    console.warn('uploadDataUrlToServer failed:', err);
+  }
+
+  // Fallback to data URL if upload failed
+  return typeof dataUrlOrFile === 'string' ? dataUrlOrFile : '';
+}
+
+/**
+ * Scan HTML prose content for any inline base64 image strings, upload them to /api/upload,
+ * and replace the huge data URLs with clean /api/images/[id] endpoints.
+ * This keeps the article HTML and Firestore documents tiny (<10KB) and avoids quota exhaustion.
+ */
+export async function processHtmlAndUploadImages(htmlContent: string): Promise<string> {
   if (!htmlContent || !htmlContent.includes('data:image')) {
     return htmlContent;
   }
 
   // Regex to find img src with data:image
   const imgDataUrlRegex = /<img\s+([^>]*?)src=["'](data:image\/[^"']+)["']([^>]*?)>/gi;
-  let matches = [...htmlContent.matchAll(imgDataUrlRegex)];
+  const matches = [...htmlContent.matchAll(imgDataUrlRegex)];
 
   if (matches.length === 0) return htmlContent;
 
   let updatedHtml = htmlContent;
 
   for (const match of matches) {
-    const fullImgTag = match[0];
     const rawDataUrl = match[2];
-
-    // Only compress if the data URL is oversized (>150KB string length)
-    if (rawDataUrl && rawDataUrl.length > 200000) {
+    if (rawDataUrl && rawDataUrl.startsWith('data:image')) {
       try {
-        const compressed = await compressImageFile(rawDataUrl, 1200, 1200, 0.8);
-        if (compressed && compressed.length < rawDataUrl.length) {
-          updatedHtml = updatedHtml.replace(rawDataUrl, compressed);
+        const compressed = await compressImageFile(rawDataUrl, 1400, 1400, 0.85);
+        const serverUrl = await uploadDataUrlToServer(compressed, `article-inline-${Date.now()}.webp`);
+        if (serverUrl && !serverUrl.startsWith('data:')) {
+          updatedHtml = updatedHtml.split(rawDataUrl).join(serverUrl);
         }
       } catch (err) {
-        console.warn('Failed to compress inline prose image:', err);
+        console.warn('Failed to upload inline prose image to server:', err);
       }
     }
   }
 
   return updatedHtml;
+}
+
+/**
+ * Scan HTML prose content for oversized inline base64 image strings and convert to server URLs or compress them.
+ */
+export async function compressProseImages(htmlContent: string): Promise<string> {
+  return processHtmlAndUploadImages(htmlContent);
 }

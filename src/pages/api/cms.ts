@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
-import { getServerCmsData, saveServerCmsData, triggerVercelDeploy } from '../../lib/cms';
+import { getServerCmsData, saveServerCmsData, deleteServerArticle, triggerVercelDeploy } from '../../lib/cms';
+import { db } from '../../lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const prerender = false;
 
@@ -23,6 +25,33 @@ export const POST: APIRoute = async ({ request }) => {
       const deployResult = await triggerVercelDeploy(body.hookUrl);
       return new Response(JSON.stringify(deployResult), {
         status: deployResult.success ? 200 : 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Delete single article action
+    if (body.action === 'delete_article' && body.articleId) {
+      await deleteServerArticle(body.articleId);
+      if (body.data) {
+        await saveServerCmsData(body.data);
+      }
+      return new Response(JSON.stringify({ success: true, message: 'Article deleted successfully' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Save single article action
+    if (body.action === 'save_article' && body.article) {
+      const art = body.article;
+      if (art.id || art.slug) {
+        await setDoc(doc(db, 'cms_articles', art.id || art.slug), art);
+      }
+      if (body.data) {
+        await saveServerCmsData(body.data);
+      }
+      return new Response(JSON.stringify({ success: true, message: 'Article saved successfully' }), {
+        status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }

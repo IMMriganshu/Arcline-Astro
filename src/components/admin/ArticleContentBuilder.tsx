@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { compressImageFile } from '../../lib/imageCompression';
+import { compressImageFile, uploadDataUrlToServer, processHtmlAndUploadImages } from '../../lib/imageCompression';
 
 interface ArticleContentBuilderProps {
   value: string;
@@ -187,11 +187,21 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
     }
   };
 
-  const handleConfirmImage = (e: React.FormEvent) => {
+  const handleConfirmImage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!imageUrl.trim()) return;
 
-    let snippet = `<figure class="my-8">\n  <img src="${imageUrl.trim()}" alt="${(imageAlt || 'Article illustration').trim()}" class="w-full rounded-2xl shadow-xl" />\n`;
+    let finalUrl = imageUrl.trim();
+    // If the image URL is a data:image, upload it to the server to get a clean, persistent URL
+    if (finalUrl.startsWith('data:image')) {
+      try {
+        finalUrl = await uploadDataUrlToServer(finalUrl, 'article-figure.webp');
+      } catch (err) {
+        console.warn('Failed to upload data URL to server:', err);
+      }
+    }
+
+    let snippet = `<figure class="my-8">\n  <img src="${finalUrl}" alt="${(imageAlt || 'Article illustration').trim()}" class="w-full rounded-2xl shadow-xl" />\n`;
     if (imageCaption.trim()) {
       snippet += `  <figcaption class="text-center text-xs text-neutral-400 mt-2.5 italic">${imageCaption.trim()}</figcaption>\n`;
     }
@@ -215,13 +225,14 @@ export const ArticleContentBuilder: React.FC<ArticleContentBuilderProps> = ({ va
     const file = files[0];
     setIsCompressingImage(true);
     try {
-      const compressedDataUrl = await compressImageFile(file, 1200, 1200, 0.8);
-      setImageUrl(compressedDataUrl);
+      const compressedDataUrl = await compressImageFile(file, 1400, 1400, 0.85);
+      const serverUrl = await uploadDataUrlToServer(compressedDataUrl, file.name);
+      setImageUrl(serverUrl || compressedDataUrl);
       if (!imageAlt) {
         setImageAlt(file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '));
       }
     } catch (err) {
-      console.error('Image compression error:', err);
+      console.error('Image compression/upload error:', err);
     } finally {
       setIsCompressingImage(false);
       e.target.value = '';

@@ -1,7 +1,7 @@
 import type { CmsData } from './types';
 import { defaultCmsContent } from '../data/defaultCmsContent';
 import { db } from './firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
 
 const CMS_STORAGE_KEY = 'arcline_cms_content_v1';
 const CMS_DOC_ID = 'main';
@@ -38,12 +38,13 @@ function isObject(item: any): boolean {
  * Server-side helper to read persistent CMS data from Firestore
  */
 export async function getServerCmsData(): Promise<CmsData> {
+  let remoteData: Partial<CmsData> | null = null;
   try {
     const docRef = doc(db, CMS_COLLECTION, CMS_DOC_ID);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const remoteData = docSnap.data() as CmsData;
+      remoteData = docSnap.data() as CmsData;
       if (remoteData?.siteConfig) {
         if (remoteData.siteConfig.name === 'Arcline') {
           remoteData.siteConfig.name = 'Seelutions';
@@ -55,10 +56,45 @@ export async function getServerCmsData(): Promise<CmsData> {
           remoteData.siteConfig.description = defaultCmsContent.siteConfig.description;
         }
       }
-      return deepMerge(defaultCmsContent, remoteData);
     }
   } catch (err) {
     console.error('Error reading CMS data from Firestore:', err);
+  }
+
+  // Also query individual articles from cms_articles collection for bulletproof persistence
+  try {
+    const articlesCol = collection(db, 'cms_articles');
+    const articlesSnap = await getDocs(articlesCol);
+    if (!articlesSnap.empty) {
+      const individualArticles: any[] = [];
+      articlesSnap.forEach((d) => {
+        const art = d.data();
+        if (art && (art.slug || art.title)) {
+          individualArticles.push({ ...art, id: art.id || d.id });
+        }
+      });
+
+      if (individualArticles.length > 0) {
+        if (!remoteData) remoteData = {};
+        const existingArticles = Array.isArray(remoteData.articles) ? remoteData.articles : [];
+        const articleMap = new Map<string, any>();
+        existingArticles.forEach((a) => {
+          if (a.id) articleMap.set(a.id, a);
+          else if (a.slug) articleMap.set(a.slug, a);
+        });
+        individualArticles.forEach((a) => {
+          if (a.id) articleMap.set(a.id, a);
+          else if (a.slug) articleMap.set(a.slug, a);
+        });
+        remoteData.articles = Array.from(articleMap.values());
+      }
+    }
+  } catch (colErr) {
+    console.warn('Error reading cms_articles collection:', colErr);
+  }
+
+  if (remoteData) {
+    return deepMerge(defaultCmsContent, remoteData);
   }
   return defaultCmsContent;
 }
@@ -216,6 +252,7 @@ export async function getVideoShowcaseContent() {
  * Server-side helper to persist CMS data to Firestore
  */
 export async function saveServerCmsData(data: CmsData): Promise<boolean> {
+  let mainSuccess = false;
   try {
     const updated = {
       ...data,
@@ -224,12 +261,41 @@ export async function saveServerCmsData(data: CmsData): Promise<boolean> {
     };
     
     await setDoc(doc(db, CMS_COLLECTION, CMS_DOC_ID), updated);
+    mainSuccess = true;
+  } catch (err) {
+    console.error('Error saving CMS data to main Firestore document:', err);
+  }
+
+  // Always persist all individual articles to cms_articles collection for resilient isolation
+  if (Array.isArray(data.articles)) {
+    for (const art of data.articles) {
+      if (art && (art.id || art.slug)) {
+        const docId = art.id || art.slug;
+        try {
+          await setDoc(doc(db, 'cms_articles', docId), art);
+        } catch (artErr) {
+          console.warn('Error saving individual article document:', docId, artErr);
+        }
+      }
+    }
+  }
+
+  return mainSuccess || (Array.isArray(data.articles) && data.articles.length > 0);
+}
+
+/**
+ * Server-side helper to delete an individual article from Firestore
+ */
+export async function deleteServerArticle(articleId: string): Promise<boolean> {
+  try {
+    await deleteDoc(doc(db, 'cms_articles', articleId));
     return true;
   } catch (err) {
-    console.error('Error saving CMS data to Firestore:', err);
+    console.warn('Error deleting article from cms_articles:', articleId, err);
     return false;
   }
 }
+
 
 
 /**

@@ -7,7 +7,7 @@ import { AdminUsersManagementView } from './AdminUsersManagementView';
 import { SeoManagerView } from './SeoManagerView';
 import { db } from '../../lib/firebase';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp, setDoc } from 'firebase/firestore';
-import { compressImageFile, compressProseImages } from '../../lib/imageCompression';
+import { compressImageFile, compressProseImages, uploadDataUrlToServer, processHtmlAndUploadImages } from '../../lib/imageCompression';
 
 
 
@@ -181,16 +181,48 @@ export default function AdminDashboard() {
       console.warn('Failed to load local CMS data', e);
     }
 
-    // Fetch initial CMS content from API
+    // Fetch initial CMS content from API and merge resiliently
     fetch('/api/cms')
       .then((res) => res.json())
-      .then((json) => {
+      .then(async (json) => {
         if (json.data && typeof json.data === 'object') {
           const effectiveHook =
             dedicatedHook ||
             json.data.siteConfig?.vercelDeployHookUrl ||
             localData?.siteConfig?.vercelDeployHookUrl ||
             PERMANENT_VERCEL_HOOK;
+
+          // Merge articles from default, local, API, and Firestore individual articles
+          const articleMap = new Map<string, Article>();
+          (defaultCmsContent.articles || []).forEach((a) => {
+            if (a.id) articleMap.set(a.id, a);
+            else if (a.slug) articleMap.set(a.slug, a);
+          });
+          (localData?.articles || []).forEach((a) => {
+            if (a.id) articleMap.set(a.id, a);
+            else if (a.slug) articleMap.set(a.slug, a);
+          });
+          if (Array.isArray(json.data.articles)) {
+            json.data.articles.forEach((a: Article) => {
+              if (a.id) articleMap.set(a.id, a);
+              else if (a.slug) articleMap.set(a.slug, a);
+            });
+          }
+
+          // Directly query cms_articles collection from Firestore to guarantee new articles are caught
+          try {
+            const artSnap = await getDocs(collection(db, 'cms_articles'));
+            artSnap.forEach((d) => {
+              const artData = d.data() as Article;
+              if (artData && (artData.id || artData.slug)) {
+                articleMap.set(artData.id || d.id, { ...artData, id: artData.id || d.id });
+              }
+            });
+          } catch (colErr) {
+            console.warn('Could not query cms_articles collection directly:', colErr);
+          }
+
+          const combinedArticles = Array.from(articleMap.values());
 
           const merged: CmsData = {
             ...defaultCmsContent,
@@ -205,7 +237,6 @@ export default function AdminDashboard() {
               vercelDeployHookUrl: effectiveHook,
             },
             comparison: Array.isArray(json.data.comparison) && json.data.comparison.length > 0 ? json.data.comparison : defaultCmsContent.comparison,
-            // Force migration if missing
             comparisonContent: (json.data.comparisonContent !== undefined && json.data.comparisonContent !== null) 
               ? json.data.comparisonContent 
               : defaultCmsContent.comparisonContent,
@@ -213,7 +244,7 @@ export default function AdminDashboard() {
             aboutContent: json.data.aboutContent || defaultCmsContent.aboutContent,
             projectCta: json.data.projectCta || defaultCmsContent.projectCta,
             videoShowcase: json.data.videoShowcase || defaultCmsContent.videoShowcase,
-            articles: Array.isArray(json.data.articles) && json.data.articles.length > 0 ? json.data.articles : defaultCmsContent.articles,
+            articles: combinedArticles.length > 0 ? combinedArticles : defaultCmsContent.articles,
             services: Array.isArray(json.data.services) && json.data.services.length > 0 ? json.data.services : defaultCmsContent.services,
             projects: Array.isArray(json.data.projects) && json.data.projects.length > 0 ? json.data.projects : defaultCmsContent.projects,
             testimonials: Array.isArray(json.data.testimonials) && json.data.testimonials.length > 0 ? json.data.testimonials : defaultCmsContent.testimonials,
@@ -225,8 +256,21 @@ export default function AdminDashboard() {
           localStorage.setItem('arcline_vercel_hook', effectiveHook);
         }
       })
-      .catch(() => {
+      .catch(async () => {
         if (localData) {
+          // Direct fallback query to cms_articles
+          try {
+            const artSnap = await getDocs(collection(db, 'cms_articles'));
+            const articleMap = new Map<string, Article>();
+            (localData.articles || []).forEach((a) => { if (a.id) articleMap.set(a.id, a); });
+            artSnap.forEach((d) => {
+              const artData = d.data() as Article;
+              if (artData && (artData.id || artData.slug)) {
+                articleMap.set(artData.id || d.id, { ...artData, id: artData.id || d.id });
+              }
+            });
+            localData.articles = Array.from(articleMap.values());
+          } catch {}
           setCmsData(localData);
         }
       });
@@ -485,43 +529,67 @@ export default function AdminDashboard() {
 
   const persistCmsData = async (targetData: CmsData, showNotification = true) => {
     try {
-      // 1. Auto-compress any oversized inline images in articles before saving
+      // 1. Convert all inline images in articles to server URLs (/api/images/...)
       const compressedArticles = await Promise.all(
         (targetData.articles || []).map(async (art) => {
           let updatedContent = art.content || '';
           if (updatedContent.includes('data:image')) {
-            updatedContent = await compressProseImages(updatedContent);
+            updatedContent = await processHtmlAndUploadImages(updatedContent);
           }
           let updatedImg = art.image || '';
-          if (updatedImg.startsWith('data:image') && updatedImg.length > 200000) {
-            updatedImg = await compressImageFile(updatedImg, 1200, 1200, 0.8);
+          if (updatedImg.startsWith('data:image')) {
+            updatedImg = await uploadDataUrlToServer(updatedImg, `art-cover-${art.slug || 'img'}.webp`);
           }
           return { ...art, content: updatedContent, image: updatedImg };
+        })
+      );
+
+      // 1b. Clean media assets in targetData.media to ensure no base64 bloat
+      const cleanMedia = await Promise.all(
+        (targetData.media || []).map(async (asset) => {
+          if (asset.url && asset.url.startsWith('data:image')) {
+            const serverUrl = await uploadDataUrlToServer(asset.url, asset.name || 'media-asset.webp');
+            return { ...asset, url: serverUrl || asset.url };
+          }
+          return asset;
         })
       );
 
       const updated: CmsData = {
         ...targetData,
         articles: compressedArticles,
+        media: cleanMedia,
         lastPublishedAt: new Date().toISOString(),
         version: (targetData.version || 1) + 1,
       };
 
-      // 2. Direct browser write to Firestore
+      // 2. Direct browser write to individual cms_articles docs for bulletproof persistence
+      for (const art of compressedArticles) {
+        if (art && (art.id || art.slug)) {
+          const docId = art.id || art.slug;
+          try {
+            await setDoc(doc(db, 'cms_articles', docId), art);
+          } catch (artErr) {
+            console.warn('Error saving individual article to Firestore:', docId, artErr);
+          }
+        }
+      }
+
+      // 3. Direct browser write to main Firestore document
       try {
         await setDoc(doc(db, 'cms_content', 'main'), updated);
       } catch (fErr) {
         console.warn('Direct Firestore client write error:', fErr);
       }
 
-      // 3. Update localStorage
+      // 4. Update localStorage
       localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updated));
       if (updated.siteConfig?.vercelDeployHookUrl) {
         localStorage.setItem('arcline_vercel_hook', updated.siteConfig.vercelDeployHookUrl);
       }
       window.dispatchEvent(new CustomEvent('cms:updated', { detail: updated }));
 
-      // 4. Send to /api/cms server endpoint
+      // 5. Send to /api/cms server endpoint
       try {
         await fetch('/api/cms', {
           method: 'POST',
@@ -1450,6 +1518,24 @@ export default function AdminDashboard() {
                             if (window.confirm(`Delete article "${art.title}"?`)) {
                               const updatedArticles = cmsData.articles.filter((a) => a.id !== art.id);
                               const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
+                              
+                              // Delete from Firestore individual docs collection
+                              try {
+                                await deleteDoc(doc(db, 'cms_articles', art.id));
+                                if (art.slug) await deleteDoc(doc(db, 'cms_articles', art.slug));
+                              } catch (dErr) {
+                                console.warn('Direct cms_articles delete warning:', dErr);
+                              }
+
+                              // Delete via server endpoint
+                              try {
+                                await fetch('/api/cms', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ action: 'delete_article', articleId: art.id, data: updatedData }),
+                                });
+                              } catch {}
+
                               await persistCmsData(updatedData, false);
                               showToast(`Article "${art.title}" deleted from database`, 'info');
                             }
@@ -2326,49 +2412,50 @@ export default function AdminDashboard() {
                       type="file"
                       accept="image/*,video/*"
                       multiple
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const files = Array.from(e.target.files || []);
                         if (files.length === 0) return;
 
-                        let addedCount = 0;
-                        files.forEach(async (file) => {
+                        showToast(`Uploading ${files.length} file(s) to live server...`, 'info');
+                        const newAssets: MediaAsset[] = [];
+
+                        for (const file of files) {
                           try {
                             const isVideo = file.type.startsWith('video') || file.name.match(/\.(mp4|mov|webm)$/i);
-                            let resultUrl = '';
+                            let publicUrl = '';
+
                             if (isVideo) {
-                              resultUrl = await new Promise((res) => {
+                              const resultDataUrl = await new Promise<string>((res) => {
                                 const r = new FileReader();
                                 r.onload = (evt) => res((evt.target?.result as string) || '');
                                 r.readAsDataURL(file);
                               });
+                              publicUrl = await uploadDataUrlToServer(resultDataUrl, file.name);
                             } else {
-                              resultUrl = await compressImageFile(file, 1200, 1200, 0.8);
+                              const compressedDataUrl = await compressImageFile(file, 1400, 1400, 0.85);
+                              publicUrl = await uploadDataUrlToServer(compressedDataUrl, file.name);
                             }
 
-                            if (resultUrl) {
-                              const newAsset: MediaAsset = {
+                            if (publicUrl) {
+                              newAssets.push({
                                 id: `med-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
                                 name: file.name,
-                                url: resultUrl,
+                                url: publicUrl,
                                 type: isVideo ? 'video' : 'image',
-                              };
-                              
-                              setCmsData((prev) => {
-                                const updatedMedia = [newAsset, ...prev.media];
-                                const updatedCms = { ...prev, media: updatedMedia };
-                                localStorage.setItem('arcline_cms_content_v1', JSON.stringify(updatedCms));
-                                return updatedCms;
                               });
-                              setHasChanges(true);
-                              addedCount++;
-                              if (addedCount === files.length) {
-                                showToast(`Successfully uploaded & compressed ${files.length} file(s)! Click "Publish to Live Site" to sync live server.`, 'success');
-                              }
                             }
                           } catch (err) {
                             console.error('Failed to compress/upload file:', err);
                           }
-                        });
+                        }
+
+                        if (newAssets.length > 0) {
+                          const updatedMedia = [...newAssets, ...cmsData.media];
+                          const updatedCms = { ...cmsData, media: updatedMedia };
+                          setCmsData(updatedCms);
+                          await persistCmsData(updatedCms, false);
+                          showToast(`Successfully uploaded ${newAssets.length} file(s) to live server!`, 'success');
+                        }
                         e.target.value = '';
                       }}
                       className="hidden"
@@ -2719,13 +2806,55 @@ export default function AdminDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1">Featured Image URL</label>
-                <input
-                  type="text"
-                  value={editingArticle.image}
-                  onChange={(e) => setEditingArticle({ ...editingArticle, image: e.target.value })}
-                  className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
-                />
+                <label className="block text-xs font-semibold text-neutral-300 mb-1">Featured Cover Image</label>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder="https://... or /images/... or /api/images/..."
+                    value={editingArticle.image}
+                    onChange={(e) => setEditingArticle({ ...editingArticle, image: e.target.value })}
+                    className="flex-1 px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono"
+                  />
+                  <label className="px-3 py-2 bg-white/10 hover:bg-white/15 text-neutral-200 hover:text-white rounded-xl text-xs font-semibold cursor-pointer shrink-0 text-center flex items-center justify-center gap-1.5 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    <span>Upload Image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        showToast('Uploading cover image to live server...', 'info');
+                        try {
+                          const compressed = await compressImageFile(file, 1400, 1400, 0.85);
+                          const url = await uploadDataUrlToServer(compressed, file.name);
+                          if (url) {
+                            setEditingArticle({ ...editingArticle, image: url });
+                            showToast('Cover image uploaded!', 'success');
+                          }
+                        } catch (err: any) {
+                          showToast('Upload failed: ' + err.message, 'error');
+                        }
+                        e.target.value = '';
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                {editingArticle.image && (
+                  <div className="mt-2 flex items-center gap-3 p-2 bg-black/40 rounded-xl border border-white/10">
+                    <img
+                      src={editingArticle.image}
+                      alt="Cover Preview"
+                      className="w-14 h-10 object-cover rounded-lg border border-white/10"
+                    />
+                    <span className="text-[11px] text-cyan-300 font-mono truncate flex-1">
+                      {editingArticle.image}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -2777,12 +2906,33 @@ export default function AdminDashboard() {
                       .replace(/(^-|-$)/g, '');
                   }
 
+                  let coverImg = editingArticle.image || '';
+                  if (coverImg.startsWith('data:image')) {
+                    showToast('Uploading cover image to server...', 'info');
+                    coverImg = await uploadDataUrlToServer(coverImg, `cover-${cleanSlug}.webp`);
+                  }
+
+                  let articleContent = editingArticle.content || '';
+                  if (articleContent.includes('data:image')) {
+                    showToast('Uploading article figures to server...', 'info');
+                    articleContent = await processHtmlAndUploadImages(articleContent);
+                  }
+
                   const articleToSave: Article = {
                     ...editingArticle,
+                    image: coverImg,
+                    content: articleContent,
                     slug: cleanSlug,
                     date: editingArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
                     published: editingArticle.published !== false,
                   };
+
+                  // 1. Direct write to individual Firestore doc for absolute persistence
+                  try {
+                    await setDoc(doc(db, 'cms_articles', articleToSave.id), articleToSave);
+                  } catch (colErr) {
+                    console.warn('Direct cms_articles write warning:', colErr);
+                  }
 
                   const exists = cmsData.articles.some((a) => a.id === articleToSave.id);
                   const updatedArticles = exists
@@ -2791,10 +2941,20 @@ export default function AdminDashboard() {
 
                   const updatedData: CmsData = { ...cmsData, articles: updatedArticles };
                   await persistCmsData(updatedData, false);
+
+                  // 2. Direct server save_article endpoint call
+                  try {
+                    await fetch('/api/cms', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ action: 'save_article', article: articleToSave, data: updatedData }),
+                    });
+                  } catch {}
+
                   setIsArticleModalOpen(false);
                   showToast(`Article "${articleToSave.title}" saved and synced to database!`, 'success');
                 }}
-                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs cursor-pointer shadow-lg shadow-cyan-500/20"
               >
                 Save Article
               </button>
