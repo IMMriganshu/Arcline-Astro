@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { CmsData, Service, Project, Article, Testimonial, NavItem, MediaAsset, Page, Submission, AdminUser } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
+import { replaceSeelutionsDeep } from '../../lib/cms';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 import { PageSectionBuilder } from './PageSectionBuilder';
 import { AdminUsersManagementView } from './AdminUsersManagementView';
@@ -72,7 +73,7 @@ export default function AdminDashboard() {
         if (local) {
           const parsed = JSON.parse(local);
           if (parsed && typeof parsed === 'object') {
-            return {
+            return replaceSeelutionsDeep({
               ...defaultCmsContent,
               ...parsed,
               hero: { ...defaultCmsContent.hero, ...(parsed.hero || {}) },
@@ -80,8 +81,8 @@ export default function AdminDashboard() {
               siteConfig: {
                 ...defaultCmsContent.siteConfig,
                 ...(parsed.siteConfig || {}),
-                name: parsed.siteConfig?.name === 'Arcline' ? 'Seelutions' : (parsed.siteConfig?.name || 'Seelutions'),
-                title: parsed.siteConfig?.title?.includes('Arcline') ? parsed.siteConfig.title.replace(/Arcline/g, 'Seelutions') : (parsed.siteConfig?.title || defaultCmsContent.siteConfig.title),
+                name: (parsed.siteConfig?.name === 'Arcline' || parsed.siteConfig?.name === 'Seelutions') ? 'seelutions' : (parsed.siteConfig?.name || 'seelutions'),
+                title: parsed.siteConfig?.title ? parsed.siteConfig.title.replace(/Arcline/g, 'seelutions').replace(/Seelutions/g, 'seelutions') : defaultCmsContent.siteConfig.title,
                 vercelDeployHookUrl: dedicatedHook || parsed.siteConfig?.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK,
               },
               comparison: Array.isArray(parsed.comparison) && parsed.comparison.length > 0 ? parsed.comparison : defaultCmsContent.comparison,
@@ -96,7 +97,7 @@ export default function AdminDashboard() {
               testimonials: Array.isArray(parsed.testimonials) && parsed.testimonials.length > 0 ? parsed.testimonials : defaultCmsContent.testimonials,
               media: Array.isArray(parsed.media) && parsed.media.length > 0 ? parsed.media : defaultCmsContent.media,
               pages: Array.isArray(parsed.pages) && parsed.pages.length > 0 ? parsed.pages : defaultCmsContent.pages,
-            };
+            });
           }
         }
       } catch (e) {}
@@ -233,8 +234,8 @@ export default function AdminDashboard() {
             siteConfig: {
               ...defaultCmsContent.siteConfig,
               ...(json.data.siteConfig || {}),
-              name: json.data.siteConfig?.name === 'Arcline' ? 'Seelutions' : (json.data.siteConfig?.name || 'Seelutions'),
-              title: json.data.siteConfig?.title?.includes('Arcline') ? json.data.siteConfig.title.replace(/Arcline/g, 'Seelutions') : (json.data.siteConfig?.title || defaultCmsContent.siteConfig.title),
+              name: (json.data.siteConfig?.name === 'Arcline' || json.data.siteConfig?.name === 'Seelutions') ? 'seelutions' : (json.data.siteConfig?.name || 'seelutions'),
+              title: json.data.siteConfig?.title ? json.data.siteConfig.title.replace(/Arcline/g, 'seelutions').replace(/Seelutions/g, 'seelutions') : defaultCmsContent.siteConfig.title,
               vercelDeployHookUrl: effectiveHook,
             },
             comparison: Array.isArray(json.data.comparison) && json.data.comparison.length > 0 ? json.data.comparison : defaultCmsContent.comparison,
@@ -252,8 +253,9 @@ export default function AdminDashboard() {
             media: Array.isArray(json.data.media) && json.data.media.length > 0 ? json.data.media : defaultCmsContent.media,
             pages: Array.isArray(json.data.pages) && json.data.pages.length > 0 ? json.data.pages : defaultCmsContent.pages,
           };
-          setCmsData(merged);
-          localStorage.setItem('arcline_cms_content_v1', JSON.stringify(merged));
+          const cleanedMerged = replaceSeelutionsDeep(merged);
+          setCmsData(cleanedMerged);
+          localStorage.setItem('arcline_cms_content_v1', JSON.stringify(cleanedMerged));
           localStorage.setItem('arcline_vercel_hook', effectiveHook);
         }
       })
@@ -475,7 +477,7 @@ export default function AdminDashboard() {
         localStorage.setItem('arcline_admin_session', 'authenticated');
         localStorage.setItem('arcline_admin_role', 'admin');
         localStorage.setItem('arcline_admin_user', JSON.stringify(u));
-        showToast('Welcome to Seelutions CMS', 'success');
+        showToast('Welcome to seelutions CMS', 'success');
         return;
       }
 
@@ -556,13 +558,13 @@ export default function AdminDashboard() {
         })
       );
 
-      const updated: CmsData = {
+      const updated: CmsData = replaceSeelutionsDeep({
         ...targetData,
         articles: compressedArticles,
         media: cleanMedia,
         lastPublishedAt: new Date().toISOString(),
         version: (targetData.version || 1) + 1,
-      };
+      });
 
       // 2. Direct browser write to individual cms_articles docs for bulletproof persistence
       for (const art of compressedArticles) {
@@ -732,12 +734,12 @@ export default function AdminDashboard() {
             <div className="inline-flex items-center justify-center p-2 mb-4">
               <img
                 src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
-                alt="Seelutions Logo"
+                alt="seelutions Logo"
                 className="h-12 w-auto object-contain filter brightness-0 invert"
               />
             </div>
             <h1 className="text-2xl font-bold font-urbanist tracking-tight text-white mb-2">
-              Seelutions CMS
+              seelutions CMS
             </h1>
             <p className="text-xs text-neutral-400 max-w-xs mx-auto">
               Authorized practice administration dashboard for patient acquisition content and live deployment.
@@ -812,13 +814,13 @@ export default function AdminDashboard() {
             <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
               <img
                 src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
-                alt="Seelutions Logo"
+                alt="seelutions Logo"
                 className="w-full h-full object-contain filter brightness-0 invert"
               />
             </div>
             <div>
               <span className="font-bold text-white text-base tracking-tight font-urbanist group-hover:text-cyan-400 transition-colors">
-                Seelutions CMS
+                seelutions CMS
               </span>
               <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
                 Headless Studio
@@ -2120,7 +2122,7 @@ export default function AdminDashboard() {
                 <div>
                   <h2 className="text-2xl font-bold font-urbanist text-white">Why Traditional Models Fail Plastic Surgeons</h2>
                   <p className="text-xs text-neutral-400">
-                    Customize the homepage comparison cards between Traditional Agencies (Rented Clicks) and The Seelutions Growth Blueprint.
+                    Customize the homepage comparison cards between Traditional Agencies (Rented Clicks) and The seelutions Growth Blueprint.
                   </p>
                 </div>
 
@@ -2267,11 +2269,11 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* Right Column: The Seelutions Growth Blueprint */}
+                  {/* Right Column: The seelutions Growth Blueprint */}
                   <div className="bg-neutral-900/80 border border-emerald-500/20 rounded-2xl p-6 space-y-4">
                     <div className="flex items-center justify-between pb-2 border-b border-white/5">
                       <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
-                        Right Column: Seelutions Blueprint
+                        Right Column: seelutions Blueprint
                       </h3>
                       <span className="text-[10px] text-neutral-500 font-mono">
                         {(compContent.seelutionsItems || []).length} Points
@@ -2352,7 +2354,7 @@ export default function AdminDashboard() {
                         onClick={() => {
                           const updated = [
                             ...(compContent.seelutionsItems || []),
-                            { id: `seel-${Date.now()}`, title: 'New Growth Advantage', description: 'Description of Seelutions advantage...' },
+                            { id: `seel-${Date.now()}`, title: 'New Growth Advantage', description: 'Description of seelutions advantage...' },
                           ];
                           setCmsData({
                             ...cmsData,
@@ -2362,7 +2364,7 @@ export default function AdminDashboard() {
                         }}
                         className="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
                       >
-                        + Add Seelutions Blueprint Point
+                        + Add seelutions Blueprint Point
                       </button>
                     </div>
                   </div>

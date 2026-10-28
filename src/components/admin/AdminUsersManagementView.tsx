@@ -541,7 +541,7 @@ export function AdminUsersManagementView({
                     Create New Administrator
                   </h3>
                   <p className="text-[11px] text-neutral-400">
-                    Grant administrative credentials to the Seelutions Headless CMS.
+                    Grant administrative credentials to the seelutions Headless CMS.
                   </p>
                 </div>
               </div>

@@ -340,7 +340,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       headline: "Why Traditional Models Fail Plastic Surgeons",
       traditionalTitle: "Traditional Agencies (Rented Clicks)",
       traditionalItems: [],
-      seelutionsTitle: "The Seelutions Growth Blueprint",
+      seelutionsTitle: "The seelutions Growth Blueprint",
       seelutionsItems: [],
     };
     return {
@@ -348,7 +348,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       headline: base.headline || "Why Traditional Models Fail Plastic Surgeons",
       traditionalTitle: base.traditionalTitle || "Traditional Agencies (Rented Clicks)",
       traditionalItems: safeArray(base.traditionalItems, defaultCmsContent.comparisonContent?.traditionalItems || []),
-      seelutionsTitle: base.seelutionsTitle || "The Seelutions Growth Blueprint",
+      seelutionsTitle: base.seelutionsTitle || "The seelutions Growth Blueprint",
       seelutionsItems: safeArray(base.seelutionsItems, defaultCmsContent.comparisonContent?.seelutionsItems || []),
     };
   });
@@ -381,7 +381,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
     ...(isHome ? [
       { id: 'hero', name: 'Hero & Masked Typography', icon: '⚡', description: 'Headline, subheadline, CTAs, video masks and background media' },
       { id: 'about', name: 'About Us & Practice Growth', icon: '🏢', description: 'Editorial narrative, eyeball aesthetic & retainer milestones' },
-      { id: 'comparison', name: 'Why Traditional Models Fail Plastic Surgeons', icon: '⚖️', description: 'COMPARING: Rented Clicks vs. Owned Authority & Seelutions Growth Blueprint' },
+      { id: 'comparison', name: 'Why Traditional Models Fail Plastic Surgeons', icon: '⚖️', description: 'COMPARING: Rented Clicks vs. Owned Authority & seelutions Growth Blueprint' },
       { id: 'services', name: 'Selected Services (01–05)', icon: '💼', description: '5 core surgical acquisition services, copy and cover images' },
       { id: 'projects', name: '10-Year Case Study Timeline', icon: '📈', description: 'Practice growth trajectory from 2016 to modern AI search' },
       { id: 'video', name: 'Architectural Video Showcase', icon: '🎥', description: 'Cinematic looping showcase video and poster frame media' },
@@ -438,7 +438,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
           <div className="h-8 w-auto flex items-center justify-center p-1">
             <img
               src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
-              alt="Seelutions Logo"
+              alt="seelutions Logo"
               className="h-full w-auto object-contain filter brightness-0 invert"
             />
           </div>
@@ -449,7 +449,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                 /{currentPage.slug}
               </span>
             </div>
-            <p className="text-[11px] text-neutral-400">Seelutions Section-Wise Page Content &amp; Media Assets Editor</p>
+            <p className="text-[11px] text-neutral-400">seelutions Section-Wise Page Content &amp; Media Assets Editor</p>
           </div>
         </div>
 
@@ -792,8 +792,8 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
 
                     {/* About Section Media Control */}
                     <MediaControlField
-                      label="Visual Poster Image / Eyeball Graphic"
-                      value={localAbout.image || '/images/Eyeball-BC.webp'}
+                      label="Dr. Diepenbrock Video Poster / Static Thumbnail"
+                      value={localAbout.image || '/images/dr-diepenbrock-thumbnail.jpg'}
                       onChange={(url) => {
                         setLocalAbout({ ...localAbout, image: url });
                         setHasChanges(true);
@@ -957,7 +957,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                           <span>Why Traditional Models Fail Plastic Surgeons Content</span>
                         </h3>
                         <p className="text-xs text-neutral-400 mt-0.5">
-                          Update comparison headlines, traditional vs Seelutions points, and metric comparison table.
+                          Update comparison headlines, traditional vs seelutions points, and metric comparison table.
                         </p>
                       </div>
                     </div>
@@ -1077,19 +1077,19 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       </div>
                     </div>
 
-                    {/* Column 2: Seelutions Model */}
+                    {/* Column 2: seelutions Model */}
                     <div className="p-4 bg-cyan-950/20 border border-cyan-500/20 rounded-2xl space-y-4">
                       <div className="flex items-center justify-between pb-2 border-b border-cyan-500/20">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2">
                           <span>✨</span>
-                          <span>Column 2: Seelutions Blueprint Title</span>
+                          <span>Column 2: seelutions Blueprint Title</span>
                         </h4>
                         <button
                           type="button"
                           onClick={() => {
                             const updated = [
                               ...(localComparisonContent.seelutionsItems || []),
-                              { id: `seel-${Date.now()}`, title: 'New Advantage', description: 'Description of Seelutions advantage' },
+                              { id: `seel-${Date.now()}`, title: 'New Advantage', description: 'Description of seelutions advantage' },
                             ];
                             setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
                             setHasChanges(true);
@@ -1108,7 +1108,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                           setHasChanges(true);
                         }}
                         className="w-full px-4 py-2 bg-black/50 border border-cyan-500/30 rounded-xl text-white text-xs font-bold"
-                        placeholder="The Seelutions Growth Blueprint"
+                        placeholder="The seelutions Growth Blueprint"
                       />
 
                       <div className="space-y-3">
@@ -1166,7 +1166,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                             Side-by-Side Metric Comparison Table Rows
                           </h4>
                           <p className="text-[11px] text-neutral-400 mt-0.5">
-                            Detailed line-by-line metrics comparing traditional models vs Seelutions organic authority.
+                            Detailed line-by-line metrics comparing traditional models vs seelutions organic authority.
                           </p>
                         </div>
                         <button
@@ -1176,7 +1176,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                               id: `comp-${Date.now()}`,
                               metric: 'New Comparison Metric',
                               rentedClicks: 'Traditional agency performance',
-                              organicAuthority: 'Seelutions performance',
+                              organicAuthority: 'seelutions performance',
                             };
                             setLocalComparison([...localComparison, newRow]);
                             setHasChanges(true);
@@ -1239,7 +1239,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                               </div>
                               <div>
                                 <label className="block text-[10px] uppercase font-semibold text-cyan-400 mb-1">
-                                  Seelutions Authority
+                                  seelutions Authority
                                 </label>
                                 <input
                                   type="text"

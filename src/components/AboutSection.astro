@@ -1,9 +1,10 @@
 ---
 import SectionLabel from "./SectionLabel.astro";
-import Button from "./Button.astro";
 import { getAboutContent } from "../lib/cms";
 
 const about = await getAboutContent();
+const thumbnailImage = about.image || "/images/dr-diepenbrock-thumbnail.jpg";
+const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov";
 ---
 
 <section id="about" class="pt-6 pb-12 md:pt-12 md:pb-20 relative overflow-hidden bg-white">
@@ -26,46 +27,153 @@ const about = await getAboutContent();
       </p>
     </div>
 
-    <!-- 2-Column Layout: Left = Video Testimonial, Right = Growth Timeline Block (Equal Height Alignment) -->
+    <!-- 2-Column Layout: Left = Video Testimonial (Click-to-Play), Right = Growth Timeline Block -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
       
-      <!-- Left Column: Video Testimonial Player (Full Height Match) -->
+      <!-- Left Column: Video Testimonial Player (Click-to-play with High-Trust Visual Hook) -->
       <div class="lg:col-span-5 flex flex-col" data-animate="scale-in">
-        <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-lg border border-neutral-200/80 w-full h-full min-h-[380px] max-h-[520px] bg-neutral-950 flex flex-col justify-center group">
+        <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-neutral-200/90 w-full bg-neutral-950 flex flex-col justify-center min-h-[440px] sm:min-h-[480px] lg:min-h-[540px] h-full group">
           
-          <!-- Video Badge Overlay -->
-          <div class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-md pointer-events-none">
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span>Dr. Diepenbrock Testimonial</span>
-          </div>
-
-          <!-- Unmute / Sound Toggle Button Overlay -->
-          <button
-            id="unmute-testimonial-btn"
-            type="button"
-            class="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/80 hover:bg-black backdrop-blur-md border border-white/30 text-white text-xs font-bold shadow-lg transition-all cursor-pointer hover:scale-105 active:scale-95"
-            aria-label="Toggle sound"
-          >
-            <span id="sound-icon">🔇</span>
-            <span id="sound-text">Unmute</span>
-          </button>
-
-          <!-- Video Element (Autoplay, Muted, Perfectly Fitted) -->
+          <!-- Video Element (NO AUTOPLAY, click-to-play, controls enabled) -->
           <video
             id="testimonial-video"
-            autoplay
-            muted
-            loop
             playsinline
             controls
-            preload="auto"
-            poster={about.image || "/images/Eyeball-BC.webp"}
-            class="w-full h-full object-cover object-top rounded-2xl md:rounded-3xl bg-neutral-950"
+            preload="metadata"
+            poster={thumbnailImage}
+            class="w-full h-full object-contain md:object-cover object-top rounded-2xl md:rounded-3xl bg-neutral-950"
+            aria-label="How seelutions Scaled Surgical Consultations — Dr. Ryan Diepenbrock Video Interview"
           >
-            <source src={about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov"} type="video/quicktime" />
-            <source src={about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov"} type="video/mp4" />
+            <source src={videoSource} type="video/quicktime" />
+            <source src={videoSource} type="video/mp4" />
+            <track
+              kind="subtitles"
+              label="English"
+              srclang="en"
+              src="/captions/diepenbrock-captions.vtt"
+              default
+            />
             Your browser does not support playing this testimonial video.
           </video>
+
+          <!-- Live On-Screen Captions / Subtitles Overlay (for sound-off viewing) -->
+          <div
+            id="live-captions-overlay"
+            class="absolute bottom-16 left-4 right-4 z-20 pointer-events-none transition-opacity duration-200 opacity-0"
+            aria-live="polite"
+          >
+            <div
+              id="live-caption-box"
+              class="mx-auto max-w-[90%] px-3.5 py-2 rounded-xl bg-black/90 backdrop-blur-md text-white text-xs sm:text-sm font-semibold text-center border border-white/20 shadow-2xl leading-snug tracking-tight"
+            >
+              "By my side for over 10 years."
+            </div>
+          </div>
+
+          <!-- Video Controls Top Bar (Visible when playing) -->
+          <div
+            id="player-header-bar"
+            class="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none opacity-0 transition-opacity duration-300"
+          >
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-md pointer-events-auto">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="truncate">Dr. Diepenbrock Interview</span>
+            </div>
+            
+            <button
+              id="toggle-cc-btn"
+              type="button"
+              class="pointer-events-auto px-3 py-1.5 rounded-full bg-black/80 hover:bg-black text-white text-xs font-bold border border-white/30 backdrop-blur-md transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95 flex items-center gap-1.5"
+              aria-label="Toggle Subtitles"
+            >
+              <span class="px-1 py-0.5 rounded bg-neutral-700 text-[10px] uppercase font-black">CC</span>
+              <span id="cc-status-text">On</span>
+            </button>
+          </div>
+
+          <!-- Custom Static Thumbnail & High-Trust Click-to-Play Overlay -->
+          <button
+            id="video-thumbnail-overlay"
+            type="button"
+            class="absolute inset-0 z-30 w-full h-full text-left p-0 border-0 cursor-pointer overflow-hidden rounded-2xl md:rounded-3xl transition-all duration-300 focus:outline-none group/thumb"
+            aria-label="Click to play video testimonial from Dr. Ryan Diepenbrock"
+          >
+            <!-- High-Resolution Static Thumbnail Image -->
+            <img
+              src={thumbnailImage}
+              alt="Dr. Ryan Diepenbrock, MD, Facial Cosmetic Surgeon"
+              class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/thumb:scale-102"
+              loading="eager"
+            />
+
+            <!-- Subtle Gradient Scrims for Readability -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40 pointer-events-none"></div>
+
+            <!-- Top Badges Overlay -->
+            <div class="absolute top-4 left-4 right-4 flex items-center justify-between gap-2 pointer-events-none">
+              <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-lg">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>Play Testimonial (1:20)</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-neutral-200 text-[11px] font-medium shadow-md">
+                <span class="px-1 py-0.2 rounded bg-neutral-700 text-[9px] font-bold text-white">CC</span>
+                <span>Captions Available</span>
+              </span>
+            </div>
+
+            <!-- Prominent Centered Play Button -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="relative flex items-center justify-center">
+                <!-- Outer Pulse Rings on Hover -->
+                <div class="absolute w-24 h-24 rounded-full bg-red-600/30 animate-ping group-hover/thumb:bg-red-600/50"></div>
+                <div class="absolute w-20 h-20 rounded-full bg-red-600/40"></div>
+                
+                <!-- Main Red Play Button -->
+                <div class="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-gradient-to-tr from-red-600 to-red-500 shadow-2xl flex items-center justify-center text-white transform transition-transform duration-300 ease-out group-hover/thumb:scale-110 group-active/thumb:scale-95 border-2 border-white/40">
+                  <svg class="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-0.5" viewBox="0 0 24 24">
+                    <polygon points="6 3 20 12 6 21 6 3"></polygon>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Floating Quote & Call-to-Action Bar -->
+            <div class="absolute bottom-4 left-4 right-4 pointer-events-none">
+              <div class="p-3.5 sm:p-4 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-white shadow-xl flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-xs sm:text-sm font-bold text-white truncate leading-tight">
+                    "By my side for over 10 years."
+                  </p>
+                  <p class="text-[11px] sm:text-xs text-neutral-300 truncate mt-0.5">
+                    How seelutions scaled Dr. Diepenbrock's practice to market dominance
+                  </p>
+                </div>
+                <div class="shrink-0 px-3 py-1.5 rounded-lg bg-red-600 group-hover/thumb:bg-red-500 text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5">
+                  <span>Watch Video</span>
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <!-- High-Trust Text Title Banner Directly Under Video Player -->
+        <div class="mt-3.5 px-4 py-3 rounded-2xl bg-neutral-900 border border-neutral-800 text-white shadow-sm flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-600/20 text-red-400 shrink-0 text-xs font-bold">
+              <svg class="w-3 h-3 fill-current ml-0.5" viewBox="0 0 24 24">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </span>
+            <p class="text-xs sm:text-sm font-semibold text-neutral-100 truncate">
+              How seelutions Scaled Surgical Consultations — Dr. Ryan Diepenbrock, MD, Facial Cosmetic Surgeon
+            </p>
+          </div>
+          <span class="text-[10px] sm:text-[11px] font-bold text-neutral-300 uppercase tracking-wider shrink-0 bg-neutral-800 px-2.5 py-1 rounded-md border border-neutral-700/60">
+            Authentic Video
+          </span>
         </div>
       </div>
 
@@ -95,59 +203,100 @@ const about = await getAboutContent();
 </section>
 
 <script>
-  function setupTestimonialVideo() {
+  // Closed captions / subtitles cues data for sound-off viewing
+  const captionCues = [
+    { start: 0.0, end: 4.2, text: '"By my side for over 10 years."' },
+    { start: 4.5, end: 9.8, text: "How seelutions scaled Dr. Diepenbrock's facial cosmetic surgery practice from California to Indiana." },
+    { start: 10.0, end: 16.2, text: "In an industry where practices switch marketing agencies every six to twelve months," },
+    { start: 16.5, end: 22.8, text: "Dr. Diepenbrock has trusted our search and patient acquisition architecture for a full decade." },
+    { start: 23.0, end: 28.5, text: '"I have no idea what you are doing, but just keep doing it."' },
+    { start: 28.8, end: 35.2, text: '"We are consistently hearing new patients say they found us on ChatGPT and AI search when looking for a cosmetic surgeon."' },
+    { start: 35.5, end: 41.8, text: "Scaling surgical consultations with high-converting procedure hubs and Map Pack entity dominance." },
+    { start: 42.0, end: 48.0, text: "Monthly reinvestment grew nearly 4x, driven entirely by compounding patient consult revenue." },
+    { start: 48.2, end: 54.0, text: "Dr. Ryan Diepenbrock, DDS, FAACS — Diepenbrock Facial Cosmetic Surgery, Fort Wayne, IN." },
+  ];
+
+  function setupClickToPlayVideo() {
     const video = document.getElementById('testimonial-video') as HTMLVideoElement | null;
-    const unmuteBtn = document.getElementById('unmute-testimonial-btn');
-    const soundIcon = document.getElementById('sound-icon');
-    const soundText = document.getElementById('sound-text');
+    const overlay = document.getElementById('video-thumbnail-overlay');
+    const headerBar = document.getElementById('player-header-bar');
+    const captionsOverlay = document.getElementById('live-captions-overlay');
+    const captionBox = document.getElementById('live-caption-box');
+    const toggleCcBtn = document.getElementById('toggle-cc-btn');
+    const ccStatusText = document.getElementById('cc-status-text');
 
-    if (video) {
-      // Ensure autoplay muted starts automatically
-      video.muted = true;
-      video.play().catch(() => {
-        // Autoplay handled by browser policy
-      });
+    if (!video) return;
 
-      if (unmuteBtn) {
-        unmuteBtn.addEventListener('click', () => {
-          if (video.muted) {
-            video.muted = false;
-            if (soundIcon) soundIcon.textContent = '🔊';
-            if (soundText) soundText.textContent = 'Sound On';
-            unmuteBtn.classList.remove('bg-black/80');
-            unmuteBtn.classList.add('bg-cyan-600');
-          } else {
-            video.muted = true;
-            if (soundIcon) soundIcon.textContent = '🔇';
-            if (soundText) soundText.textContent = 'Unmute';
-            unmuteBtn.classList.remove('bg-cyan-600');
-            unmuteBtn.classList.add('bg-black/80');
-          }
+    let captionsEnabled = true;
+
+    // Strict requirement: Ensure autoplay is NEVER active on page load
+    video.autoplay = false;
+    video.pause();
+
+    // Click-to-play trigger on static thumbnail
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        // Smoothly hide the static thumbnail overlay
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        
+        // Show player top bar and captions
+        if (headerBar) headerBar.classList.remove('opacity-0');
+        if (captionsOverlay) captionsOverlay.classList.remove('opacity-0');
+
+        // Play video with audio enabled
+        video.muted = false;
+        video.play().catch((err) => {
+          console.warn('Playback gesture required or blocked:', err);
+          // Fallback to muted playback if user device policy requires initial mute
+          video.muted = true;
+          video.play().catch(() => {});
         });
-      }
+      });
+    }
 
-      // Sync sound button state if user interacts with native controls
-      video.addEventListener('volumechange', () => {
-        if (video.muted || video.volume === 0) {
-          if (soundIcon) soundIcon.textContent = '🔇';
-          if (soundText) soundText.textContent = 'Unmute';
-          if (unmuteBtn) {
-            unmuteBtn.classList.remove('bg-cyan-600');
-            unmuteBtn.classList.add('bg-black/80');
-          }
+    // Live Subtitles sync on timeupdate
+    video.addEventListener('timeupdate', () => {
+      if (!captionsEnabled || !captionBox || !captionsOverlay) return;
+
+      const currentTime = video.currentTime;
+      const activeCue = captionCues.find(
+        (cue) => currentTime >= cue.start && currentTime <= cue.end
+      );
+
+      if (activeCue) {
+        captionBox.textContent = activeCue.text;
+        captionsOverlay.classList.remove('opacity-0');
+      } else {
+        captionsOverlay.classList.add('opacity-0');
+      }
+    });
+
+    // Subtitles (CC) Toggle button
+    if (toggleCcBtn && ccStatusText) {
+      toggleCcBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        captionsEnabled = !captionsEnabled;
+        if (captionsEnabled) {
+          ccStatusText.textContent = 'On';
+          toggleCcBtn.classList.remove('bg-neutral-800');
+          toggleCcBtn.classList.add('bg-black/80');
+          if (captionsOverlay) captionsOverlay.classList.remove('opacity-0');
         } else {
-          if (soundIcon) soundIcon.textContent = '🔊';
-          if (soundText) soundText.textContent = 'Sound On';
-          if (unmuteBtn) {
-            unmuteBtn.classList.remove('bg-black/80');
-            unmuteBtn.classList.add('bg-cyan-600');
-          }
+          ccStatusText.textContent = 'Off';
+          toggleCcBtn.classList.add('bg-neutral-800');
+          toggleCcBtn.classList.remove('bg-black/80');
+          if (captionsOverlay) captionsOverlay.classList.add('opacity-0');
         }
       });
     }
+
+    // Video end state
+    video.addEventListener('ended', () => {
+      if (captionsOverlay) captionsOverlay.classList.add('opacity-0');
+    });
   }
 
-  // Initial setup and re-run on client navigation
-  setupTestimonialVideo();
-  document.addEventListener('astro:page-load', setupTestimonialVideo);
+  // Initialize on load and re-run on client navigation
+  setupClickToPlayVideo();
+  document.addEventListener('astro:page-load', setupClickToPlayVideo);
 </script>

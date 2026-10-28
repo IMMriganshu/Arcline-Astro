@@ -47,7 +47,7 @@ if (!key) {
 
 const pageSeo = cmsData.pageSeoMap?.[key || 'home'];
 
-const pageTitle = propTitle || pageSeo?.title || globalSeo?.defaultTitle || siteConfig.title || siteConfig.name || "Seelutions — Patient Acquisition & Digital Authority Studio";
+const pageTitle = propTitle || pageSeo?.title || globalSeo?.defaultTitle || siteConfig.title || siteConfig.name || "seelutions — Patient Acquisition & Digital Authority Studio";
 const pageDescription = propDescription || pageSeo?.description || globalSeo?.defaultDescription || siteConfig.description || "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.";
 const ogTitle = pageSeo?.ogTitle || pageTitle;
 const ogDescription = pageSeo?.ogDescription || pageDescription;
@@ -81,7 +81,7 @@ if (!schemaJsonObj) {
       schemaJsonObj = {
         "@context": "https://schema.org",
         "@type": "MedicalBusiness",
-        "name": siteConfig.name || "Seelutions",
+        "name": siteConfig.name || "seelutions",
         "url": siteOrigin,
         "logo": `${siteOrigin}/images/seelutions%20new%20updatedLogo.png`,
         "image": `${siteOrigin}${ogImage}`,
@@ -112,7 +112,7 @@ if (!schemaJsonObj) {
       schemaJsonObj = {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": siteConfig.name || "Seelutions",
+        "name": siteConfig.name || "seelutions",
         "url": siteOrigin,
         "logo": `${siteOrigin}/images/seelutions%20new%20updatedLogo.png`,
         "description": pageDescription,
@@ -153,7 +153,7 @@ if (!schemaJsonObj) {
 
     <!-- Open Graph Tags -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={siteConfig.name || "Seelutions"} />
+    <meta property="og:site_name" content={siteConfig.name || "seelutions"} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:image" content={ogImage} />

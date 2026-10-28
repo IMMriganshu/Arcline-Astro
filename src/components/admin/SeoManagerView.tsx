@@ -70,7 +70,7 @@ export function SeoManagerView({
     const updatedArticles = (cmsData.articles || []).map((art) => {
       if (art.id === articleId) {
         const currentSeo = art.seo || {
-          title: `${art.title} — Seelutions Intelligence`,
+          title: `${art.title} — seelutions Intelligence`,
           description: art.excerpt,
           canonicalUrl: `${cmsData.seoSettings?.siteUrl || 'https://seelutions.com'}/blog/${art.slug}`,
           ogTitle: art.title,
@@ -192,7 +192,7 @@ export function SeoManagerView({
   const selectedPageSeo = getSeoForPage(selectedPageKey);
   const activeArticle = (cmsData.articles || []).find((a) => a.id === selectedArticleId) || cmsData.articles?.[0];
   const activeArticleSeo = activeArticle?.seo || {
-    title: activeArticle ? `${activeArticle.title} — Seelutions Intelligence` : '',
+    title: activeArticle ? `${activeArticle.title} — seelutions Intelligence` : '',
     description: activeArticle?.excerpt || '',
     canonicalUrl: activeArticle ? `${cmsData.seoSettings?.siteUrl || 'https://seelutions.com'}/blog/${activeArticle.slug}` : '',
     ogTitle: activeArticle?.title || '',
@@ -326,7 +326,7 @@ export function SeoManagerView({
                 type="text"
                 value={selectedPageSeo.title || ''}
                 onChange={(e) => updatePageSeo(selectedPageKey, { title: e.target.value })}
-                placeholder="Seelutions — Plastic Surgery Patient Acquisition & Search Authority"
+                placeholder="seelutions — Plastic Surgery Patient Acquisition & Search Authority"
                 className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400 font-medium"
               />
             </div>
@@ -468,7 +468,7 @@ export function SeoManagerView({
                   rows={5}
                   value={selectedPageSeo.customSchemaJson || ''}
                   onChange={(e) => updatePageSeo(selectedPageKey, { customSchemaJson: e.target.value })}
-                  placeholder='{\n  "@context": "https://schema.org",\n  "@type": "MedicalBusiness",\n  "name": "Seelutions"\n}'
+                  placeholder='{\n  "@context": "https://schema.org",\n  "@type": "MedicalBusiness",\n  "name": "seelutions"\n}'
                   className="w-full p-3 bg-black/80 border border-white/15 rounded-xl text-cyan-300 text-xs font-mono leading-relaxed focus:outline-none focus:border-cyan-400"
                 />
               </div>
@@ -719,7 +719,7 @@ export function SeoManagerView({
                 <span className="text-[10px] font-mono text-neutral-500">OpenGraph</span>
               </div>
               <div className="bg-[#1e1e24] p-3.5 rounded-2xl border-l-4 border-cyan-400 space-y-2">
-                <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Seelutions Studio</p>
+                <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">seelutions Studio</p>
                 <h5 className="text-xs font-bold text-white leading-snug">
                   {selectedPageSeo.ogTitle || selectedPageSeo.title}
                 </h5>

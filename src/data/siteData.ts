@@ -44,8 +44,8 @@ export interface Article {
 }
 
 export const siteConfig = {
-  name: "Seelutions",
-  title: "Seelutions — Patient Acquisition & Digital Authority Studio",
+  name: "seelutions",
+  title: "seelutions — Patient Acquisition & Digital Authority Studio",
   description: "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.",
   email: "practice@seelutions.com",
   phone: "(555) 345-6789",

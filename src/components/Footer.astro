@@ -8,15 +8,17 @@ const footer = await getFooterContent();
 const navItems = await getNavigation();
 ---
 
-<footer id="contact" class="bg-[#050505] text-white pt-20 pb-8">
+<footer id="contact" class="bg-[#030712] text-white pt-20 pb-8">
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <!-- 4-Column Footer Information Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-10 md:py-20 border-b border-white/10">
       
-      <!-- Col 1: Logo, Tagline, Positioning -->
+      <!-- Col 1: Logo, Positioning -->
       <div class="flex flex-col gap-6">
         <Logo variant="light" size="lg" />
-        <p class="text-xl font-medium tracking-tight">{footer.tagline || "be seen. be chosen."}</p>
+        {footer.tagline && footer.tagline.toLowerCase().trim() !== "be seen. be chosen." && (
+          <p class="text-xl font-medium tracking-tight">{footer.tagline}</p>
+        )}
         <p class="text-sm text-neutral-400 leading-relaxed">
           {footer.description || "Helping surgical practices dominate local and AI-driven search landscapes."}
         </p>
@@ -66,11 +68,11 @@ const navItems = await getNavigation();
           Legal
         </h3>
         <p class="text-sm text-neutral-400 leading-relaxed mb-3">
-          {footer.copyrightText || "© 2026 seelutions. All Rights Reserved."}
+          {(footer.copyrightText || "© 2026 seelutions. All Rights Reserved.").replace(/Seelutions/g, 'seelutions')}
         </p>
         {footer.disclaimer && (
           <p class="text-xs text-neutral-500 leading-relaxed mb-4">
-            {footer.disclaimer}
+            {footer.disclaimer.replace(/Seelutions/g, 'seelutions')}
           </p>
         )}
         <a

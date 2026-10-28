@@ -17,7 +17,7 @@ const relatedArticles = allArticles
   .filter((a) => a.published && a.slug !== article.slug)
   .slice(0, 3);
 const articleSeo = article.seo;
-const articleTitle = articleSeo?.title || `${article.title} — Seelutions Intelligence`;
+const articleTitle = articleSeo?.title || `${article.title} — seelutions Intelligence`;
 const articleDesc = articleSeo?.description || article.excerpt;
 const articleImage = articleSeo?.ogImage || article.image;
 const articleCanonical = articleSeo?.canonicalUrl || Astro.url.href;
@@ -31,11 +31,11 @@ const articleSchema = {
   "datePublished": article.date ? new Date(article.date).toISOString() : new Date().toISOString(),
   "author": {
     "@type": "Organization",
-    "name": "Seelutions Studio"
+    "name": "seelutions Studio"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Seelutions",
+    "name": "seelutions",
     "logo": {
       "@type": "ImageObject",
       "url": `${Astro.url.origin}/images/seelutions%20new%20updatedLogo.png`
@@ -95,7 +95,7 @@ const articleSchema = {
             </div>
             <div>
               <div class="text-sm font-bold text-white font-urbanist">Patient Grower Intelligence</div>
-              <div class="text-xs text-neutral-400">Seelutions Practice Growth Strategy</div>
+              <div class="text-xs text-neutral-400">seelutions Practice Growth Strategy</div>
             </div>
           </div>
 
@@ -133,10 +133,10 @@ const articleSchema = {
 
       <!-- Article End Author Bio & Practice Growth Banner -->
       <div class="mt-16 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-900 group">
-        <a href="/#contact" class="block transition-transform duration-300 hover:scale-[1.005]" title="Request Your Free Practice Audit - Seelutions">
+        <a href="/#contact" class="block transition-transform duration-300 hover:scale-[1.005]" title="Request Your Free Practice Audit - seelutions">
           <img
             src="/images/seelution_Author.png"
-            alt="Langley Holland, President of Seelutions - Ready to Capture GLP-1 Demand? Call (804) 707-5821"
+            alt="Langley Holland, President of seelutions - Ready to Capture GLP-1 Demand? Call (804) 707-5821"
             class="w-full h-auto object-cover rounded-2xl block"
             loading="lazy"
           />

@@ -35,6 +35,26 @@ function isObject(item: any): boolean {
 }
 
 /**
+ * Recursively normalize any occurrence of "Seelutions" to lowercase "seelutions"
+ */
+export function replaceSeelutionsDeep<T>(obj: T): T {
+  if (typeof obj === 'string') {
+    return (obj as string).replace(/Seelutions/g, 'seelutions') as unknown as T;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => replaceSeelutionsDeep(item)) as unknown as T;
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const res: any = {};
+    for (const key of Object.keys(obj as object)) {
+      res[key] = replaceSeelutionsDeep((obj as any)[key]);
+    }
+    return res;
+  }
+  return obj;
+}
+
+/**
  * Server-side helper to read persistent CMS data from Firestore
  */
 export async function getServerCmsData(): Promise<CmsData> {
@@ -46,15 +66,18 @@ export async function getServerCmsData(): Promise<CmsData> {
     if (docSnap.exists()) {
       remoteData = docSnap.data() as CmsData;
       if (remoteData?.siteConfig) {
-        if (remoteData.siteConfig.name === 'Arcline') {
-          remoteData.siteConfig.name = 'Seelutions';
+        if (remoteData.siteConfig.name === 'Arcline' || remoteData.siteConfig.name === 'Seelutions') {
+          remoteData.siteConfig.name = 'seelutions';
         }
-        if (remoteData.siteConfig.title && remoteData.siteConfig.title.includes('Arcline')) {
-          remoteData.siteConfig.title = remoteData.siteConfig.title.replace(/Arcline/g, 'Seelutions');
+        if (remoteData.siteConfig.title) {
+          remoteData.siteConfig.title = remoteData.siteConfig.title.replace(/Arcline/g, 'seelutions').replace(/Seelutions/g, 'seelutions');
         }
         if (remoteData.siteConfig.description && remoteData.siteConfig.description.includes('Distinguished architectural agency')) {
           remoteData.siteConfig.description = defaultCmsContent.siteConfig.description;
         }
+      }
+      if (remoteData?.comparisonContent?.seelutionsTitle) {
+        remoteData.comparisonContent.seelutionsTitle = remoteData.comparisonContent.seelutionsTitle.replace(/Seelutions/g, 'seelutions');
       }
     }
   } catch (err) {
@@ -94,9 +117,9 @@ export async function getServerCmsData(): Promise<CmsData> {
   }
 
   if (remoteData) {
-    return deepMerge(defaultCmsContent, remoteData);
+    return replaceSeelutionsDeep(deepMerge(defaultCmsContent, remoteData));
   }
-  return defaultCmsContent;
+  return replaceSeelutionsDeep(defaultCmsContent);
 }
 
 /**
@@ -254,10 +277,11 @@ export async function getVideoShowcaseContent() {
 export async function saveServerCmsData(data: CmsData): Promise<boolean> {
   let mainSuccess = false;
   try {
+    const cleaned = replaceSeelutionsDeep(data);
     const updated = {
-      ...data,
+      ...cleaned,
       lastPublishedAt: new Date().toISOString(),
-      version: (data.version || 1) + 1,
+      version: (cleaned.version || 1) + 1,
     };
     
     await setDoc(doc(db, CMS_COLLECTION, CMS_DOC_ID), updated);
@@ -316,18 +340,12 @@ export function getClientCmsData(): CmsData {
     const local = localStorage.getItem(CMS_STORAGE_KEY);
     if (local) {
       const parsed = JSON.parse(local);
-      if (parsed?.siteConfig) {
-        if (parsed.siteConfig.name === 'Arcline') parsed.siteConfig.name = 'Seelutions';
-        if (parsed.siteConfig.title && parsed.siteConfig.title.includes('Arcline')) {
-          parsed.siteConfig.title = parsed.siteConfig.title.replace(/Arcline/g, 'Seelutions');
-        }
-      }
-      return parsed;
+      return replaceSeelutionsDeep(deepMerge(defaultCmsContent, parsed));
     }
   } catch (e) {
     console.warn('Failed to parse localStorage CMS data:', e);
   }
-  return defaultCmsContent;
+  return replaceSeelutionsDeep(defaultCmsContent);
 }
 
 /**
@@ -335,10 +353,11 @@ export function getClientCmsData(): CmsData {
  */
 export async function saveClientCmsData(data: CmsData): Promise<{ success: boolean; data?: CmsData; error?: string }> {
   try {
+    const cleaned = replaceSeelutionsDeep(data);
     const updated: CmsData = {
-      ...data,
+      ...cleaned,
       lastPublishedAt: new Date().toISOString(),
-      version: (data.version || 1) + 1,
+      version: (cleaned.version || 1) + 1,
     };
 
     if (typeof window !== 'undefined') {
