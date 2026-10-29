@@ -111,6 +111,7 @@ export interface Article {
   excerpt: string;
   content: string;
   image: string;
+  ctaImage?: string;
   published: boolean;
   seo?: PageSeoMetadata;
 }
