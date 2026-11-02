@@ -86,17 +86,17 @@ export const pagesDropdownData = {
 export const servicesData: Service[] = [
   {
     number: "01",
-    title: "Local SEO & Google Maps",
-    description: "We optimize your Google Business Profile, local citations, and schema markup so your practice occupies the top 3 local Map Pack spots for high-value surgical searches in your metro area.",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=85",
-    imageAlt: "Modern medical aesthetic clinic office and local map search optimization",
-  },
-  {
-    number: "02",
     title: "AI Search & Overviews",
     description: "Modern surgical patients ask AI assistants (ChatGPT, Perplexity, Google AI Overviews) for doctor recommendations. We structure your digital entity so AI engines cite your practice as the premier surgical authority in your region.",
     image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=85",
     imageAlt: "Digital technology data analytics representing Generative AI search and entity building",
+  },
+  {
+    number: "02",
+    title: "Local SEO & Google Maps",
+    description: "We optimize your Google Business Profile, local citations, and schema markup so your practice occupies the top 3 local Map Pack spots for high-value surgical searches in your metro area.",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=85",
+    imageAlt: "Modern medical aesthetic clinic office and local map search optimization",
   },
   {
     number: "03",
