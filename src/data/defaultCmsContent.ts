@@ -474,8 +474,8 @@ export const defaultCmsContent: CmsData = {
     badge: "PRACTICE DIGITAL AUDIT",
     headline: "Is Your Practice Visible in Modern AI & Google Search?",
     description: "Claim a customized, 3-minute video analysis of your practice's digital footprint. We'll walk through your site, identify where high-ticket patient consults are leaking to local competitors, and show you how to fix it.",
-    buttonText: "Request Your Free 3-Minute Practice Audit",
-    buttonLink: "#contact",
+    buttonText: "Get Practice Visibility Audit",
+    buttonLink: "https://audit.seelutions.com/",
     backgroundImage: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85",
   },
   media: [

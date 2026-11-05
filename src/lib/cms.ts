@@ -79,6 +79,14 @@ export async function getServerCmsData(): Promise<CmsData> {
       if (remoteData?.comparisonContent?.seelutionsTitle) {
         remoteData.comparisonContent.seelutionsTitle = remoteData.comparisonContent.seelutionsTitle.replace(/Seelutions/g, 'seelutions');
       }
+      if (remoteData?.projectCta) {
+        if (!remoteData.projectCta.buttonText || remoteData.projectCta.buttonText === 'Request Your Free 3-Minute Practice Audit') {
+          remoteData.projectCta.buttonText = 'Get Practice Visibility Audit';
+        }
+        if (!remoteData.projectCta.buttonLink || remoteData.projectCta.buttonLink === '#contact') {
+          remoteData.projectCta.buttonLink = 'https://audit.seelutions.com/';
+        }
+      }
     }
   } catch (err) {
     console.error('Error reading CMS data from Firestore:', err);

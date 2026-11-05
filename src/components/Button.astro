@@ -7,6 +7,8 @@ interface Props {
   class?: string;
   id?: string;
   type?: "button" | "submit" | "reset";
+  target?: string;
+  rel?: string;
 }
 
 const {
@@ -17,7 +19,13 @@ const {
   class: className = "",
   id,
   type = "button",
+  target,
+  rel,
 } = Astro.props;
+
+const isExternal = href?.startsWith('http://') || href?.startsWith('https://');
+const effectiveTarget = target || (isExternal ? "_blank" : undefined);
+const effectiveRel = rel || (isExternal ? "noopener noreferrer" : undefined);
 
 const variantClasses = {
   black: "btn-pill-black",
@@ -36,6 +44,8 @@ const Tag = href ? "a" : "button";
 
 <Tag
   href={href}
+  target={effectiveTarget}
+  rel={effectiveRel}
   id={id}
   type={href ? undefined : type}
   class={`${variantClasses[variant]} group cursor-pointer inline-flex items-center select-none ${className}`}
