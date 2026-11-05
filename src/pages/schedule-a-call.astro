@@ -1,0 +1,113 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionLabel from "../components/SectionLabel.astro";
+import ProjectCTA from "../components/ProjectCTA.astro";
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
+---
+
+<BaseLayout
+  title="Schedule a Free Discovery Call & Consultation — seelutions"
+  description="Receive a free consultation & quote. Schedule a 20-30 min. discovery call with Langley Holland today."
+>
+  <div class="relative overflow-hidden pt-28 pb-20 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <!-- Ambient Background Glow Accents -->
+    <div class="absolute top-12 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-cyan-500/10 via-blue-500/5 to-transparent blur-3xl pointer-events-none rounded-full -z-10"></div>
+
+    <!-- Breadcrumb / Header Label -->
+    <div class="mb-6" data-animate="fade-up">
+      <SectionLabel text="DISCOVERY CALL & CONSULTATION" />
+    </div>
+
+    {/* Modern Split Hero & Host Section */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16" data-animate="fade-up">
+      {/* Left: Headline & Copy */}
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-800 text-xs font-bold tracking-wide uppercase">
+          <span class="w-2 h-2 rounded-full bg-cyan-600 animate-pulse"></span>
+          Direct 1-on-1 Strategy Session
+        </div>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#030303] leading-[1.1]">
+          Receive a free consultation & quote.
+        </h1>
+        <h2 class="text-xl sm:text-2xl font-bold text-neutral-800 leading-snug">
+          Schedule a 20-30 min. discovery call today.
+        </h2>
+        <p class="text-base sm:text-lg text-neutral-700 leading-relaxed font-normal">
+          Thank you for your interest in seelutions. We are excited to help you. First, please answer a few basic questions and set a 20-30 minute FREE discovery call with Langley Holland. Once Langley has obtained all the necessary information about your company he will provide you with a strategy and plan to reach your goals.
+        </p>
+        <p class="text-sm sm:text-base font-semibold text-neutral-900 bg-neutral-100/80 px-4 py-3 rounded-2xl border border-neutral-200/80">
+          ✨ Help us learn more about your business and prepare for your call by answering a few questions in the secure calendar below.
+        </p>
+      </div>
+
+      {/* Right: Executive Host Card */}
+      <div class="lg:col-span-5">
+        <div class="bg-gradient-to-b from-neutral-900 to-neutral-950 text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/10 relative overflow-hidden group">
+          <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-cyan-400/40 bg-neutral-900 shrink-0 shadow-lg flex items-center justify-center p-2">
+              <img
+                src="/images/seelutions new updatedLogo.png"
+                alt="seelutions Logo Icon"
+                class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div>
+              <span class="text-[10px] font-mono tracking-widest uppercase text-cyan-400 font-bold block mb-1">Your Strategy Expert</span>
+              <h3 class="text-xl font-bold text-white">Langley Holland</h3>
+              <p class="text-xs text-neutral-400">President &amp; Founder, seelutions</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10 text-xs sm:text-sm text-neutral-300">
+            <div class="flex items-center gap-3">
+              <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0">✓</div>
+              <span>100% Free 20-30 min discovery &amp; audit</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0">✓</div>
+              <span>Customized territory growth &amp; AI search plan</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0">✓</div>
+              <span>Zero sales pressure — actionable insights only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Ultra-Modern Booking Calendar Embed Section */}
+    <div class="relative bg-white rounded-3xl border border-black/10 shadow-2xl p-6 sm:p-12 mb-20 overflow-hidden" data-animate="fade-up">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-cyan-400/10 via-blue-500/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 text-xs font-bold tracking-wider uppercase mb-3">
+            <span>🔒 Secure 256-Bit Encrypted Scheduling</span>
+          </div>
+          <h3 class="text-2xl sm:text-4xl font-black text-black tracking-tight">Select Your Discovery Call Time</h3>
+          <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+            Choose a convenient date and time below to lock in your live strategy consultation with Langley Holland.
+          </p>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden bg-neutral-50 p-3 sm:p-6 border border-neutral-200/85 shadow-inner">
+          <iframe 
+            src="https://api.leadconnectorhq.com/widget/booking/W5Zq6Tv6PLwsjNWkB7up" 
+            allow="payment" 
+            style="width: 100%; min-height: 720px; border: none; overflow: hidden; background: transparent;" 
+            scrolling="no" 
+            id="W5Zq6Tv6PLwsjNWkB7up_1793865482803"
+          ></iframe>
+          <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ProjectCTA />
+</BaseLayout>

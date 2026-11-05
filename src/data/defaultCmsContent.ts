@@ -7,7 +7,7 @@ export const defaultCmsContent: CmsData = {
     name: "seelutions",
     title: "seelutions — Patient Acquisition & Digital Authority Studio",
     description: "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.",
-    email: "practice@seelutions.com",
+    email: "hello@seelutions.com",
     phone: "(555) 345-6789",
     address: "567 Jac Spruce Crescent, Montreal, QC H1A 2K3",
     estYear: "EST. 2010",
@@ -48,6 +48,8 @@ export const defaultCmsContent: CmsData = {
     },
     { id: "nav-4", label: "Case Studies", href: "/#case-studies" },
     { id: "nav-5", label: "Blog", href: "/#blog" },
+    { id: "nav-6", label: "Schedule a Call", href: "/schedule-a-call" },
+    { id: "nav-7", label: "Contact", href: "/contact" },
   ],
   services: [
     {
@@ -242,6 +244,18 @@ export const defaultCmsContent: CmsData = {
       slug: "services/google-ads-paid-search",
       title: "Google Ads & Paid Search Page",
       content: "<h2>Targeted Google Ads & Paid Search Acquisition</h2><p>Targeted, high-intent Google Ads campaigns engineered to fill your surgical calendar with qualified, high-ticket procedure consults.</p>",
+    },
+    {
+      id: "page-schedule-call",
+      slug: "schedule-a-call",
+      title: "Schedule a Call Page",
+      content: "<h2>Receive a free consultation & quote.</h2><p>Schedule a 20-30 min. discovery call today.</p>",
+    },
+    {
+      id: "page-contact",
+      slug: "contact",
+      title: "Contact Page",
+      content: "<h2>Let's Scale Your Surgical Practice</h2><p>Request a customized 3-minute video audit and strategy consultation.</p>",
     },
   ],
   comparison: [

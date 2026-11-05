@@ -46,29 +46,9 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
           >
             <source src={videoSource} type="video/quicktime" />
             <source src={videoSource} type="video/mp4" />
-            <track
-              kind="subtitles"
-              label="English"
-              srclang="en"
-              src="/captions/diepenbrock-captions.vtt"
-              default
-            />
             Your browser does not support playing this testimonial video.
           </video>
 
-          <!-- Live On-Screen Captions / Subtitles Overlay (for sound-off viewing) -->
-          <div
-            id="live-captions-overlay"
-            class="absolute bottom-16 left-4 right-4 z-20 pointer-events-none transition-opacity duration-200 opacity-0"
-            aria-live="polite"
-          >
-            <div
-              id="live-caption-box"
-              class="mx-auto max-w-[90%] px-3.5 py-2 rounded-xl bg-black/90 backdrop-blur-md text-white text-xs sm:text-sm font-semibold text-center border border-white/20 shadow-2xl leading-snug tracking-tight"
-            >
-              "By my side for over 10 years."
-            </div>
-          </div>
 
           <!-- Video Controls Top Bar (Visible when playing) -->
           <div
@@ -137,25 +117,7 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
               </div>
             </div>
 
-            <!-- Bottom Floating Quote & Call-to-Action Bar -->
-            <div class="absolute bottom-4 left-4 right-4 pointer-events-none">
-              <div class="p-3.5 sm:p-4 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-white shadow-xl flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="text-xs sm:text-sm font-bold text-white truncate leading-tight">
-                    "By my side for over 10 years."
-                  </p>
-                  <p class="text-[11px] sm:text-xs text-neutral-300 truncate mt-0.5">
-                    How seelutions scaled Dr. Diepenbrock's practice to market dominance
-                  </p>
-                </div>
-                <div class="shrink-0 px-3 py-1.5 rounded-lg bg-red-600 group-hover/thumb:bg-red-500 text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5">
-                  <span>Watch Video</span>
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+
           </button>
         </div>
 

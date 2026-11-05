@@ -811,19 +811,16 @@ export default function AdminDashboard() {
       <header className="sticky top-0 z-40 bg-[#050b1a]/90 backdrop-blur-md border-b border-white/10 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 p-1.5 flex items-center justify-center shadow-md">
               <img
-                src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
+                src="/images/seelutions%20new%20updatedLogo.png"
                 alt="seelutions Logo"
-                className="w-full h-full object-contain filter brightness-0 invert"
+                className="w-full h-full object-contain"
               />
             </div>
             <div>
               <span className="font-bold text-white text-base tracking-tight font-urbanist group-hover:text-cyan-400 transition-colors">
                 seelutions CMS
-              </span>
-              <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
-                Headless Studio
               </span>
             </div>
           </a>
@@ -1693,11 +1690,33 @@ export default function AdminDashboard() {
                   {(Array.isArray(cmsData.navigation) ? cmsData.navigation : []).map((item, idx) => (
                     <div
                       key={item.id || `nav-${idx}`}
-                      className="p-4 bg-black/40 border border-white/10 rounded-xl hover:border-white/20 transition-all flex flex-col gap-3"
+                      draggable={true}
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', idx.toString());
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const fromIdxStr = e.dataTransfer.getData('text/plain');
+                        const fromIdx = parseInt(fromIdxStr, 10);
+                        if (!isNaN(fromIdx) && fromIdx !== idx) {
+                          const current = Array.isArray(cmsData.navigation) ? [...cmsData.navigation] : [];
+                          const [moved] = current.splice(fromIdx, 1);
+                          current.splice(idx, 0, moved);
+                          setCmsData({ ...cmsData, navigation: current });
+                          setHasChanges(true);
+                        }
+                      }}
+                      className="p-4 bg-black/40 border border-white/10 rounded-xl hover:border-white/20 transition-all flex flex-col gap-3 cursor-move group"
                     >
                       <div className="flex flex-col md:flex-row md:items-center gap-3">
-                        {/* Index & Handle badge */}
+                        {/* Drag Handle & Index badge */}
                         <div className="flex items-center gap-2">
+                          <span className="text-neutral-500 group-hover:text-cyan-400 cursor-grab active:cursor-grabbing text-base select-none px-1" title="Drag to reorder menu item">
+                            ⠿
+                          </span>
                           <span className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs font-mono font-bold text-cyan-300 shrink-0">
                             {idx + 1}
                           </span>
