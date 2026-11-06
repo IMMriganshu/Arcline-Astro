@@ -501,9 +501,9 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
         <div className="flex items-center gap-3">
           <div className="h-8 w-auto flex items-center justify-center p-1">
             <img
-              src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
+              src="/images/seelution%20Footer%20Logo.png"
               alt="seelutions Logo"
-              className="h-full w-auto object-contain filter brightness-0 invert"
+              className="h-full w-auto object-contain"
             />
           </div>
           <div>

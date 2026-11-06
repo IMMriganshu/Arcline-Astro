@@ -5,28 +5,33 @@ interface Props {
   class?: string;
   tagline?: string;
   fetchpriority?: "high" | "low" | "auto";
+  customSrc?: string;
 }
 
-const { variant = "dark", size = "md", class: className = "", tagline, fetchpriority = "auto" } = Astro.props;
+const { variant = "dark", size = "md", class: className = "", tagline, fetchpriority = "auto", customSrc } = Astro.props;
 
 const isLight = variant === "light";
+const logoSrc = customSrc || (isLight ? "/images/seelution%20Footer%20Logo.png" : "/images/seelutions%20Header%20Nav%20Logo.png");
+const logoWidth = isLight ? "1306" : "4960";
+const logoHeight = isLight ? "337" : "1261";
 
 const iconSizes = {
   sm: "h-8",
-  md: "h-10 sm:h-12",
-  lg: "h-14 sm:h-16",
+  md: "h-9 sm:h-11",
+  lg: "h-12 sm:h-14",
 };
 ---
 
-<a href="/" class={`inline-flex items-center group select-none ${className}`}>
+<a href="/" class={`inline-flex items-center group select-none ${className}`} aria-label="seelutions home">
   <div class={`${iconSizes[size]} w-auto flex items-center`}>
     <img
-      src="/images/seelutions%20Full%20Logo%20on%20White%20Background.png"
+      src={logoSrc}
       alt="seelutions Logo — be seen. be chosen."
       fetchpriority={fetchpriority}
-      class={`h-full w-auto object-contain transition-opacity group-hover:opacity-90 ${isLight ? "filter brightness-0 invert" : ""}`}
-      width="343"
-      height="84"
+      class="h-full w-auto object-contain transition-opacity group-hover:opacity-90"
+      width={logoWidth}
+      height={logoHeight}
     />
   </div>
 </a>
+

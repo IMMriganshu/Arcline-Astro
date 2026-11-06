@@ -54,11 +54,11 @@ let letterCounter = 0;
               ))}
             </span>
 
-            <!-- Official seelutions Icon -->
+            <!-- Official seelutions Brand Icon (Black mask reveals background video in lighten blend mode) -->
             <span class="home-hero__icon-box" aria-hidden="true">
               <img
-                src="/images/seelutions%20new%20updatedLogo.png"
-                alt="seelutions Logo"
+                src="/images/seelutions%20brand%20icon.webp"
+                alt="seelutions Icon"
                 class="w-full h-full object-contain filter grayscale brightness-0"
                 width="56"
                 height="56"
@@ -277,6 +277,10 @@ let letterCounter = 0;
     vertical-align: middle;
     margin-left: 0.05em;
     animation: heroIconReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+  }
+
+  .home-hero__icon-box img {
+    filter: grayscale(100%) brightness(0);
   }
 
   @keyframes heroIconReveal {
