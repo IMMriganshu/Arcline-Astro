@@ -1,0 +1,310 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionLabel from "../../components/SectionLabel.astro";
+import Button from "../../components/Button.astro";
+import ProjectCTA from "../../components/ProjectCTA.astro";
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
+
+const pageTitle = "AI Search Visibility for Plastic & Facial Cosmetic Surgeons | seelutions";
+const pageDescription = "Patients now ask ChatGPT and Google's AI which surgeon to see. seelutions helps make your practice the name they hear.";
+
+const faqs = [
+  {
+    q: "Can you guarantee ChatGPT will recommend our practice?",
+    a: "No one honestly can, and be wary of anyone who promises it. AI tools decide for themselves which practices to mention. We don't use tricks or try to game the system. We build real authority, trust, and relevance for your practice: clear expert answers, verified credentials, and trusted mentions. That's what ChatGPT, Gemini, and other AI tools look for when deciding who to recommend. Then we track how often your practice comes up."
+  },
+  {
+    q: "How long does it take?",
+    a: "Most practices start to see changes over several months, depending on your market and how much your competitors have already done. It builds over time, and unlike ads, it keeps working."
+  },
+  {
+    q: "Do we still need regular SEO and Google Maps?",
+    a: "Yes. AI tools draw on many of the same things Google does: your website, your reviews, and your Google Business Profile. Strong Google and Google Maps visibility makes AI visibility easier, which is why we do them together."
+  },
+  {
+    q: "Is AI search replacing Google?",
+    a: "Not replacing it, adding to it. Patients use both, often for the same decision. You want to show up in each."
+  }
+];
+
+const faqSchemaJson = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.a
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  customSchemaData={faqSchemaJson}
+>
+  <!-- Section 1: Hero Section -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white relative overflow-hidden">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text="GET RECOMMENDED BY AI" />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <!-- Left Text Column -->
+        <div class="lg:col-span-7 flex flex-col justify-center">
+          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25xl] font-bold tracking-tight text-[#030303] leading-[1.12] mb-6">
+            AI Search Visibility for Plastic and Facial Cosmetic Surgeons
+          </h1>
+
+          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-8 max-w-2xl">
+            Patients now ask ChatGPT, Google's AI answers, and Perplexity which surgeon to see. We help make your practice the name they hear.
+          </p>
+
+          <div data-animate="fade-up-sm" data-animate-delay="2" class="flex flex-wrap items-center gap-4">
+            <Button href="https://audit.seelutions.com/" variant="black" showIcon={true} iconType="arrow-right">
+              Get Your Free Practice Visibility Audit
+            </Button>
+            <Button href="/services" variant="outline" showIcon={false}>
+              All Services
+            </Button>
+          </div>
+        </div>
+
+        <!-- Right Graphic Column -->
+        <div class="lg:col-span-5" data-animate="scale-in">
+          <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl border border-neutral-200/80 bg-neutral-950 group">
+            <img
+              src="/images/seelutions_AI_Search_Card_Graphic.png"
+              alt="seelutions AI Search Visibility graphic showing ChatGPT recommendation for top facelift surgeon"
+              class="w-full h-auto aspect-[4/3] object-cover object-center transition-transform duration-700 ease-out group-hover:scale-102"
+              loading="eager"
+              decoding="async"
+              width="1200"
+              height="900"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: The Shift -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-b border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center">
+      <div class="mb-3 inline-block" data-animate="fade-up-sm">
+        <SectionLabel text="THE SHIFT" />
+      </div>
+
+      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#030303] tracking-tight mb-6">
+        How are patients choosing a surgeon now?
+      </h2>
+
+      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl mx-auto">
+        Before booking a consultation, today's patients do their research. More and more of them skip the list of links and ask an AI tool directly: "Who's the best facelift surgeon near me?" or "How long is rhinoplasty recovery?" The AI answers with a short list of names. If your practice isn't one of them, that patient may never see your website, your reviews, or your results.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3: How It Works & 4 Cards -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <div class="mb-3 inline-block" data-animate="fade-up-sm">
+          <SectionLabel text="HOW IT WORKS" />
+        </div>
+
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl font-bold text-[#030303] tracking-tight mb-4">
+          How do we get your practice recommended by AI?
+        </h2>
+
+        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-600 leading-relaxed mb-4">
+          AI tools recommend the practices they can understand, verify, and trust. Through AgencyGo™, the seelutions system behind the growth, we build all four for you.
+        </p>
+
+        <!-- AgencyGo™ Badge -->
+        <div data-animate="fade-up-sm" data-animate-delay="2" class="inline-flex items-center justify-center">
+          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#C5A880]/10 border border-[#C5A880]/30 text-neutral-900 text-xs font-bold tracking-wide shadow-2xs">
+            <span class="w-5 h-5 rounded-full bg-[#C5A880] text-black flex items-center justify-center font-black text-[10px] leading-none">
+              A
+            </span>
+            <span>AgencyGo™ · The System Behind The Growth</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <!-- Card 01 -->
+        <div data-animate="fade-up" data-animate-delay="1" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                01
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Clear Authority
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Answers before patients ask
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              We write expert content in your voice that answers the questions patients ask about cost, recovery, and results. These are the same answers AI tools look for and quote.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 02 -->
+        <div data-animate="fade-up" data-animate-delay="2" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                02
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Verified Entity
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Credentials AI can verify
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Your name, credentials, procedures, and locations, stated the same way everywhere online, so AI tools can confirm who you are and what you do.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 03 -->
+        <div data-animate="fade-up" data-animate-delay="3" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                03
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                External Proof
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Mentioned in trusted places
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Reviews, directories, and respected publications that mention your practice give AI tools outside proof that you're the expert.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 04 -->
+        <div data-animate="fade-up" data-animate-delay="4" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                04
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Brand Presence
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Polished wherever AI shows you
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              When AI tools display your practice, they often show your logo and name. We make sure your brand looks as polished there as it does in your office.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Testimonial & Practitioner Proof -->
+  <section class="py-20 md:py-28 bg-[#050505] text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.12),transparent_70%)] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center relative z-10">
+      <!-- Small seelutions logo mark -->
+      <div class="mb-8 flex justify-center" data-animate="fade-up-sm">
+        <div class="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center p-2.5 shadow-xl">
+          <img
+            src="/images/seelutions brand icon.webp"
+            alt="seelutions brand icon"
+            class="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <blockquote data-animate="fade-up" class="text-xl sm:text-2xl md:text-3xl font-medium text-neutral-100 leading-relaxed mb-8 italic">
+        "I have no idea what you are doing, but just keep doing it. We are consistently hearing new patients say they found us on ChatGPT when they searched for Plastic Surgeon Near Me."
+      </blockquote>
+
+      <!-- Practitioner Credentials -->
+      <div data-animate="fade-up-sm" data-animate-delay="1" class="mb-10">
+        <h3 class="text-lg sm:text-xl font-bold text-white mb-1">
+          Dr. Ryan M. Diepenbrock, DDS, FAACS
+        </h3>
+        <p class="text-xs sm:text-sm text-[#C5A880] font-medium tracking-wide">
+          Past President, American Board of Facial Cosmetic Surgery · Fort Wayne, Indiana
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <div data-animate="fade-up-sm" data-animate-delay="2">
+        <Button href="/projects" variant="white" showIcon={true} iconType="arrow-right">
+          See the 10-year case study
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Questions Surgeons Ask (FAQ Accordion) -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="mb-3 inline-block" data-animate="fade-up-sm">
+          <SectionLabel text="QUESTIONS SURGEONS ASK" />
+        </div>
+
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl font-bold text-[#030303] tracking-tight">
+          AI search, answered
+        </h2>
+      </div>
+
+      <!-- Interactive FAQ Accordion List -->
+      <div class="space-y-4" data-animate="fade-up">
+        {faqs.map((faq, idx) => (
+          <details class="group bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-2xs hover:border-neutral-300 transition-all [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex items-center justify-between gap-4 cursor-pointer list-none text-left">
+              <h3 class="text-base sm:text-lg font-bold text-[#030303] group-hover:text-black transition-colors pr-2">
+                {faq.q}
+              </h3>
+              <span class="shrink-0 w-8 h-8 rounded-full bg-neutral-100 group-open:bg-black group-open:text-white transition-all flex items-center justify-center text-sm font-bold text-neutral-600">
+                <span class="group-open:rotate-45 transition-transform duration-300">＋</span>
+              </span>
+            </summary>
+            <div class="mt-4 pt-4 border-t border-neutral-100 text-sm sm:text-base text-neutral-600 leading-relaxed font-normal">
+              <p>{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Audit CTA Section -->
+  <ProjectCTA />
+</BaseLayout>

@@ -39,10 +39,13 @@ export interface NavItem {
 export interface Service {
   id: string;
   number: string;
+  badge?: string;
   title: string;
   description: string;
   image: string;
   imageAlt: string;
+  href?: string;
+  buttonText?: string;
 }
 
 export interface Project {

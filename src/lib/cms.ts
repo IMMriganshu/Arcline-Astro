@@ -54,6 +54,20 @@ export function replaceSeelutionsDeep<T>(obj: T): T {
   return obj;
 }
 
+function normalizeCmsServices(data: Partial<CmsData>): Partial<CmsData> {
+  if (!data) return data;
+  if (Array.isArray(data.navigation)) {
+    data.navigation = defaultCmsContent.navigation;
+  }
+  if (Array.isArray(data.services)) {
+    data.services = defaultCmsContent.services;
+  }
+  if (data.childServices) {
+    data.childServices['ai-search-overviews'] = defaultCmsContent.childServices!['ai-search-overviews'];
+  }
+  return data;
+}
+
 /**
  * Server-side helper to read persistent CMS data from Firestore
  */
@@ -96,6 +110,9 @@ export async function getServerCmsData(): Promise<CmsData> {
         if (!remoteData.projectCta.buttonLink || remoteData.projectCta.buttonLink === '#contact') {
           remoteData.projectCta.buttonLink = 'https://audit.seelutions.com/';
         }
+      }
+      if (remoteData) {
+        remoteData = normalizeCmsServices(remoteData);
       }
     }
   } catch (err) {
@@ -395,7 +412,8 @@ export function getClientCmsData(): CmsData {
       ) {
         parsed.comparisonContent = defaultCmsContent.comparisonContent;
       }
-      return replaceSeelutionsDeep(deepMerge(defaultCmsContent, parsed));
+      const normalized = normalizeCmsServices(parsed);
+      return replaceSeelutionsDeep(deepMerge(defaultCmsContent, normalized));
     }
   } catch (e) {
     console.warn('Failed to parse localStorage CMS data:', e);
