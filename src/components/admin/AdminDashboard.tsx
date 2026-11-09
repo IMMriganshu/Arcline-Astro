@@ -955,6 +955,7 @@ export default function AdminDashboard() {
               { id: 'pages', label: 'Manage Pages', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
               { id: 'testimonials', label: 'Surgeon Testimonials', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
               { id: 'comparison', label: 'Why Models Fail (Comparison)', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+              { id: 'sitebottom', label: 'Site Bottom (Audit CTA)', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
               { id: 'navigation', label: 'Navigation & Footer', icon: 'M4 6h16M4 12h16M4 18h16' },
               { id: 'submissions', label: 'Form Submissions', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
               { id: 'media', label: 'Media Assets', icon: 'M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z' },
@@ -2129,8 +2130,302 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+
+              {/* SECTION 5: SITE BOTTOM (PRACTICE AUDIT CTA BANNER) */}
+              <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                    Site Bottom (Practice Digital Audit CTA Section)
+                  </h3>
+                  <span className="text-xs font-mono px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                    Global Bottom Banner
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Section Eyebrow Label (Gold Badge)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.projectCta?.badge || ''}
+                      placeholder="PRACTICE DIGITAL AUDIT"
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          projectCta: { ...defaultCmsContent.projectCta!, ...cmsData.projectCta, badge: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Main Headline
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.projectCta?.headline || ''}
+                      placeholder="Is Your Practice Visible in Modern AI & Google Search?"
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          projectCta: { ...defaultCmsContent.projectCta!, ...cmsData.projectCta, headline: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                <RichTextEditor
+                  label="Section Paragraph / Value Proposition"
+                  value={cmsData.projectCta?.description || ''}
+                  placeholder="Claim a customized, 3-minute video analysis of your practice's digital footprint..."
+                  onChange={(val) => {
+                    setCmsData({
+                      ...cmsData,
+                      projectCta: { ...defaultCmsContent.projectCta!, ...cmsData.projectCta, description: val },
+                    });
+                    setHasChanges(true);
+                  }}
+                  minHeight="120px"
+                  helperText="Supports formatting, bold text, links, and line breaks"
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      CTA Button Text
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.projectCta?.buttonText || ''}
+                      placeholder="Get Practice Visibility Audit"
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          projectCta: { ...defaultCmsContent.projectCta!, ...cmsData.projectCta, buttonText: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-semibold focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      CTA Button Target Link / URL
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsData.projectCta?.buttonLink || ''}
+                      placeholder="https://audit.seelutions.com/"
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          projectCta: { ...defaultCmsContent.projectCta!, ...cmsData.projectCta, buttonLink: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                    Background Image URL
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsData.projectCta?.backgroundImage || ''}
+                    placeholder="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85"
+                    onChange={(e) => {
+                      setCmsData({
+                        ...cmsData,
+                        projectCta: { ...defaultCmsContent.projectCta!, ...cmsData.projectCta, backgroundImage: e.target.value },
+                      });
+                      setHasChanges(true);
+                    }}
+                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+              </div>
             </div>
           )}
+
+          {/* TAB: Dedicated Site Bottom (Audit CTA) */}
+          {activeTab === 'sitebottom' && (() => {
+            const ctaContent = cmsData.projectCta || defaultCmsContent.projectCta!;
+            return (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold font-urbanist text-white">Site Bottom (Practice Digital Audit CTA)</h2>
+                  <p className="text-xs text-neutral-400">
+                    Manage the high-converting bottom Audit CTA section displayed above the footer across the homepage, service pages, and case studies.
+                  </p>
+                </div>
+
+                <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-6 space-y-6">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                      Practice Audit CTA Settings
+                    </h3>
+                    <span className="text-xs font-mono px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                      Global Bottom Banner
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Section Eyebrow Label (Gold Badge)
+                      </label>
+                      <input
+                        type="text"
+                        value={ctaContent.badge || ''}
+                        placeholder="PRACTICE DIGITAL AUDIT"
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            projectCta: { ...ctaContent, badge: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Main Headline
+                      </label>
+                      <input
+                        type="text"
+                        value={ctaContent.headline || ''}
+                        placeholder="Is Your Practice Visible in Modern AI & Google Search?"
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            projectCta: { ...ctaContent, headline: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                  </div>
+
+                  <RichTextEditor
+                    label="Section Paragraph / Value Proposition"
+                    value={ctaContent.description || ''}
+                    placeholder="Claim a customized, 3-minute video analysis of your practice's digital footprint..."
+                    onChange={(val) => {
+                      setCmsData({
+                        ...cmsData,
+                        projectCta: { ...ctaContent, description: val },
+                      });
+                      setHasChanges(true);
+                    }}
+                    minHeight="120px"
+                    helperText="Supports formatting, bold text, links, and line breaks"
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        CTA Button Text
+                      </label>
+                      <input
+                        type="text"
+                        value={ctaContent.buttonText || ''}
+                        placeholder="Get Practice Visibility Audit"
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            projectCta: { ...ctaContent, buttonText: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-semibold focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        CTA Button Target Link / URL
+                      </label>
+                      <input
+                        type="text"
+                        value={ctaContent.buttonLink || ''}
+                        placeholder="https://audit.seelutions.com/"
+                        onChange={(e) => {
+                          setCmsData({
+                            ...cmsData,
+                            projectCta: { ...ctaContent, buttonLink: e.target.value },
+                          });
+                          setHasChanges(true);
+                        }}
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                      Background Image URL
+                    </label>
+                    <input
+                      type="text"
+                      value={ctaContent.backgroundImage || ''}
+                      placeholder="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85"
+                      onChange={(e) => {
+                        setCmsData({
+                          ...cmsData,
+                          projectCta: { ...ctaContent, backgroundImage: e.target.value },
+                        });
+                        setHasChanges(true);
+                      }}
+                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  {/* Live Preview Frame */}
+                  <div className="pt-4 border-t border-white/10 space-y-3">
+                    <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                      Live Preview (Site Bottom Audit CTA)
+                    </label>
+                    <div className="relative overflow-hidden rounded-xl bg-[#050505] p-8 text-white border border-white/10">
+                      <div className="max-w-2xl space-y-3 relative z-10">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#C5A880]">
+                          — {ctaContent.badge || 'PRACTICE DIGITAL AUDIT'}
+                        </span>
+                        <h3 className="text-2xl font-bold tracking-tight text-white leading-tight">
+                          {ctaContent.headline || 'Is Your Practice Visible in Modern AI & Google Search?'}
+                        </h3>
+                        <div
+                          className="text-xs text-neutral-300 leading-relaxed prose prose-invert max-w-none"
+                          dangerouslySetInnerHTML={{ __html: ctaContent.description || '' }}
+                        />
+                        <div className="pt-2">
+                          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-black font-bold text-xs">
+                            {ctaContent.buttonText || 'Get Practice Visibility Audit'} →
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* TAB: Why Traditional Models Fail (Comparison) */}
           {activeTab === 'comparison' && (() => {

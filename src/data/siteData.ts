@@ -86,24 +86,24 @@ export const pagesDropdownData = {
 export const servicesData: Service[] = [
   {
     number: "01",
+    title: "AI Search Visibility",
+    description: "More patients now ask ChatGPT, Google's AI answers, and Perplexity, \"Who's the best facelift surgeon near me?\" We build the expert content, reviews, and consistent practice information these tools rely on, so your name is the one patients hear.",
+    image: "/images/seelutions_AI_Search_Card_Graphic.png",
+    imageAlt: "seelutions AI Search Visibility graphic showing ChatGPT recommendation for top facelift surgeon",
+  },
+  {
+    number: "02",
     title: "Local SEO & Google Maps",
     description: "We optimize your Google Business Profile, local citations, and schema markup so your practice occupies the top 3 local Map Pack spots for high-value surgical searches in your metro area.",
     image: "/images/service-local-seo.jpg",
     imageAlt: "seelutions Local SEO graphic showing Google Maps 3-Pack smartphone recommendation UI for top plastic surgeon",
   },
   {
-    number: "02",
+    number: "03",
     title: "Web Design & Conversion Optimization",
     description: "Patients looking for high-ticket procedures don't fill out generic contact forms. We build procedure hubs, stunning aesthetics, and gallery layouts structured to drive long session durations and direct consultation requests.",
     image: "/images/service-web-design.jpg",
     imageAlt: "seelutions Web Design graphic showing luxury cosmetic surgery website gallery mobile UI",
-  },
-  {
-    number: "03",
-    title: "AI Search Visibility",
-    description: "More patients now ask ChatGPT, Google's AI answers, and Perplexity, \"Who's the best facelift surgeon near me?\" We build the expert content, reviews, and consistent practice information these tools rely on, so your name is the one patients hear.",
-    image: "/images/seelutions_AI_Search_Card_Graphic.png",
-    imageAlt: "seelutions AI Search Visibility graphic showing ChatGPT recommendation for top facelift surgeon",
   },
   {
     number: "04",
