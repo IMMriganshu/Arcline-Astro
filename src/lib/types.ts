@@ -159,6 +159,16 @@ export interface AboutMilestone {
   text: string;
 }
 
+export interface AboutStatItem {
+  value: string;
+  label: string;
+}
+
+export interface AboutTimelineRow {
+  year: string;
+  text: string;
+}
+
 export interface AboutContent {
   badge: string;
   title: string;
@@ -166,9 +176,13 @@ export interface AboutContent {
   description: string;
   image: string;
   videoUrl?: string;
+  videoCaption?: string;
   timelineTitle: string;
   timelineSubtitle: string;
-  milestones: AboutMilestone[];
+  timelineHeading?: string;
+  stats?: AboutStatItem[];
+  timelineRows?: AboutTimelineRow[];
+  milestones?: AboutMilestone[];
 }
 
 export interface VideoShowcaseContent {

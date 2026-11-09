@@ -5,6 +5,35 @@ import { getAboutContent } from "../lib/cms";
 const about = await getAboutContent();
 const thumbnailImage = about.image || "/images/dr-diepenbrock-thumbnail.jpg";
 const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov";
+const videoCaption = about.videoCaption || "Dr. Ryan Diepenbrock on 10 years with seelutions";
+
+const timelineTitle = (about.timelineTitle && about.timelineTitle !== "Growth Timeline & Retainer Expansion")
+  ? about.timelineTitle
+  : "Results for Diepenbrock Facial Cosmetic Surgery";
+
+const timelineSubtitle = (about.timelineSubtitle && about.timelineSubtitle !== "A decade-long trajectory of expanding partnership and compounding patient consult revenue.")
+  ? about.timelineSubtitle
+  : "2026 verified results";
+
+const stats = (about.stats && about.stats.length > 0)
+  ? about.stats
+  : [
+      { value: "35 of 62", label: "Google searches in top 3" },
+      { value: "+158%", label: "Google Maps views" },
+      { value: "+43%", label: "Phone calls from Google" },
+      { value: "+48%", label: "Direction requests" },
+    ];
+
+const timelineHeading = about.timelineHeading || "A decade of staying ahead";
+
+const timelineRows = (about.timelineRows && about.timelineRows.length > 0)
+  ? about.timelineRows
+  : [
+      { year: "2016", text: "Local search foundation" },
+      { year: "2018", text: "Procedure pages and galleries" },
+      { year: "2021", text: "Mobile and Google Maps growth" },
+      { year: "2024 to today", text: "AI search" },
+    ];
 ---
 
 <section id="about" class="pt-6 pb-12 md:pt-12 md:pb-20 relative overflow-hidden bg-white">
@@ -23,12 +52,12 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
       <div data-animate="fade-up-sm" data-animate-delay="2" class="text-base sm:text-lg text-neutral-600 leading-relaxed prose prose-p:my-1 prose-headings:my-2 prose-a:text-cyan-600 prose-a:underline" set:html={about.description} />
     </div>
 
-    <!-- 2-Column Layout: Left = Video Testimonial (Click-to-Play), Right = Growth Timeline Block -->
+    <!-- 2-Column Layout: Left = Video Testimonial (Click-to-Play), Right = Results & Timeline Block -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
       
       <!-- Left Column: Video Testimonial Player (Click-to-play with High-Trust Visual Hook) -->
-      <div class="lg:col-span-5 flex flex-col" data-animate="scale-in">
-        <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-neutral-200/90 w-full bg-neutral-950 flex flex-col justify-center min-h-[440px] sm:min-h-[480px] lg:min-h-[540px] h-full group">
+      <div class="lg:col-span-5 flex flex-col justify-between" data-animate="scale-in">
+        <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-neutral-200/90 w-full bg-neutral-950 flex flex-col justify-center min-h-[440px] sm:min-h-[480px] lg:min-h-[520px] h-full group">
           
           <!-- Video Element (NO AUTOPLAY, click-to-play, controls enabled) -->
           <video
@@ -38,7 +67,7 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
             preload="metadata"
             poster={thumbnailImage}
             class="w-full h-full object-contain md:object-cover object-top rounded-2xl md:rounded-3xl bg-neutral-950"
-            aria-label="How seelutions Scaled Surgical Consultations — Dr. Ryan Diepenbrock Video Interview"
+            aria-label={videoCaption}
           >
             <source src={videoSource} type="video/quicktime" />
             <source src={videoSource} type="video/mp4" />
@@ -72,12 +101,12 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
             id="video-thumbnail-overlay"
             type="button"
             class="absolute inset-0 z-30 w-full h-full text-left p-0 border-0 cursor-pointer overflow-hidden rounded-2xl md:rounded-3xl transition-all duration-300 focus:outline-none group/thumb"
-            aria-label="Click to play video testimonial from Dr. Ryan Diepenbrock"
+            aria-label={`Click to play: ${videoCaption}`}
           >
             <!-- High-Resolution Static Thumbnail Image -->
             <img
               src={thumbnailImage}
-              alt="Dr. Ryan Diepenbrock, MD, Facial Cosmetic Surgeon"
+              alt="Dr. Ryan M. Diepenbrock, DDS, FAACS — Double Board-Certified Facial Cosmetic Surgeon"
               class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/thumb:scale-102"
               loading="eager"
             />
@@ -112,8 +141,6 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
                 </div>
               </div>
             </div>
-
-
           </button>
         </div>
 
@@ -126,7 +153,7 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
               </svg>
             </span>
             <p class="text-xs sm:text-sm font-semibold text-neutral-100 truncate">
-              How seelutions Scaled Surgical Consultations — Dr. Ryan Diepenbrock, MD, Facial Cosmetic Surgeon
+              {videoCaption}
             </p>
           </div>
           <span class="text-[10px] sm:text-[11px] font-bold text-neutral-300 uppercase tracking-wider shrink-0 bg-neutral-800 px-2.5 py-1 rounded-md border border-neutral-700/60">
@@ -135,24 +162,52 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
         </div>
       </div>
 
-      <!-- Right Column: Growth Timeline & Retainer Expansion Block (Full Height Match) -->
+      <!-- Right Column: Results & 10-Year Timeline Panel (No Empty Space, Stats Fill Top) -->
       <div class="lg:col-span-7 flex flex-col" data-animate="scale-in" data-animate-delay="2">
-        <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl md:rounded-3xl p-6 sm:p-8 shadow-lg w-full h-full flex flex-col justify-between">
-          <div class="mb-5">
-            <h3 class="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-[#050505] mb-2">
-              {about.timelineTitle}
-            </h3>
-            <p class="text-[#050505]/75 text-xs sm:text-sm leading-relaxed">
-              {about.timelineSubtitle}
-            </p>
-          </div>
-          <div class="space-y-3">
-            {(about.milestones || []).map((m) => (
-              <div class="bg-white px-4 py-3 rounded-xl border border-neutral-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition-shadow hover:shadow-md">
-                <span class="text-xs font-bold px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 w-fit shrink-0">{m.yearBudget}</span>
-                <span class="text-neutral-800 text-xs sm:text-sm font-medium leading-snug text-left sm:text-right">{m.text}</span>
-              </div>
-            ))}
+        <div class="bg-white border border-neutral-200/90 rounded-2xl md:rounded-3xl p-6 sm:p-7 shadow-lg w-full flex flex-col justify-between h-full">
+          <div>
+            <!-- Header -->
+            <div class="mb-5">
+              <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-[#050505] mb-1">
+                {timelineTitle}
+              </h3>
+              <p class="text-xs sm:text-sm text-neutral-500 font-normal">
+                {timelineSubtitle}
+              </p>
+            </div>
+
+            <!-- 2x2 Stats Grid filling the upper space directly under title (NO empty gap) -->
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+              {stats.map((stat) => (
+                <div class="bg-[#F4F2EE] rounded-2xl p-4 sm:p-5 flex flex-col justify-center">
+                  <span class="text-2xl sm:text-3xl font-bold text-neutral-900 leading-tight tracking-tight">
+                    {stat.value}
+                  </span>
+                  <span class="text-xs sm:text-[13px] text-neutral-600 font-normal mt-1.5 leading-snug">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <!-- Small Heading: A decade of staying ahead -->
+            <h4 class="text-xs sm:text-sm font-bold text-neutral-900 mb-3 tracking-tight">
+              {timelineHeading}
+            </h4>
+
+            <!-- Four Rows with NO dollar amounts -->
+            <div class="space-y-2 sm:space-y-2.5">
+              {timelineRows.map((row) => (
+                <div class="bg-white px-4 py-2.5 sm:py-3 rounded-xl border border-neutral-200 shadow-2xs flex items-center justify-between gap-3 hover:border-neutral-300 transition-colors">
+                  <span class="text-xs sm:text-sm font-semibold text-[#00A0DC] tracking-tight shrink-0">
+                    {row.year}
+                  </span>
+                  <span class="text-xs sm:text-sm font-normal text-neutral-700 text-right">
+                    {row.text}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

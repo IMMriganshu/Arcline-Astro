@@ -311,9 +311,24 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       title: "380% Retainer Growth over 10 Years",
       subtitle: "How Dr. Ryan Diepenbrock (Diepenbrock Facial Cosmetic Surgery — Fort Wayne, IN) Scaled to Regional Market Dominance Across a Decade of Digital Shift.",
       description: "In an industry where practices fire marketing agencies every 6 to 12 months, Dr. Diepenbrock has trusted our search and patient acquisition architecture for a decade.",
-      image: "/images/Eyeball-BC.webp",
-      timelineTitle: "Growth Timeline & Retainer Expansion",
-      timelineSubtitle: "A decade-long trajectory of expanding partnership and compounding patient consult revenue.",
+      image: "/images/dr-diepenbrock-thumbnail.jpg",
+      videoUrl: "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
+      videoCaption: "Dr. Ryan Diepenbrock on 10 years with seelutions",
+      timelineTitle: "Results for Diepenbrock Facial Cosmetic Surgery",
+      timelineSubtitle: "2026 verified results",
+      timelineHeading: "A decade of staying ahead",
+      stats: [
+        { value: "35 of 62", label: "Google searches in top 3" },
+        { value: "+158%", label: "Google Maps views" },
+        { value: "+43%", label: "Phone calls from Google" },
+        { value: "+48%", label: "Direction requests" },
+      ],
+      timelineRows: [
+        { year: "2016", text: "Local search foundation" },
+        { year: "2018", text: "Procedure pages and galleries" },
+        { year: "2021", text: "Mobile and Google Maps growth" },
+        { year: "2024 to today", text: "AI search" },
+      ],
       milestones: [],
     };
     return {
@@ -321,9 +336,28 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       title: base.title || "380% Retainer Growth over 10 Years",
       subtitle: base.subtitle || "",
       description: base.description || "",
-      image: base.image || "/images/Eyeball-BC.webp",
-      timelineTitle: base.timelineTitle || "Growth Timeline & Retainer Expansion",
-      timelineSubtitle: base.timelineSubtitle || "",
+      image: base.image || "/images/dr-diepenbrock-thumbnail.jpg",
+      videoUrl: base.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
+      videoCaption: base.videoCaption || "Dr. Ryan Diepenbrock on 10 years with seelutions",
+      timelineTitle: (base.timelineTitle && base.timelineTitle !== "Growth Timeline & Retainer Expansion")
+        ? base.timelineTitle
+        : "Results for Diepenbrock Facial Cosmetic Surgery",
+      timelineSubtitle: (base.timelineSubtitle && base.timelineSubtitle !== "A decade-long trajectory of expanding partnership and compounding patient consult revenue.")
+        ? base.timelineSubtitle
+        : "2026 verified results",
+      timelineHeading: base.timelineHeading || "A decade of staying ahead",
+      stats: safeArray(base.stats, [
+        { value: "35 of 62", label: "Google searches in top 3" },
+        { value: "+158%", label: "Google Maps views" },
+        { value: "+43%", label: "Phone calls from Google" },
+        { value: "+48%", label: "Direction requests" },
+      ]),
+      timelineRows: safeArray(base.timelineRows, [
+        { year: "2016", text: "Local search foundation" },
+        { year: "2018", text: "Procedure pages and galleries" },
+        { year: "2021", text: "Mobile and Google Maps growth" },
+        { year: "2024 to today", text: "AI search" },
+      ]),
       milestones: safeArray(base.milestones, defaultCmsContent.aboutContent?.milestones || []),
     };
   });
@@ -1153,13 +1187,33 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
                     />
 
-                    {/* Timeline Block Content */}
-                    <div className="pt-4 border-t border-white/10 space-y-4">
-                      <h4 className="text-sm font-bold text-cyan-300">Growth Timeline &amp; Retainer Expansion Block</h4>
+                    {/* Video Caption Field */}
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                        Video Caption Bar Under Player
+                      </label>
+                      <input
+                        type="text"
+                        value={localAbout.videoCaption || ''}
+                        onChange={(e) => {
+                          setLocalAbout({ ...localAbout, videoCaption: e.target.value });
+                          setHasChanges(true);
+                        }}
+                        placeholder="Dr. Ryan Diepenbrock on 10 years with seelutions"
+                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-medium"
+                      />
+                    </div>
+
+                    {/* Results Panel Block Content */}
+                    <div className="pt-4 border-t border-white/10 space-y-5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-bold text-cyan-300">Right Side Results Panel (2x2 Stats &amp; 10-Year Timeline)</h4>
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                            Timeline Card Title
+                            Panel Title
                           </label>
                           <input
                             type="text"
@@ -1173,7 +1227,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         </div>
                         <div>
                           <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                            Timeline Card Subtitle
+                            Panel Subtitle
                           </label>
                           <input
                             type="text"
@@ -1187,33 +1241,123 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         </div>
                       </div>
 
-                      <div className="space-y-3">
+                      {/* 2x2 Stats Grid Fields */}
+                      <div className="space-y-3 pt-2 border-t border-white/5">
                         <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider">
-                          Milestones List ({(localAbout.milestones || []).length})
+                          Verified Stats (2x2 Grid Fills Upper Panel)
                         </label>
-                        {(localAbout.milestones || []).map((m, mIdx) => (
-                          <div key={mIdx} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-black/40 rounded-xl border border-white/10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {(localAbout.stats || [
+                            { value: "35 of 62", label: "Google searches in top 3" },
+                            { value: "+158%", label: "Google Maps views" },
+                            { value: "+43%", label: "Phone calls from Google" },
+                            { value: "+48%", label: "Direction requests" },
+                          ]).map((st, sIdx) => (
+                            <div key={sIdx} className="p-3 bg-black/40 rounded-xl border border-white/10 space-y-2">
+                              <div>
+                                <span className="text-[10px] text-neutral-400 font-bold uppercase block mb-1">Stat {sIdx + 1} Big Value</span>
+                                <input
+                                  type="text"
+                                  value={st.value}
+                                  onChange={(e) => {
+                                    const currentStats = [...(localAbout.stats || [
+                                      { value: "35 of 62", label: "Google searches in top 3" },
+                                      { value: "+158%", label: "Google Maps views" },
+                                      { value: "+43%", label: "Phone calls from Google" },
+                                      { value: "+48%", label: "Direction requests" },
+                                    ])];
+                                    currentStats[sIdx] = { ...currentStats[sIdx], value: e.target.value };
+                                    setLocalAbout({ ...localAbout, stats: currentStats });
+                                    setHasChanges(true);
+                                  }}
+                                  className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white font-bold text-xs"
+                                />
+                              </div>
+                              <div>
+                                <span className="text-[10px] text-neutral-400 font-bold uppercase block mb-1">Description Label</span>
+                                <input
+                                  type="text"
+                                  value={st.label}
+                                  onChange={(e) => {
+                                    const currentStats = [...(localAbout.stats || [
+                                      { value: "35 of 62", label: "Google searches in top 3" },
+                                      { value: "+158%", label: "Google Maps views" },
+                                      { value: "+43%", label: "Phone calls from Google" },
+                                      { value: "+48%", label: "Direction requests" },
+                                    ])];
+                                    currentStats[sIdx] = { ...currentStats[sIdx], label: e.target.value };
+                                    setLocalAbout({ ...localAbout, stats: currentStats });
+                                    setHasChanges(true);
+                                  }}
+                                  className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-neutral-300 text-xs"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Small Heading: A decade of staying ahead */}
+                      <div className="pt-2 border-t border-white/5">
+                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
+                          Timeline Small Heading (Below Stats)
+                        </label>
+                        <input
+                          type="text"
+                          value={localAbout.timelineHeading || 'A decade of staying ahead'}
+                          onChange={(e) => {
+                            setLocalAbout({ ...localAbout, timelineHeading: e.target.value });
+                            setHasChanges(true);
+                          }}
+                          className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs font-bold"
+                        />
+                      </div>
+
+                      {/* 4 Rows with NO dollar amounts */}
+                      <div className="space-y-3 pt-2 border-t border-white/5">
+                        <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+                          Four Timeline Rows (No Dollar Amounts)
+                        </label>
+                        {(localAbout.timelineRows || [
+                          { year: "2016", text: "Local search foundation" },
+                          { year: "2018", text: "Procedure pages and galleries" },
+                          { year: "2021", text: "Mobile and Google Maps growth" },
+                          { year: "2024 to today", text: "AI search" },
+                        ]).map((row, rIdx) => (
+                          <div key={rIdx} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-black/40 rounded-xl border border-white/10">
                             <div>
+                              <span className="text-[10px] text-neutral-400 font-bold uppercase block mb-1">Year / Period</span>
                               <input
                                 type="text"
-                                value={m.yearBudget}
+                                value={row.year}
                                 onChange={(e) => {
-                                  const updated = [...localAbout.milestones];
-                                  updated[mIdx].yearBudget = e.target.value;
-                                  setLocalAbout({ ...localAbout, milestones: updated });
+                                  const updated = [...(localAbout.timelineRows || [
+                                    { year: "2016", text: "Local search foundation" },
+                                    { year: "2018", text: "Procedure pages and galleries" },
+                                    { year: "2021", text: "Mobile and Google Maps growth" },
+                                    { year: "2024 to today", text: "AI search" },
+                                  ])];
+                                  updated[rIdx] = { ...updated[rIdx], year: e.target.value };
+                                  setLocalAbout({ ...localAbout, timelineRows: updated });
                                   setHasChanges(true);
                                 }}
-                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-cyan-300 text-xs font-bold"
+                                className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-cyan-400 text-xs font-bold"
                               />
                             </div>
                             <div className="md:col-span-2">
+                              <span className="text-[10px] text-neutral-400 font-bold uppercase block mb-1">Milestone Description</span>
                               <input
                                 type="text"
-                                value={m.text}
+                                value={row.text}
                                 onChange={(e) => {
-                                  const updated = [...localAbout.milestones];
-                                  updated[mIdx].text = e.target.value;
-                                  setLocalAbout({ ...localAbout, milestones: updated });
+                                  const updated = [...(localAbout.timelineRows || [
+                                    { year: "2016", text: "Local search foundation" },
+                                    { year: "2018", text: "Procedure pages and galleries" },
+                                    { year: "2021", text: "Mobile and Google Maps growth" },
+                                    { year: "2024 to today", text: "AI search" },
+                                  ])];
+                                  updated[rIdx] = { ...updated[rIdx], text: e.target.value };
+                                  setLocalAbout({ ...localAbout, timelineRows: updated });
                                   setHasChanges(true);
                                 }}
                                 className="w-full px-3 py-1.5 bg-black/60 border border-white/15 rounded-lg text-white text-xs"
@@ -1232,6 +1376,51 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     <h2 className="text-3xl font-bold">{localAbout.title}</h2>
                     <div className="text-lg font-medium text-neutral-800 prose prose-p:my-1" dangerouslySetInnerHTML={{ __html: localAbout.subtitle }} />
                     <div className="text-neutral-600 text-sm leading-relaxed prose prose-p:my-1" dangerouslySetInnerHTML={{ __html: localAbout.description }} />
+
+                    {/* Preview of Video Caption */}
+                    <div className="p-3 rounded-xl bg-neutral-900 text-white flex items-center justify-between text-xs font-semibold">
+                      <span>▶ {localAbout.videoCaption || "Dr. Ryan Diepenbrock on 10 years with seelutions"}</span>
+                      <span className="text-[10px] bg-neutral-800 px-2 py-0.5 rounded text-neutral-300">AUTHENTIC VIDEO</span>
+                    </div>
+
+                    {/* Preview of Right Side Box matching image_c078e311.png */}
+                    <div className="border border-neutral-200 rounded-2xl p-6 bg-white space-y-5">
+                      <div>
+                        <h3 className="text-xl font-bold text-neutral-900 mb-1">{localAbout.timelineTitle}</h3>
+                        <p className="text-xs text-neutral-500">{localAbout.timelineSubtitle}</p>
+                      </div>
+
+                      {/* 2x2 Stats Grid */}
+                      <div className="grid grid-cols-2 gap-3">
+                        {(localAbout.stats || [
+                          { value: "35 of 62", label: "Google searches in top 3" },
+                          { value: "+158%", label: "Google Maps views" },
+                          { value: "+43%", label: "Phone calls from Google" },
+                          { value: "+48%", label: "Direction requests" },
+                        ]).map((s, idx) => (
+                          <div key={idx} className="bg-[#F4F2EE] rounded-xl p-4 flex flex-col justify-center">
+                            <span className="text-2xl font-bold text-neutral-900">{s.value}</span>
+                            <span className="text-xs text-neutral-600 mt-1">{s.label}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <h4 className="text-xs font-bold text-neutral-900">{localAbout.timelineHeading || "A decade of staying ahead"}</h4>
+
+                      <div className="space-y-2">
+                        {(localAbout.timelineRows || [
+                          { year: "2016", text: "Local search foundation" },
+                          { year: "2018", text: "Procedure pages and galleries" },
+                          { year: "2021", text: "Mobile and Google Maps growth" },
+                          { year: "2024 to today", text: "AI search" },
+                        ]).map((r, idx) => (
+                          <div key={idx} className="bg-white px-3.5 py-2.5 rounded-xl border border-neutral-200 flex items-center justify-between text-xs">
+                            <span className="font-semibold text-[#00A0DC]">{r.year}</span>
+                            <span className="text-neutral-700">{r.text}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
