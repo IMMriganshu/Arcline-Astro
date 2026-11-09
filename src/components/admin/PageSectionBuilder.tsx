@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { CmsData, Page, HeroContent, AboutContent, ServicesHeroContent, ChildServiceContent, ChildServiceInfrastructureItem, ProjectCtaContent, VideoShowcaseContent, Service, Project, Testimonial, ComparisonItem, ComparisonSectionContent, MediaAsset, Article } from '../../lib/types';
 import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
+import { RichTextEditor } from './RichTextEditor';
 
 interface PageSectionBuilderProps {
   page: Page;
@@ -690,20 +691,16 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Subheadline &amp; Value Proposition
-                      </label>
-                      <textarea
-                        rows={3}
-                        value={localHero.subheadline}
-                        onChange={(e) => {
-                          setLocalHero({ ...localHero, subheadline: e.target.value });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
+                    <RichTextEditor
+                      label="Subheadline & Value Proposition"
+                      value={localHero.subheadline}
+                      onChange={(val) => {
+                        setLocalHero({ ...localHero, subheadline: val });
+                        setHasChanges(true);
+                      }}
+                      minHeight="120px"
+                      helperText="Supports H1-H6, paragraph, bold, underline, links, custom text color & font size"
+                    />
 
                     {/* HERO MEDIA CONTROLS */}
                     <div className="pt-4 border-t border-white/10 space-y-4">
@@ -820,7 +817,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       {localHero.titleLine2}
                     </h1>
                     <h2 className="text-2xl font-bold text-white max-w-2xl">{localHero.headline}</h2>
-                    <p className="text-neutral-400 text-sm max-w-2xl leading-relaxed">{localHero.subheadline}</p>
+                    <div className="text-neutral-400 text-sm max-w-2xl leading-relaxed prose prose-invert prose-p:my-1" dangerouslySetInnerHTML={{ __html: localHero.subheadline }} />
                     <div className="flex gap-4 pt-2">
                       <span className="px-5 py-2.5 bg-white text-black font-bold text-xs rounded-full">
                         {localHero.primaryCtaText} &rarr;
@@ -893,35 +890,27 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Subtitle / Introductory Paragraph
-                      </label>
-                      <textarea
-                        rows={3}
-                        value={localServicesHero.subtitle}
-                        onChange={(e) => {
-                          setLocalServicesHero({ ...localServicesHero, subtitle: e.target.value });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
+                    <RichTextEditor
+                      label="Subtitle / Introductory Paragraph"
+                      value={localServicesHero.subtitle}
+                      onChange={(val) => {
+                        setLocalServicesHero({ ...localServicesHero, subtitle: val });
+                        setHasChanges(true);
+                      }}
+                      minHeight="110px"
+                      helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                    />
 
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Secondary Description
-                      </label>
-                      <textarea
-                        rows={2}
-                        value={localServicesHero.description}
-                        onChange={(e) => {
-                          setLocalServicesHero({ ...localServicesHero, description: e.target.value });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
+                    <RichTextEditor
+                      label="Secondary Description"
+                      value={localServicesHero.description}
+                      onChange={(val) => {
+                        setLocalServicesHero({ ...localServicesHero, description: val });
+                        setHasChanges(true);
+                      }}
+                      minHeight="110px"
+                      helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                    />
                   </div>
                 ) : (
                   <div className="bg-black border border-white/15 rounded-2xl p-8 space-y-4">
@@ -931,8 +920,8 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     <h1 className="text-4xl font-black text-white font-urbanist tracking-tighter">
                       {localServicesHero.title}
                     </h1>
-                    <p className="text-white text-base font-medium">{localServicesHero.subtitle}</p>
-                    <p className="text-neutral-400 text-sm leading-relaxed">{localServicesHero.description}</p>
+                    <div className="text-white text-base font-medium prose prose-invert prose-p:my-1" dangerouslySetInnerHTML={{ __html: localServicesHero.subtitle }} />
+                    <div className="text-neutral-400 text-sm leading-relaxed prose prose-invert prose-p:my-1" dangerouslySetInnerHTML={{ __html: localServicesHero.description }} />
                   </div>
                 )}
               </div>
@@ -961,12 +950,11 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Meta Description / Hero Subtitle</label>
-                    <textarea
-                      rows={3}
+                    <RichTextEditor
+                      label="Meta Description / Hero Subtitle"
                       value={localChildService.metaDescription}
-                      onChange={(e) => { setLocalChildService({ ...localChildService, metaDescription: e.target.value }); setHasChanges(true); }}
-                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                      onChange={(val) => { setLocalChildService({ ...localChildService, metaDescription: val }); setHasChanges(true); }}
+                      minHeight="100px"
                     />
                   </div>
                   <MediaControlField
@@ -995,12 +983,11 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Problem Statement Text</label>
-                    <textarea
-                      rows={4}
+                    <RichTextEditor
+                      label="Problem Statement Text"
                       value={localChildService.problemText}
-                      onChange={(e) => { setLocalChildService({ ...localChildService, problemText: e.target.value }); setHasChanges(true); }}
-                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                      onChange={(val) => { setLocalChildService({ ...localChildService, problemText: val }); setHasChanges(true); }}
+                      minHeight="120px"
                     />
                   </div>
                 </div>
@@ -1039,17 +1026,17 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Pillar Description</label>
-                          <textarea
-                            rows={2}
+                          <RichTextEditor
+                            label="Pillar Description"
                             value={item.desc}
-                            onChange={(e) => {
+                            onChange={(val) => {
                               const updated = [...localChildService.infrastructureItems];
-                              updated[idx].desc = e.target.value;
+                              updated[idx].desc = val;
                               setLocalChildService({ ...localChildService, infrastructureItems: updated });
                               setHasChanges(true);
                             }}
-                            className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-lg text-white text-xs leading-relaxed"
+                            minHeight="90px"
+                            compact
                           />
                         </div>
                       </div>
@@ -1064,12 +1051,11 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
               <div className="space-y-6">
                 <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 space-y-5">
                   <div>
-                    <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Surgeon-Specific Value Proposition</label>
-                    <textarea
-                      rows={3}
+                    <RichTextEditor
+                      label="Surgeon-Specific Value Proposition"
                       value={localChildService.surgeonValueText}
-                      onChange={(e) => { setLocalChildService({ ...localChildService, surgeonValueText: e.target.value }); setHasChanges(true); }}
-                      className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
+                      onChange={(val) => { setLocalChildService({ ...localChildService, surgeonValueText: val }); setHasChanges(true); }}
+                      minHeight="110px"
                     />
                   </div>
                   <div>
@@ -1145,35 +1131,27 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Subtitle / Doctor Case Study Attribution
-                      </label>
-                      <textarea
-                        rows={2}
-                        value={localAbout.subtitle}
-                        onChange={(e) => {
-                          setLocalAbout({ ...localAbout, subtitle: e.target.value });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
+                    <RichTextEditor
+                      label="Subtitle / Doctor Case Study Attribution"
+                      value={localAbout.subtitle}
+                      onChange={(val) => {
+                        setLocalAbout({ ...localAbout, subtitle: val });
+                        setHasChanges(true);
+                      }}
+                      minHeight="110px"
+                      helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                    />
 
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                        Editorial Narrative Description
-                      </label>
-                      <textarea
-                        rows={4}
-                        value={localAbout.description}
-                        onChange={(e) => {
-                          setLocalAbout({ ...localAbout, description: e.target.value });
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
+                    <RichTextEditor
+                      label="Editorial Narrative Description"
+                      value={localAbout.description}
+                      onChange={(val) => {
+                        setLocalAbout({ ...localAbout, description: val });
+                        setHasChanges(true);
+                      }}
+                      minHeight="140px"
+                      helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                    />
 
                     {/* Timeline Block Content */}
                     <div className="pt-4 border-t border-white/10 space-y-4">
@@ -1252,8 +1230,8 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       {localAbout.badge}
                     </span>
                     <h2 className="text-3xl font-bold">{localAbout.title}</h2>
-                    <p className="text-lg font-medium text-neutral-800">{localAbout.subtitle}</p>
-                    <p className="text-neutral-600 text-sm leading-relaxed">{localAbout.description}</p>
+                    <div className="text-lg font-medium text-neutral-800 prose prose-p:my-1" dangerouslySetInnerHTML={{ __html: localAbout.subtitle }} />
+                    <div className="text-neutral-600 text-sm leading-relaxed prose prose-p:my-1" dangerouslySetInnerHTML={{ __html: localAbout.description }} />
                   </div>
                 )}
               </div>
@@ -1375,17 +1353,17 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                               className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-white text-xs font-semibold"
                               placeholder="Title (e.g. Rented Clicks)"
                             />
-                            <textarea
-                              rows={2}
+                            <RichTextEditor
+                              label="Flaw Description"
                               value={item.description}
-                              onChange={(e) => {
+                              onChange={(val) => {
                                 const updated = [...localComparisonContent.traditionalItems];
-                                updated[idx] = { ...updated[idx], description: e.target.value };
+                                updated[idx] = { ...updated[idx], description: val };
                                 setLocalComparisonContent({ ...localComparisonContent, traditionalItems: updated });
                                 setHasChanges(true);
                               }}
-                              className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-neutral-300 text-xs leading-relaxed"
-                              placeholder="Description..."
+                              minHeight="70px"
+                              compact
                             />
                           </div>
                         ))}
@@ -1456,17 +1434,17 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                               className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-white text-xs font-semibold"
                               placeholder="Title (e.g. Owned Search Equity)"
                             />
-                            <textarea
-                              rows={2}
+                            <RichTextEditor
+                              label="Advantage Description"
                               value={item.description}
-                              onChange={(e) => {
+                              onChange={(val) => {
                                 const updated = [...localComparisonContent.seelutionsItems];
-                                updated[idx] = { ...updated[idx], description: e.target.value };
+                                updated[idx] = { ...updated[idx], description: val };
                                 setLocalComparisonContent({ ...localComparisonContent, seelutionsItems: updated });
                                 setHasChanges(true);
                               }}
-                              className="w-full px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-neutral-300 text-xs leading-relaxed"
-                              placeholder="Description..."
+                              minHeight="70px"
+                              compact
                             />
                           </div>
                         ))}
@@ -1670,20 +1648,18 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         type="image"
                       />
 
-                      <div>
-                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Description</label>
-                        <textarea
-                          rows={2}
-                          value={srv.description}
-                          onChange={(e) => {
-                            const updated = [...localServices];
-                            updated[idx].description = e.target.value;
-                            setLocalServices(updated);
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                        />
-                      </div>
+                      <RichTextEditor
+                        label="Pillar Description"
+                        value={srv.description}
+                        onChange={(val) => {
+                          const updated = [...localServices];
+                          updated[idx].description = val;
+                          setLocalServices(updated);
+                          setHasChanges(true);
+                        }}
+                        minHeight="90px"
+                        compact
+                      />
                     </div>
                   ))}
                 </div>
@@ -1747,20 +1723,18 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         type="image"
                       />
 
-                      <div>
-                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Description / Growth Metric</label>
-                        <textarea
-                          rows={2}
-                          value={prj.description}
-                          onChange={(e) => {
-                            const updated = [...localProjects];
-                            updated[idx].description = e.target.value;
-                            setLocalProjects(updated);
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                        />
-                      </div>
+                      <RichTextEditor
+                        label="Description / Growth Metric"
+                        value={prj.description}
+                        onChange={(val) => {
+                          const updated = [...localProjects];
+                          updated[idx].description = val;
+                          setLocalProjects(updated);
+                          setHasChanges(true);
+                        }}
+                        minHeight="90px"
+                        compact
+                      />
                     </div>
                   ))}
                 </div>
@@ -1863,20 +1837,18 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                       type="image"
                     />
 
-                    <div>
-                      <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Testimonial Quote</label>
-                      <textarea
-                        rows={2}
-                        value={t.quote}
-                        onChange={(e) => {
-                          const updated = [...localTestimonials];
-                          updated[idx].quote = e.target.value;
-                          setLocalTestimonials(updated);
-                          setHasChanges(true);
-                        }}
-                        className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                      />
-                    </div>
+                    <RichTextEditor
+                      label="Testimonial Quote"
+                      value={t.quote}
+                      onChange={(val) => {
+                        const updated = [...localTestimonials];
+                        updated[idx].quote = val;
+                        setLocalTestimonials(updated);
+                        setHasChanges(true);
+                      }}
+                      minHeight="85px"
+                      compact
+                    />
                   </div>
                 ))}
               </div>
@@ -1983,20 +1955,18 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                         type="image"
                       />
 
-                      <div>
-                        <label className="block text-[11px] font-semibold text-neutral-400 mb-1">Excerpt Summary</label>
-                        <textarea
-                          rows={2}
-                          value={art.excerpt}
-                          onChange={(e) => {
-                            const updated = [...localArticles];
-                            updated[idx].excerpt = e.target.value;
-                            setLocalArticles(updated);
-                            setHasChanges(true);
-                          }}
-                          className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                        />
-                      </div>
+                      <RichTextEditor
+                        label="Excerpt Summary"
+                        value={art.excerpt}
+                        onChange={(val) => {
+                          const updated = [...localArticles];
+                          updated[idx].excerpt = val;
+                          setLocalArticles(updated);
+                          setHasChanges(true);
+                        }}
+                        minHeight="85px"
+                        compact
+                      />
                     </div>
                   ))}
                 </div>
@@ -2049,20 +2019,16 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Description &amp; Offer
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={localCta.description}
-                    onChange={(e) => {
-                      setLocalCta({ ...localCta, description: e.target.value });
-                      setHasChanges(true);
-                    }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed"
-                  />
-                </div>
+                <RichTextEditor
+                  label="Description & Offer"
+                  value={localCta.description}
+                  onChange={(val) => {
+                    setLocalCta({ ...localCta, description: val });
+                    setHasChanges(true);
+                  }}
+                  minHeight="110px"
+                  helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>

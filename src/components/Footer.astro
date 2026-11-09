@@ -19,9 +19,7 @@ const navItems = await getNavigation();
         {footer.tagline && footer.tagline.toLowerCase().trim() !== "be seen. be chosen." && (
           <p class="text-xl font-medium tracking-tight">{footer.tagline}</p>
         )}
-        <p class="text-sm text-neutral-400 leading-relaxed">
-          {footer.description || "Helping surgical practices dominate local and AI-driven search landscapes."}
-        </p>
+        <div class="text-sm text-neutral-400 leading-relaxed prose prose-invert prose-sm max-w-none" set:html={footer.description || "Helping surgical practices dominate local and AI-driven search landscapes."} />
       </div>
 
       <!-- Col 2: Quick Links (Synced with Navigation) -->
@@ -71,9 +69,7 @@ const navItems = await getNavigation();
           {(footer.copyrightText || "© 2026 seelutions. All Rights Reserved.").replace(/Seelutions/g, 'seelutions')}
         </p>
         {footer.disclaimer && (
-          <p class="text-xs text-neutral-500 leading-relaxed mb-4">
-            {footer.disclaimer.replace(/Seelutions/g, 'seelutions')}
-          </p>
+          <div class="text-xs text-neutral-500 leading-relaxed mb-4 prose prose-invert prose-xs max-w-none" set:html={footer.disclaimer.replace(/Seelutions/g, 'seelutions')} />
         )}
         <a
           href="/admin"

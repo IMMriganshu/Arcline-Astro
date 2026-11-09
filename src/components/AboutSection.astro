@@ -19,12 +19,8 @@ const videoSource = about.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20
       <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#030303] leading-[1.15] mb-4">
         {about.title}
       </h2>
-      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl md:text-2xl font-medium text-neutral-800 leading-relaxed mb-3">
-        {about.subtitle}
-      </p>
-      <p data-animate="fade-up-sm" data-animate-delay="2" class="text-base sm:text-lg text-neutral-600 leading-relaxed">
-        {about.description}
-      </p>
+      <div data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl md:text-2xl font-medium text-neutral-800 leading-relaxed mb-3 prose prose-p:my-1 prose-headings:my-2 prose-a:text-cyan-600 prose-a:underline" set:html={about.subtitle} />
+      <div data-animate="fade-up-sm" data-animate-delay="2" class="text-base sm:text-lg text-neutral-600 leading-relaxed prose prose-p:my-1 prose-headings:my-2 prose-a:text-cyan-600 prose-a:underline" set:html={about.description} />
     </div>
 
     <!-- 2-Column Layout: Left = Video Testimonial (Click-to-Play), Right = Growth Timeline Block -->

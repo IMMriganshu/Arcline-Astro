@@ -68,13 +68,9 @@ const coreServices = [
             {servicesHero.title}
           </h1>
           
-          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-6">
-            {servicesHero.subtitle}
-          </p>
+          <div data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-6" set:html={servicesHero.subtitle} />
 
-          <p data-animate="fade-up-sm" data-animate-delay="2" class="text-base text-neutral-600 leading-relaxed mb-8">
-            {servicesHero.description}
-          </p>
+          <div data-animate="fade-up-sm" data-animate-delay="2" class="text-base text-neutral-600 leading-relaxed mb-8 prose prose-neutral max-w-none" set:html={servicesHero.description} />
 
           <div data-animate="fade-up-sm" data-animate-delay="3" class="flex flex-wrap items-center gap-4">
             <Button href="/#contact" variant="black" showIcon={true} iconType="arrow-right">

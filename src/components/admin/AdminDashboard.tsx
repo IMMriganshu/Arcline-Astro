@@ -4,6 +4,7 @@ import { defaultCmsContent } from '../../data/defaultCmsContent';
 import { replaceSeelutionsDeep } from '../../lib/cms';
 import { ArticleContentBuilder } from './ArticleContentBuilder';
 import { PageSectionBuilder } from './PageSectionBuilder';
+import { RichTextEditor } from './RichTextEditor';
 import { AdminUsersManagementView } from './AdminUsersManagementView';
 import { SeoManagerView } from './SeoManagerView';
 import { db } from '../../lib/firebase';
@@ -1193,20 +1194,16 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Subheadline Paragraph
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={cmsData.hero.subheadline}
-                    onChange={(e) => {
-                      setCmsData({ ...cmsData, hero: { ...cmsData.hero, subheadline: e.target.value } });
-                      setHasChanges(true);
-                    }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs leading-relaxed focus:outline-none focus:border-cyan-400"
-                  />
-                </div>
+                <RichTextEditor
+                  label="Subheadline Paragraph"
+                  value={cmsData.hero.subheadline}
+                  onChange={(val) => {
+                    setCmsData({ ...cmsData, hero: { ...cmsData.hero, subheadline: val } });
+                    setHasChanges(true);
+                  }}
+                  minHeight="110px"
+                  helperText="Supports H1-H6, paragraph, bold, underline, links, custom text color & font size"
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div>
@@ -2060,43 +2057,35 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Footer Mission / Agency Description
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={cmsData.footer?.description || ''}
-                    placeholder="Helping surgical practices dominate local and AI-driven search landscapes."
-                    onChange={(e) => {
-                      setCmsData({
-                        ...cmsData,
-                        footer: { ...cmsData.footer, description: e.target.value },
-                      });
-                      setHasChanges(true);
-                    }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
-                  />
-                </div>
+                <RichTextEditor
+                  label="Footer Mission / Agency Description"
+                  value={cmsData.footer?.description || ''}
+                  placeholder="Helping surgical practices dominate local and AI-driven search landscapes."
+                  onChange={(val) => {
+                    setCmsData({
+                      ...cmsData,
+                      footer: { ...cmsData.footer, description: val },
+                    });
+                    setHasChanges(true);
+                  }}
+                  minHeight="100px"
+                  helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                />
 
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">
-                    Territory Exclusivity & Legal Disclaimer
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={cmsData.footer?.disclaimer || ''}
-                    placeholder="Territory exclusivity guaranteed: We partner with exactly one surgical practice per geographic metro..."
-                    onChange={(e) => {
-                      setCmsData({
-                        ...cmsData,
-                        footer: { ...cmsData.footer, disclaimer: e.target.value },
-                      });
-                      setHasChanges(true);
-                    }}
-                    className="w-full px-4 py-2.5 bg-black/50 border border-white/15 rounded-xl text-white text-xs focus:outline-none focus:border-cyan-400"
-                  />
-                </div>
+                <RichTextEditor
+                  label="Territory Exclusivity & Legal Disclaimer"
+                  value={cmsData.footer?.disclaimer || ''}
+                  placeholder="Territory exclusivity guaranteed: We partner with exactly one surgical practice per geographic metro..."
+                  onChange={(val) => {
+                    setCmsData({
+                      ...cmsData,
+                      footer: { ...cmsData.footer, disclaimer: val },
+                    });
+                    setHasChanges(true);
+                  }}
+                  minHeight="100px"
+                  helperText="Supports H1-H6, paragraph, bold, underline, links, custom color & font size"
+                />
               </div>
 
               {/* SECTION 4: PRACTICE CONTACT DETAILS (MIRRORED IN FOOTER) */}
@@ -2965,15 +2954,13 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">Short Excerpt</label>
-              <textarea
-                rows={2}
-                value={editingArticle.excerpt}
-                onChange={(e) => setEditingArticle({ ...editingArticle, excerpt: e.target.value })}
-                className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-              />
-            </div>
+            <RichTextEditor
+              label="Short Excerpt"
+              value={editingArticle.excerpt}
+              onChange={(val) => setEditingArticle({ ...editingArticle, excerpt: val })}
+              minHeight="85px"
+              compact
+            />
 
             {/* Rich Article Text Builder with H1-H6, Links, Quotes, Bullets, Images, Captions & Preview */}
             <div className="pt-1">
@@ -3113,15 +3100,13 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">Description</label>
-              <textarea
-                rows={3}
-                value={editingService.description}
-                onChange={(e) => setEditingService({ ...editingService, description: e.target.value })}
-                className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-              />
-            </div>
+            <RichTextEditor
+              label="Description"
+              value={editingService.description}
+              onChange={(val) => setEditingService({ ...editingService, description: val })}
+              minHeight="95px"
+              compact
+            />
 
             <div>
               <label className="block text-xs font-semibold text-neutral-300 mb-1">Image URL</label>
@@ -3196,15 +3181,13 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">Outcome Narrative</label>
-              <textarea
-                rows={3}
-                value={editingProject.description}
-                onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
-                className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-              />
-            </div>
+            <RichTextEditor
+              label="Outcome Narrative"
+              value={editingProject.description}
+              onChange={(val) => setEditingProject({ ...editingProject, description: val })}
+              minHeight="95px"
+              compact
+            />
 
             <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
               <button onClick={() => setIsProjectModalOpen(false)} className="px-4 py-2 rounded-xl bg-white/5 text-xs text-neutral-300 cursor-pointer">
@@ -3269,15 +3252,13 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">Quote</label>
-              <textarea
-                rows={3}
-                value={editingTestimonial.quote}
-                onChange={(e) => setEditingTestimonial({ ...editingTestimonial, quote: e.target.value })}
-                className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
-              />
-            </div>
+            <RichTextEditor
+              label="Testimonial Quote"
+              value={editingTestimonial.quote}
+              onChange={(val) => setEditingTestimonial({ ...editingTestimonial, quote: val })}
+              minHeight="95px"
+              compact
+            />
 
             <div>
               <label className="block text-xs font-semibold text-neutral-300 mb-1">Avatar Image URL</label>

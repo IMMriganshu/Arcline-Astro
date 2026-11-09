@@ -138,9 +138,7 @@ let letterCounter = 0;
             </h2>
 
             <!-- Subheadline Paragraph -->
-            <p class="text-neutral-100 text-base sm:text-base leading-relaxed mb-10 max-w-xl">
-              {hero.subheadline}
-            </p>
+            <div class="text-neutral-100 text-base sm:text-base leading-relaxed mb-10 max-w-xl prose prose-invert prose-p:my-1 prose-headings:my-2 prose-a:text-cyan-400 prose-a:underline" set:html={hero.subheadline} />
 
             <!-- Call to Action Buttons -->
             <div class="flex flex-wrap items-center gap-4">

@@ -60,7 +60,7 @@ const portfolioProjects = await getProjects();
                     {project.title}
                     <div class="recent-works__project-name-border"></div>
                   </a>
-                  <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-2xl font-normal leading-relaxed">{project.description}</p>
+                  <div class="text-neutral-600 text-sm sm:text-base mt-2 max-w-2xl font-normal leading-relaxed prose prose-neutral max-w-none" set:html={project.description} />
                 </div>
               </div>
               <a href="/projects" class="recent-works__project-category">

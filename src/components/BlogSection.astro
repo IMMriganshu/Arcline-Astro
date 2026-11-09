@@ -62,9 +62,7 @@ const blogArticles = (await getArticles()).filter((a: any) => a.published);
             </h3>
 
             <!-- Excerpt -->
-            <p class="text-sm sm:text-base text-neutral-600 leading-relaxed mb-6">
-              {article.excerpt}
-            </p>
+            <div class="text-sm sm:text-base text-neutral-600 leading-relaxed mb-6 prose prose-neutral max-w-none line-clamp-3" set:html={article.excerpt} />
           </div>
 
           <a

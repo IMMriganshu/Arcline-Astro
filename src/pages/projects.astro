@@ -47,9 +47,7 @@ const portfolioProjects = await getProjects();
               {project.title}
             </h2>
 
-            <p class="text-sm text-neutral-600 leading-relaxed">
-              {project.description}
-            </p>
+            <div class="text-sm text-neutral-600 leading-relaxed prose prose-neutral max-w-none" set:html={project.description} />
           </div>
         </div>
       ))}

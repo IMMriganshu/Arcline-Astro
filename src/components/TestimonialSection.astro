@@ -46,9 +46,7 @@ const testimonial = testimonialsData[0] || {
           </span>
 
           <!-- Quote text -->
-          <blockquote class="text-xl sm:text-2xl md:text-3xl font-bold text-[#030303] leading-relaxed tracking-tight mb-8">
-            "{testimonial.quote}"
-          </blockquote>
+          <blockquote class="text-xl sm:text-2xl md:text-3xl font-bold text-[#030303] leading-relaxed tracking-tight mb-8 prose prose-neutral max-w-none" set:html={`"${testimonial.quote}"`} />
 
           <!-- Author Info -->
           <div class="pt-4 border-t border-neutral-200">
