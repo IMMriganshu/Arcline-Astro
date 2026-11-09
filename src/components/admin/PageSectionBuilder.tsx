@@ -388,20 +388,15 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
   const [localTestimonials, setLocalTestimonials] = useState<Testimonial[]>(() => safeArray(cmsData?.testimonials, defaultCmsContent.testimonials));
   const [localComparison, setLocalComparison] = useState<ComparisonItem[]>(() => safeArray(cmsData?.comparison, defaultCmsContent.comparison));
   const [localComparisonContent, setLocalComparisonContent] = useState<ComparisonSectionContent>(() => {
-    const base = cmsData?.comparisonContent || defaultCmsContent.comparisonContent || {
-      badge: "Rented Clicks vs. Owned Authority",
-      headline: "Why Traditional Models Fail Plastic Surgeons",
-      traditionalTitle: "Traditional Agencies (Rented Clicks)",
-      traditionalItems: [],
-      seelutionsTitle: "The seelutions Growth Blueprint",
-      seelutionsItems: [],
-    };
+    const raw = cmsData?.comparisonContent;
+    const isInvalid = !raw || !raw.traditionalItems || raw.traditionalItems.length < 4 || !raw.seelutionsItems || raw.seelutionsItems.length < 4 || raw.badge === "Rented Clicks vs. Owned Authority";
+    const base = isInvalid ? defaultCmsContent.comparisonContent! : raw;
     return {
-      badge: base.badge || "Rented Clicks vs. Owned Authority",
-      headline: base.headline || "Why Traditional Models Fail Plastic Surgeons",
-      traditionalTitle: base.traditionalTitle || "Traditional Agencies (Rented Clicks)",
+      badge: base.badge || "Why practices choose seelutions",
+      headline: base.headline || "Why Most Marketing Agencies Fall Short for Plastic and Facial Cosmetic Surgeons",
+      traditionalTitle: base.traditionalTitle || "General marketing agencies",
       traditionalItems: safeArray(base.traditionalItems, defaultCmsContent.comparisonContent?.traditionalItems || []),
-      seelutionsTitle: base.seelutionsTitle || "The seelutions Growth Blueprint",
+      seelutionsTitle: base.seelutionsTitle || "seelutions: Surgical Practice Specialists",
       seelutionsItems: safeArray(base.seelutionsItems, defaultCmsContent.comparisonContent?.seelutionsItems || []),
     };
   });

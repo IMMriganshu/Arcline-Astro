@@ -87,7 +87,7 @@ export default function AdminDashboard() {
                 vercelDeployHookUrl: dedicatedHook || parsed.siteConfig?.vercelDeployHookUrl || PERMANENT_VERCEL_HOOK,
               },
               comparison: Array.isArray(parsed.comparison) && parsed.comparison.length > 0 ? parsed.comparison : defaultCmsContent.comparison,
-              comparisonContent: (parsed.comparisonContent !== undefined && parsed.comparisonContent !== null) ? parsed.comparisonContent : defaultCmsContent.comparisonContent,
+              comparisonContent: (parsed.comparisonContent && parsed.comparisonContent.traditionalItems?.length >= 4 && parsed.comparisonContent.seelutionsItems?.length >= 4) ? parsed.comparisonContent : defaultCmsContent.comparisonContent,
               navigation: Array.isArray(parsed.navigation) && parsed.navigation.length > 0 ? parsed.navigation : defaultCmsContent.navigation,
               aboutContent: parsed.aboutContent || defaultCmsContent.aboutContent,
               projectCta: {

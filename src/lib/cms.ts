@@ -76,7 +76,17 @@ export async function getServerCmsData(): Promise<CmsData> {
           remoteData.siteConfig.description = defaultCmsContent.siteConfig.description;
         }
       }
-      if (remoteData?.comparisonContent?.seelutionsTitle) {
+      if (
+        !remoteData?.comparisonContent ||
+        !Array.isArray(remoteData.comparisonContent.traditionalItems) ||
+        remoteData.comparisonContent.traditionalItems.length < 4 ||
+        !Array.isArray(remoteData.comparisonContent.seelutionsItems) ||
+        remoteData.comparisonContent.seelutionsItems.length < 4 ||
+        remoteData.comparisonContent.badge === 'Rented Clicks vs. Owned Authority' ||
+        remoteData.comparisonContent.headline === 'Why Traditional Models Fail Plastic Surgeons'
+      ) {
+        remoteData.comparisonContent = defaultCmsContent.comparisonContent;
+      } else if (remoteData?.comparisonContent?.seelutionsTitle) {
         remoteData.comparisonContent.seelutionsTitle = remoteData.comparisonContent.seelutionsTitle.replace(/Seelutions/g, 'seelutions');
       }
       if (remoteData?.projectCta) {
@@ -276,7 +286,19 @@ export async function getAboutContent() {
  */
 export async function getComparisonContent() {
   const data = await getCmsData();
-  return data.comparisonContent || defaultCmsContent.comparisonContent!;
+  const comp = data.comparisonContent;
+  if (
+    !comp ||
+    !Array.isArray(comp.traditionalItems) ||
+    comp.traditionalItems.length < 4 ||
+    !Array.isArray(comp.seelutionsItems) ||
+    comp.seelutionsItems.length < 4 ||
+    comp.badge === 'Rented Clicks vs. Owned Authority' ||
+    comp.headline === 'Why Traditional Models Fail Plastic Surgeons'
+  ) {
+    return defaultCmsContent.comparisonContent!;
+  }
+  return comp;
 }
 
 /**
@@ -351,8 +373,6 @@ export async function deleteServerArticle(articleId: string, slug?: string): Pro
   return success;
 }
 
-
-
 /**
  * Client-side helper to get CMS data from localStorage or fallback
  */
@@ -364,6 +384,17 @@ export function getClientCmsData(): CmsData {
     const local = localStorage.getItem(CMS_STORAGE_KEY);
     if (local) {
       const parsed = JSON.parse(local);
+      if (
+        !parsed.comparisonContent ||
+        !Array.isArray(parsed.comparisonContent.traditionalItems) ||
+        parsed.comparisonContent.traditionalItems.length < 4 ||
+        !Array.isArray(parsed.comparisonContent.seelutionsItems) ||
+        parsed.comparisonContent.seelutionsItems.length < 4 ||
+        parsed.comparisonContent.badge === 'Rented Clicks vs. Owned Authority' ||
+        parsed.comparisonContent.headline === 'Why Traditional Models Fail Plastic Surgeons'
+      ) {
+        parsed.comparisonContent = defaultCmsContent.comparisonContent;
+      }
       return replaceSeelutionsDeep(deepMerge(defaultCmsContent, parsed));
     }
   } catch (e) {
