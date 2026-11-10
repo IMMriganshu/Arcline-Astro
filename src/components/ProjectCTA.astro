@@ -1,48 +1,75 @@
 ---
 import SectionLabel from "./SectionLabel.astro";
-import Button from "./Button.astro";
 import { getProjectCtaContent } from "../lib/cms";
+import InteractiveAuditCard from "./InteractiveAuditCard";
 
 const cta = await getProjectCtaContent();
+
+const badgeText = cta.badge || "PRACTICE VISIBILITY AUDIT";
+const headlineText = cta.headline || "Is Your Practice Visible in Modern AI & Google Search?";
+const descriptionText = "Claim a free, customized Practice Visibility Audit of your practice's digital footprint. We'll review your website, Google rankings, Google Maps presence, and AI search visibility, then show you where patients are going to competitors and how to fix it.";
+const buttonText = "Get Your Free Practice Visibility Audit";
+const buttonLink = cta.buttonLink || "https://audit.seelutions.com/";
 ---
 
-<section id="contact-cta" class="py-16 md:py-24 relative overflow-hidden bg-[#050505] text-white">
-  <!-- Atmospheric Dark Architectural Background Image -->
-  <div class="absolute inset-0 z-0">
-    <img
-      src={cta.backgroundImage || "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2100&q=85"}
-      alt="Modern medical aesthetic practice architecture"
-      class="w-full h-full object-cover object-center opacity-25"
-      loading="lazy"
-      decoding="async"
-      width="1440"
-      height="600"
-    />
-    <div class="absolute inset-0 bg-gradient-to-r from-[#050505]/95 via-[#050505]/85 to-[#050505]/70"></div>
+<section id="contact-cta" class="pt-16 md:pt-24 pb-20 md:pb-28 relative overflow-hidden bg-gradient-to-b from-[#051329] via-[#091D3E] to-[#050D1D] text-white border-0">
+  <!-- Subtle Background Watermark & Radial Glows -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <!-- Faint background radial glow -->
+    <div class="absolute top-1/2 right-10 -translate-y-1/2 w-[700px] h-[700px] bg-[#1D60C8]/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-20 left-10 w-[500px] h-[500px] bg-[#C5A880]/10 rounded-full blur-3xl"></div>
+
+    <!-- Faint seelutions Eye Logo Watermark on right -->
+    <div class="absolute right-[-100px] top-1/2 -translate-y-1/2 opacity-[0.04] text-white select-none">
+      <svg class="w-[850px] h-[850px]" viewBox="0 0 200 200" fill="currentColor">
+        <path d="M100 30C50 30 10 70 10 100c0 30 40 70 90 70s90-40 90-70c0-30-40-70-90-70zm0 115c-24.8 0-45-20.2-45-45s20.2-45 45-45 45 20.2 45 45-20.2 45-45 45z"/>
+      </svg>
+    </div>
   </div>
 
   <div class="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-    <div class="max-w-3xl">
-      <!-- Gold Label -->
-      <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text={cta.badge || "PRACTICE DIGITAL AUDIT"} theme="dark" />
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      
+      <!-- Left Column: Text & Gold CTA Button -->
+      <div class="lg:col-span-7 flex flex-col items-start max-w-2xl">
+        <!-- Small Gold Label -->
+        <div class="mb-4" data-animate="fade-up-sm">
+          <SectionLabel text={badgeText} theme="dark" />
+        </div>
+
+        <!-- Headline -->
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold tracking-tight text-white leading-[1.18] mb-6 font-urbanist">
+          {headlineText}
+        </h2>
+
+        <!-- Paragraph -->
+        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-300 font-normal leading-relaxed mb-8 max-w-xl">
+          {descriptionText}
+        </p>
+
+        <!-- Gold Standout CTA Button -->
+        <div data-animate="fade-up-sm" data-animate-delay="2">
+          <a
+            href={buttonLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group bg-[#C5A880] hover:bg-[#B8986C] text-[#051329] font-bold text-sm sm:text-base px-7 py-4 rounded-full inline-flex items-center gap-3.5 shadow-[0_10px_30px_rgba(197,168,128,0.3)] transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+          >
+            <span>{buttonText}</span>
+            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#051329] text-[#C5A880] flex items-center justify-center transition-transform group-hover:translate-x-0.5 shadow-sm">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </a>
+        </div>
       </div>
 
-      <!-- Headline -->
-      <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12] mb-6">
-        {cta.headline}
-      </h2>
-
-      <!-- Sub-Heading -->
-      <div data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-300 leading-relaxed mb-8 max-w-2xl font-normal prose prose-invert max-w-none" set:html={cta.description} />
-
-      <!-- Trigger Button -->
-      <div data-animate="fade-up-sm" data-animate-delay="2">
-        <Button href={cta.buttonLink || "https://audit.seelutions.com/"} variant="white" showIcon={true} iconType="arrow-right">
-          {cta.buttonText || "Get Practice Visibility Audit"}
-        </Button>
+      <!-- Right Column: Interactive Audit Card Graphic (Redesigned Lens & Interactivity) -->
+      <div class="lg:col-span-5 flex justify-center lg:justify-end" data-animate="scale-in">
+        <InteractiveAuditCard client:visible />
       </div>
+
     </div>
   </div>
 </section>
-

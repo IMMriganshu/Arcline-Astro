@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import SectionLabel from "../components/SectionLabel.astro";
+import ProjectCTA from "../components/ProjectCTA.astro";
+---
+
+<BaseLayout title="Privacy Policy | seelutions - Specialized Search Authority" description="Privacy policy and data protection guidelines for seelutions and Patient Grower.">
+  <Header />
+
+  <main class="bg-[#051329] text-white pt-32 pb-20">
+    <div class="max-w-[1000px] mx-auto px-4 sm:px-8">
+      
+      <!-- Header Banner -->
+      <div class="mb-12 border-b border-white/10 pb-8">
+        <div class="mb-4">
+          <SectionLabel text="LEGAL & DATA PROTECTION" theme="dark" />
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white font-urbanist mb-4">
+          Privacy Policy
+        </h1>
+        <p class="text-neutral-400 text-sm">
+          Last updated: March 2026 · seelutions
+        </p>
+      </div>
+
+      <!-- Policy Content -->
+      <div class="prose prose-invert prose-lg max-w-none text-neutral-300 space-y-8 font-normal leading-relaxed">
+        <section>
+          <h2 class="text-2xl font-bold text-white font-urbanist mb-3">1. Overview</h2>
+          <p>
+            At <strong>seelutions</strong>, we respect your privacy and are committed to protecting the confidentiality of the personal and practice information shared with us. This Privacy Policy details how we collect, use, and safeguard information when you visit our website, request a Practice Visibility Audit, or engage our digital search services.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-white font-urbanist mb-3">2. Information We Collect</h2>
+          <p>
+            We collect information strictly necessary to provide tailored digital marketing, search engine optimization, AI search visibility, and website design services for board-certified plastic and facial cosmetic surgeons.
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-neutral-300">
+            <li><strong>Practice Details:</strong> Practice name, website URL, surgeon credentials, primary location, and contact information provided when requesting an audit or strategy call.</li>
+            <li><strong>Communication Records:</strong> Email address, phone number, and consultation notes when scheduling strategy calls.</li>
+            <li><strong>Technical Diagnostics:</strong> Anonymous analytics, IP addresses, browser types, and referral sources strictly used to improve site performance and accessibility.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-white font-urbanist mb-3">3. How We Use Your Information</h2>
+          <p>
+            Your information is used exclusively to:
+          </p>
+          <ul class="list-disc pl-6 space-y-2 text-neutral-300">
+            <li>Generate customized Practice Visibility Audits analyzing website speed, Google Maps rankings, and AI search visibility (ChatGPT, Gemini, Google AI Overviews).</li>
+            <li>Communicate directly regarding strategy calls, practice audits, and service inquiries.</li>
+            <li>Enforce our strict territory exclusivity policy (partnering with only one practice per metropolitan market).</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-white font-urbanist mb-3">4. Data Sharing & Confidentiality</h2>
+          <p>
+            <strong>We never sell, rent, or trade your practice data to third parties.</strong> Data is shared only with trusted technical infrastructure providers under strict confidentiality agreements necessary to deliver our services.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-white font-urbanist mb-3">5. Contact Us</h2>
+          <p>
+            If you have questions regarding this Privacy Policy or how your data is handled, please contact us directly:
+          </p>
+          <div class="mt-4 p-6 rounded-2xl bg-white/5 border border-white/10 text-sm space-y-2">
+            <p><strong>seelutions</strong></p>
+            <p>Email: <a href="mailto:info@seelutions.com" class="text-[#C5A880] hover:underline">info@seelutions.com</a></p>
+            <p>Phone: <a href="tel:7577371306" class="text-[#C5A880] hover:underline">(757) 737-1306</a></p>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+
+  <ProjectCTA />
+  <Footer />
+</BaseLayout>

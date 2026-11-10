@@ -44,7 +44,7 @@ const PRESET_COLORS = [
   { name: 'Muted Gray', hex: '#9CA3AF' },
   { name: 'seelutions Cyan', hex: '#00A0DC' },
   { name: 'Bright Cyan', hex: '#06B6D4' },
-  { name: 'seelutions Green', hex: '#8DC541' },
+  { name: 'seelutions Gold', hex: '#C5A880' },
   { name: 'Lime Green', hex: '#A3E635' },
   { name: 'Amber Gold', hex: '#F59E0B' },
   { name: 'Warm Orange', hex: '#F97316' },

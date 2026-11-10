@@ -4,6 +4,7 @@ import Hero from "../components/Hero.astro";
 import AboutSection from "../components/AboutSection.astro";
 import ComparisonSection from "../components/ComparisonSection.astro";
 import ServicesSection from "../components/ServicesSection.astro";
+import AgencyGoSection from "../components/AgencyGoSection.astro";
 import PortfolioSection from "../components/PortfolioSection.astro";
 import VideoShowcase from "../components/VideoShowcase.astro";
 import TestimonialSection from "../components/TestimonialSection.astro";
@@ -25,6 +26,9 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3153600
 
   <!-- Our Selected Services with Large Numerals -->
   <ServicesSection />
+
+  <!-- AgencyGo System Section -->
+  <AgencyGoSection />
 
   <!-- Portfolio Section with Oversized Recent Works Typography -->
   <PortfolioSection />

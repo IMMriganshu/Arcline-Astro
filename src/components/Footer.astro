@@ -6,9 +6,11 @@ import { getSiteConfig, getFooterContent, getNavigation } from "../lib/cms";
 const siteConfig = await getSiteConfig();
 const footer = await getFooterContent();
 const navItems = await getNavigation();
+
+const taglineText = "Helping plastic and cosmetic surgeons get found on Google, Google Maps, and AI search.";
 ---
 
-<footer id="contact" class="bg-[#030712] text-white pt-20 pb-8">
+<footer id="contact" class="bg-[#050D1D] text-white pt-16 pb-8 border-0">
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <!-- 4-Column Footer Information Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-10 md:py-20 border-b border-white/10">
@@ -19,7 +21,9 @@ const navItems = await getNavigation();
         {footer.tagline && footer.tagline.toLowerCase().trim() !== "be seen. be chosen." && (
           <p class="text-xl font-medium tracking-tight">{footer.tagline}</p>
         )}
-        <div class="text-sm text-neutral-400 leading-relaxed prose prose-invert prose-sm max-w-none" set:html={footer.description || "Helping surgical practices dominate local and AI-driven search landscapes."} />
+        <div class="text-sm text-neutral-400 leading-relaxed prose prose-invert prose-sm max-w-none">
+          {taglineText}
+        </div>
       </div>
 
       <!-- Col 2: Quick Links (Synced with Navigation) -->
@@ -28,13 +32,16 @@ const navItems = await getNavigation();
           Quick Links
         </h3>
         <ul class="space-y-3 text-sm text-neutral-400">
-          {navItems.map((item) => (
-            <li>
-              <a href={item.href} class="hover:text-white transition-colors">
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const label = (item.label === "Blog" || item.href === "/blog") ? "Patient Grower" : item.label;
+            return (
+              <li>
+                <a href={item.href} class="hover:text-white transition-colors">
+                  {label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -60,7 +67,7 @@ const navItems = await getNavigation();
         </address>
       </div>
 
-      <!-- Col 4: Copyright Info -->
+      <!-- Col 4: Copyright & Legal Info -->
       <div>
         <h3 class="text-sm font-semibold tracking-wider text-white uppercase mb-6">
           Legal
@@ -71,15 +78,14 @@ const navItems = await getNavigation();
         {footer.disclaimer && (
           <div class="text-xs text-neutral-500 leading-relaxed mb-4 prose prose-invert prose-xs max-w-none" set:html={footer.disclaimer.replace(/Seelutions/g, 'seelutions')} />
         )}
-        <a
-          href="/admin"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-neutral-400 hover:text-cyan-300 transition-colors"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          <span>CMS Admin Portal</span>
-        </a>
+        <div class="pt-2">
+          <a
+            href="/privacy-policy"
+            class="text-xs text-neutral-400 hover:text-[#C5A880] transition-colors underline underline-offset-4"
+          >
+            Privacy Policy
+          </a>
+        </div>
       </div>
     </div>
   </div>

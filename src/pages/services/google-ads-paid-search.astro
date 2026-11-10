@@ -1,0 +1,348 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionLabel from "../../components/SectionLabel.astro";
+import Button from "../../components/Button.astro";
+import ProjectCTA from "../../components/ProjectCTA.astro";
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
+
+const pageTitle = "Google Ads for Plastic Surgeons | seelutions";
+const pageDescription = "Google Ads and paid search for plastic and facial cosmetic surgeons, focused on patients ready to book a consultation.";
+
+const faqs = [
+  {
+    q: "How quickly will we see results?",
+    a: "Ads can start bringing in calls and consultation requests soon after launch. We keep refining the campaign as we learn which searches turn into patients."
+  },
+  {
+    q: "How much should we spend?",
+    a: "It depends on your market, your procedures, and your goals. We'll recommend a budget after reviewing your area and your competition."
+  },
+  {
+    q: "Can you guarantee a certain number of consultations?",
+    a: "No one honestly can, and be wary of anyone who promises it. We focus your budget on qualified patients, track the results, and show you what your ads produce."
+  },
+  {
+    q: "Do we still need SEO if we run ads?",
+    a: "Yes. Ads bring patients in now, but they stop the day you stop paying. SEO, Google Maps, and AI search visibility keep working over time, which is why we plan them together."
+  }
+];
+
+const faqSchemaJson = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.a
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  customSchemaData={faqSchemaJson}
+>
+  <!-- Section 1: Hero Section -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white relative overflow-hidden">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text="PATIENTS READY TO BOOK" />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <!-- Left Text Column -->
+        <div class="lg:col-span-7 flex flex-col justify-center">
+          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25xl] font-bold tracking-tight text-[#030303] leading-[1.12] mb-6">
+            Google Ads & Paid Search for Plastic and Facial Cosmetic Surgeons
+          </h1>
+
+          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-8 max-w-2xl">
+            Reach patients the moment they search for the procedures you perform. We run focused Google Ads campaigns that bring in consultation requests while your rankings grow.
+          </p>
+
+          <div data-animate="fade-up-sm" data-animate-delay="2" class="flex flex-wrap items-center gap-4">
+            <Button href="https://audit.seelutions.com/" variant="black" showIcon={true} iconType="arrow-right">
+              Get Your Free Practice Visibility Audit
+            </Button>
+            <Button href="/services" variant="outline" showIcon={false}>
+              All Services
+            </Button>
+          </div>
+        </div>
+
+        <!-- Right Graphic Column -->
+        <div class="lg:col-span-5" data-animate="scale-in">
+          <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl border border-neutral-200/80 bg-neutral-950 group">
+            <img
+              src="/images/service-google-ads.jpg"
+              alt="seelutions Google Ads graphic showing sponsored search ad result mobile UI for top plastic surgeon"
+              class="w-full h-auto aspect-[4/3] object-cover object-center transition-transform duration-700 ease-out group-hover:scale-102"
+              loading="eager"
+              decoding="async"
+              width="1200"
+              height="900"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: The Shift -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-b border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center">
+      <div class="mb-3 inline-block" data-animate="fade-up-sm">
+        <SectionLabel text="THE SHIFT" />
+      </div>
+
+      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#030303] tracking-tight mb-6">
+        Where does ad money usually go to waste?
+      </h2>
+
+      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl mx-auto">
+        Many practices pay for clicks from people looking for cheap deals, free consultations, or procedures they don't offer. Those clicks add up fast and rarely turn into consultations. The right campaign shows your ads only to patients searching for the procedures you perform, in the area you serve.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3: How It Works & 4 Cards -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <div class="mb-3 inline-block" data-animate="fade-up-sm">
+          <SectionLabel text="HOW IT WORKS" />
+        </div>
+
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl font-bold text-[#030303] tracking-tight mb-4">
+          How do we turn ad spend into consultations?
+        </h2>
+
+        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl mx-auto">
+          Every dollar should go toward patients who are ready to book. We focus on four things.
+        </p>
+      </div>
+
+      <!-- 4 Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <!-- Card 01 -->
+        <div data-animate="fade-up" data-animate-delay="1" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                01
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                The Right Searches
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Ads for the procedures you perform
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Campaigns built around the procedures you want more of, such as facelift, rhinoplasty, or breast augmentation, in the area you serve.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 02 -->
+        <div data-animate="fade-up" data-animate-delay="2" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                02
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Less Waste
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Filtering out the wrong clicks
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              We block searches for cheap deals, free consultations, and procedures you don't offer, so your budget goes to qualified patients.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 03 -->
+        <div data-animate="fade-up" data-animate-delay="3" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                03
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Landing Pages
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              A page for each procedure
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Each ad leads to a page about that exact procedure, with clear next steps, so patients who click are more likely to call.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 04 -->
+        <div data-animate="fade-up" data-animate-delay="4" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                04
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Clear Reporting
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Calls and requests you can track
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              We track the calls and consultation requests that come from your ads, so you can see what your budget is producing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: AgencyGo Banner -->
+  <section id="agencygo" class="w-full bg-gradient-to-r from-[#07244c] via-[#0b3368] to-[#061e40] py-14 sm:py-16 md:py-20 relative overflow-hidden text-white border-y border-white/10">
+    <!-- Large background watermark on the right -->
+    <div class="absolute -right-12 sm:-right-16 md:-right-24 top-1/2 -translate-y-1/2 w-[320px] sm:w-[420px] md:w-[540px] lg:w-[620px] h-[320px] sm:h-[420px] md:h-[540px] lg:h-[620px] opacity-[0.14] pointer-events-none select-none">
+      <img
+        src="/images/agencygo-gold-icon.png"
+        alt=""
+        class="w-full h-full object-contain filter brightness-150 contrast-125"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="max-w-[1240px] mx-auto px-6 sm:px-10 lg:px-14 relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 lg:gap-16">
+      <!-- Left: Gold Circular AgencyGo Emblem -->
+      <a href="https://seelutions.com/#agencygo" class="shrink-0 w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 self-center md:self-start mt-1 group transition-transform hover:scale-105" aria-label="AgencyGo System Overview">
+        <img
+          src="/images/agencygo-gold-icon.png"
+          alt="AgencyGo Emblem"
+          class="w-full h-full object-contain drop-shadow-lg"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+
+      <!-- Right: Content -->
+      <div class="flex-1 text-center md:text-left">
+        <!-- Logo Wordmark: Agency in bold, Go in normal, small superscript ™ -->
+        <a href="https://seelutions.com/#agencygo" class="inline-flex items-baseline mb-1 group" aria-label="AgencyGo">
+          <span class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white font-urbanist">Agency</span>
+          <span class="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-[#c5a880] font-urbanist">Go</span>
+          <sup class="text-xs sm:text-sm text-[#c5a880] font-normal align-super ml-0.5">™</sup>
+        </a>
+
+        <!-- Subtitle -->
+        <p class="text-xs sm:text-sm md:text-base font-medium text-white/80 tracking-wider mb-4">
+          The System Behind The Growth
+        </p>
+
+        <!-- Paragraph Description -->
+        <p class="text-white/90 text-sm sm:text-base leading-relaxed max-w-2xl mb-7 font-normal">
+          <strong class="font-bold text-white">Agency</strong><span class="font-normal text-white">Go</span><sup class="text-xs text-white/90 font-normal">™</sup> is how seelutions runs every service we offer. Your ads, website, and Google rankings are planned together, so ads bring in patients now while your rankings grow.
+        </p>
+
+        <!-- Gold Pill Button -->
+        <div>
+          <a
+            href="https://seelutions.com/#agencygo"
+            class="inline-flex items-center gap-2.5 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-[#c49a45] hover:bg-[#b38a37] text-white font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md hover:shadow-lg group"
+          >
+            <span>See how AgencyGo works</span>
+            <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Why Both / Proof (Dark Section) -->
+  <section class="py-20 md:py-28 bg-[#050505] text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.12),transparent_70%)] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center relative z-10">
+      <div class="mb-6 flex justify-center" data-animate="fade-up-sm">
+        <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center p-2 mb-2">
+          <img src="/images/seelutions brand icon.webp" alt="seelutions logo mark" class="w-full h-full object-contain" />
+        </div>
+      </div>
+
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text="WHY BOTH" variant="white" />
+      </div>
+
+      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight mb-6">
+        Ads work now. Rankings keep working.
+      </h2>
+
+      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-300 leading-relaxed max-w-2xl mx-auto mb-10">
+        Paid ads stop the day you stop paying. That's why we pair them with SEO, Google Maps, and AI search visibility, so your practice keeps showing up long after a campaign ends.
+      </p>
+
+      <div data-animate="fade-up-sm" data-animate-delay="2">
+        <Button href="/projects" variant="white" showIcon={true} iconType="arrow-right">
+          See the 10-year case study
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Questions Surgeons Ask (FAQ Accordion) -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-2xl mx-auto mb-16 md:mb-20 relative block">
+        <div class="mb-4 inline-block" data-animate="fade-up-sm">
+          <SectionLabel text="QUESTIONS SURGEONS ASK" />
+        </div>
+
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-[2.65rem] font-bold text-[#030303] tracking-tight leading-tight mt-2 mb-0">
+          Google Ads, answered
+        </h2>
+      </div>
+
+      <div class="space-y-4 pt-2 md:pt-4 relative z-10" data-animate="fade-up">
+        {faqs.map((faq, idx) => (
+          <details class="group bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-2xs hover:border-neutral-300 transition-all [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex items-center justify-between gap-4 cursor-pointer list-none text-left">
+              <h3 class="text-base sm:text-lg font-bold text-[#030303] group-hover:text-black transition-colors pr-2">
+                {faq.q}
+              </h3>
+              <span class="shrink-0 w-8 h-8 rounded-full bg-neutral-100 group-open:bg-black group-open:text-white transition-all flex items-center justify-center text-sm font-bold text-neutral-600">
+                <span class="group-open:rotate-45 transition-transform duration-300">＋</span>
+              </span>
+            </summary>
+            <div class="mt-4 pt-4 border-t border-neutral-100 text-sm sm:text-base text-neutral-600 leading-relaxed font-normal">
+              <p>{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Audit CTA Section -->
+  <ProjectCTA />
+</BaseLayout>

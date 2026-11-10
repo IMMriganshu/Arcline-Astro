@@ -1,95 +1,328 @@
 ---
+import SectionLabel from "./SectionLabel.astro";
+import { getVideoShowcaseContent } from "../lib/cms";
+
+const videoShowcase = await getVideoShowcaseContent();
+const videoUrl = videoShowcase?.videoUrl || "/videos/seelutions_Video_Final.mp4";
+const posterUrl = "/assets/aistudio/Owner_Video_Thumbnail_b026f920.jpg";
+
+const transcriptText = "Hi, my name is Langley. I'm the president of seelutions. I wanted to tell you quickly about my business. We started in 1983 as a graphic design business and in the late ’90s to early 2000s, I transformed it into a digital marketing agency doing SEO and website design. Along the way, I met Dr. Ryan Diepenbrock. He's a board-certified facial cosmetic surgeon up in Fort Wayne, Indiana. And we just had immediate bond and it's been a great relationship. I do SEO, I do website design, I do AI visibility for Dr. Diepenbrock. And right now, he's got more authority than any facial cosmetic surgeon in the geographical area in Fort Wayne. He's ranked number one for facelifts, rhinoplasty, blepharoplasty. He is really doing great. And that being said, we are looking for a few more plastic surgeons or cosmetic surgeons to work with. And it's as simple as emailing us or calling us and setting up a strategy call. We'll tell you what we do. We'll see if we have a nice fit and we'll take it from there. I'd love for you to take a quick look at Dr. Diepenbrock's video testimonial on our website. And once again, we'd love to hear from you and talk to you soon.";
+
+const videoObjectSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Meet Langley Holland — Why We Work With Plastic and Cosmetic Surgeons",
+  "description": "Langley Holland, Founder and President of seelutions, explains why seelutions works with plastic and cosmetic surgeons, building long-term search authority, local SEO map pack dominance, and AI search visibility in under 90 seconds.",
+  "thumbnailUrl": [
+    "https://seelutions.com/assets/aistudio/Owner_Video_Thumbnail_b026f920.jpg"
+  ],
+  "uploadDate": "2024-01-01T08:00:00+00:00",
+  "duration": "PT1M20S",
+  "contentUrl": "https://seelutions.com/videos/seelutions_Video_Final.mp4",
+  "embedUrl": "https://seelutions.com/#founder-video",
+  "transcript": transcriptText,
+  "author": {
+    "@type": "Person",
+    "name": "Langley Holland",
+    "jobTitle": "Founder & President",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "seelutions",
+      "url": "https://seelutions.com"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "seelutions",
+    "url": "https://seelutions.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://seelutions.com/images/seelutions-logo-gold.svg"
+    }
+  }
+};
 ---
 
-<section class="py-0 relative">
-  <div class="w-full">
-    <!-- Large Feature Showcase (Fitting Plastic & Facial Cosmetic Surgeon Aesthetic) -->
-    <div data-animate="scale-in" class="relative overflow-hidden shadow-xl border border-black/5 aspect-[16/9] md:aspect-[21/9] group bg-neutral-900">
-      <video
-        autoplay
-        loop
-        muted
-        playsinline
-        preload="none"
-        poster="/images/home-hero-image.webp"
-        class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-      >
-        <source src="/videos/eyeball-showcase.mp4" type="video/mp4" />
-        <source src="/videos/title-video.mp4" type="video/mp4" />
-      </video>
+<!-- Schema.org VideoObject Structured Data for Google & AI Search -->
+<script type="application/ld+json" set:html={JSON.stringify(videoObjectSchema)} />
 
-      <!-- Dark overlay gradient -->
-      <div class="absolute inset-0 bg-black/25 transition-colors group-hover:bg-black/35"></div>
+<section class="py-12 md:py-20 relative bg-[#FCFCFC]" id="founder-video">
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+    <!-- Section Header Wording -->
+    <div class="mb-6 sm:mb-8 max-w-3xl">
+      <div class="mb-3">
+        <SectionLabel text="A MESSAGE FROM OUR FOUNDER" />
+      </div>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#030303] mb-2 font-urbanist">
+        Meet Langley Holland
+      </h2>
+      <p class="text-base sm:text-lg text-neutral-600 font-normal">
+        Why we work with plastic and cosmetic surgeons, in under 90 seconds.
+      </p>
+    </div>
 
-      <!-- Centered Play Button (Frosted Glass with Triangle Arrow) -->
-      <div class="absolute inset-0 flex items-center justify-center">
+    <!-- Video Thumbnail & Play Container (Does NOT autoplay until user clicks play button) -->
+    <div data-animate="scale-in" class="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border border-black/10 aspect-[16/9] md:aspect-[21/9] group bg-neutral-950">
+      <!-- High Resolution Owner Video Thumbnail Image -->
+      <img
+        src={posterUrl}
+        alt="Langley Holland, Founder of seelutions"
+        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        loading="eager"
+        decoding="async"
+      />
+
+      <!-- Dark overlay gradient for contrast -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/30 transition-colors group-hover:bg-black/40 pointer-events-none"></div>
+
+      <!-- Play Button Overlay -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center z-20 gap-3 p-4 text-center">
         <button
           id="play-tour-btn"
           type="button"
-          class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/25 hover:bg-white/40 text-white backdrop-blur-md border border-white/40 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 cursor-pointer"
-          aria-label="Play surgical practice digital authority showcase"
+          class="w-16 h-16 sm:w-22 sm:h-22 rounded-full bg-white/25 hover:bg-white/40 text-white backdrop-blur-md border border-white/40 flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover:scale-110 cursor-pointer focus:outline-none"
+          aria-label="Play video message from Langley Holland"
         >
-          <!-- Play icon triangle -->
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 translate-x-0.5 fill-current" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 sm:w-10 sm:h-10 translate-x-0.5 fill-current" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>
         </button>
+        <span class="text-xs sm:text-sm font-semibold tracking-wider text-white/90 uppercase drop-shadow-md">
+          Watch Video (1:20)
+        </span>
       </div>
+    </div>
+
+    <!-- Name line under the video -->
+    <div class="mt-4 sm:mt-6 text-center flex flex-col items-center gap-2">
+      <p class="text-base sm:text-lg font-semibold text-[#030303] tracking-tight">
+        Langley Holland, Founder of seelutions
+      </p>
+
+      <!-- Read the Transcript Link Button -->
+      <button
+        id="toggle-transcript-btn"
+        type="button"
+        class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#C5A880] hover:text-[#b09269] transition-colors cursor-pointer group focus:outline-none mt-1"
+        aria-expanded="false"
+        aria-controls="transcript-content"
+      >
+        <span>Read the transcript</span>
+        <svg
+          id="transcript-chevron"
+          class="w-4 h-4 transition-transform duration-300 transform group-hover:translate-y-0.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Collapsible Transcript Container (Hidden by default until clicked) -->
+    <div
+      id="transcript-content"
+      class="hidden max-w-3xl mx-auto mt-4 p-6 sm:p-8 rounded-2xl bg-white border border-neutral-200 shadow-sm transition-all duration-300"
+    >
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-neutral-100">
+        <span class="text-xs font-bold tracking-widest text-[#C5A880] uppercase">Official Video Transcript</span>
+        <span class="text-xs text-neutral-400 font-medium">Langley Holland · seelutions</span>
+      </div>
+      <p class="text-sm sm:text-base text-neutral-700 font-normal leading-relaxed sm:leading-loose text-justify sm:text-left">
+        {transcriptText}
+      </p>
     </div>
   </div>
 
-  <!-- Video Showcase Modal Dialog -->
+  <!-- Video Modal Dialog with CC Controls -->
   <div
     id="video-modal"
-    class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8"
+    class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8"
   >
-    <div class="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-      <!-- Close button -->
-      <button
-        id="close-video-modal"
-        type="button"
-        class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
-        aria-label="Close video"
-      >
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+    <div class="relative w-full max-w-5xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col">
+      <!-- Modal Top Bar -->
+      <div class="absolute top-4 right-4 z-30 flex items-center gap-3">
+        <!-- CC Toggle Button -->
+        <button
+          id="toggle-modal-cc-btn"
+          type="button"
+          class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs tracking-wider border border-white/20 flex items-center gap-1.5 transition-colors cursor-pointer"
+          title="Toggle Closed Captions (CC)"
+          aria-label="Toggle Closed Captions"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-400 transition-opacity opacity-100" id="cc-status-dot"></span>
+          <span>CC</span>
+        </button>
 
-      <div class="aspect-video w-full bg-black flex items-center justify-center">
+        <!-- Close Button -->
+        <button
+          id="close-video-modal"
+          type="button"
+          class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+          aria-label="Close video"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Video Player Frame -->
+      <div class="aspect-video w-full bg-black flex items-center justify-center relative group/player">
         <video
           id="modal-video"
-          autoplay
           controls
+          playsinline
+          poster={posterUrl}
           class="w-full h-full"
         >
-          <source src="/videos/eyeball-showcase.mp4" type="video/mp4" />
-          <source src="/videos/title-video.mp4" type="video/mp4" />
+          <source src={videoUrl} type="video/mp4" />
+          <track
+            id="modal-cc-track"
+            kind="subtitles"
+            src="/subtitles/langley-founder.vtt"
+            srclang="en"
+            label="English"
+            default
+          />
         </video>
+
+        <!-- Custom Subtitle Overlay for silent viewers (Ensures crisp CC on all platforms) -->
+        <div
+          id="cc-caption-overlay"
+          class="absolute bottom-12 left-4 right-4 sm:left-12 sm:right-12 text-center pointer-events-none transition-opacity duration-200 z-20"
+        >
+          <span
+            id="cc-caption-text"
+            class="inline-block bg-black/85 text-white text-xs sm:text-base md:text-lg font-medium px-4 py-2 rounded-xl border border-white/10 shadow-xl max-w-2xl leading-snug"
+          >
+            Hi, my name is Langley. I'm the president of seelutions.
+          </span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  const playBtn = document.getElementById('play-tour-btn');
-  const videoModal = document.getElementById('video-modal');
-  const closeModalBtn = document.getElementById('close-video-modal');
+  function setupVideoShowcase() {
+    const playBtn = document.getElementById('play-tour-btn');
+    const videoModal = document.getElementById('video-modal');
+    const closeModalBtn = document.getElementById('close-video-modal');
+    const modalVideo = document.getElementById('modal-video') as HTMLVideoElement | null;
+    const toggleCcBtn = document.getElementById('toggle-modal-cc-btn');
+    const ccStatusDot = document.getElementById('cc-status-dot');
+    const ccCaptionOverlay = document.getElementById('cc-caption-overlay');
+    const ccCaptionText = document.getElementById('cc-caption-text');
+    const toggleTranscriptBtn = document.getElementById('toggle-transcript-btn');
+    const transcriptContent = document.getElementById('transcript-content');
+    const transcriptChevron = document.getElementById('transcript-chevron');
 
-  playBtn?.addEventListener('click', () => {
-    videoModal?.classList.remove('hidden');
-    videoModal?.classList.add('flex');
-  });
+    let ccEnabled = true;
 
-  closeModalBtn?.addEventListener('click', () => {
-    videoModal?.classList.add('hidden');
-    videoModal?.classList.remove('flex');
-  });
+    // Subtitle cue database for custom CC overlay
+    const cues = [
+      { start: 0.0, end: 4.5, text: "Hi, my name is Langley. I'm the president of seelutions. I wanted to tell you quickly about my business." },
+      { start: 4.5, end: 12.5, text: "We started in 1983 as a graphic design business and in the late ’90s to early 2000s, I transformed it into a digital marketing agency doing SEO and website design." },
+      { start: 12.5, end: 19.5, text: "Along the way, I met Dr. Ryan Diepenbrock. He's a board-certified facial cosmetic surgeon up in Fort Wayne, Indiana." },
+      { start: 19.5, end: 25.0, text: "And we just had immediate bond and it's been a great relationship." },
+      { start: 25.0, end: 32.0, text: "I do SEO, I do website design, I do AI visibility for Dr. Diepenbrock." },
+      { start: 32.0, end: 40.0, text: "And right now, he's got more authority than any facial cosmetic surgeon in the geographical area in Fort Wayne." },
+      { start: 40.0, end: 47.0, text: "He's ranked number one for facelifts, rhinoplasty, blepharoplasty. He is really doing great." },
+      { start: 47.0, end: 54.0, text: "And that being said, we are looking for a few more plastic surgeons or cosmetic surgeons to work with." },
+      { start: 54.0, end: 62.0, text: "And it's as simple as emailing us or calling us and setting up a strategy call. We'll tell you what we do." },
+      { start: 62.0, end: 68.0, text: "We'll see if we have a nice fit and we'll take it from there." },
+      { start: 68.0, end: 75.0, text: "I'd love for you to take a quick look at Dr. Diepenbrock's video testimonial on our website." },
+      { start: 75.0, end: 85.0, text: "And once again, we'd love to hear from you and talk to you soon." }
+    ];
 
-  videoModal?.addEventListener('click', (e) => {
-    if (e.target === videoModal) {
+    // Transcript Toggle Listener
+    if (toggleTranscriptBtn && transcriptContent && transcriptChevron) {
+      toggleTranscriptBtn.addEventListener('click', () => {
+        const isHidden = transcriptContent.classList.contains('hidden');
+        if (isHidden) {
+          transcriptContent.classList.remove('hidden');
+          toggleTranscriptBtn.setAttribute('aria-expanded', 'true');
+          transcriptChevron.classList.add('rotate-180');
+        } else {
+          transcriptContent.classList.add('hidden');
+          toggleTranscriptBtn.setAttribute('aria-expanded', 'false');
+          transcriptChevron.classList.remove('rotate-180');
+        }
+      });
+    }
+
+    // CC Toggle Listener
+    function updateCcDisplay() {
+      if (!modalVideo) return;
+      const track = modalVideo.textTracks && modalVideo.textTracks[0];
+      if (track) {
+        track.mode = ccEnabled ? 'showing' : 'hidden';
+      }
+      if (ccStatusDot) {
+        if (ccEnabled) {
+          ccStatusDot.classList.remove('bg-neutral-500');
+          ccStatusDot.classList.add('bg-emerald-400');
+        } else {
+          ccStatusDot.classList.remove('bg-emerald-400');
+          ccStatusDot.classList.add('bg-neutral-500');
+        }
+      }
+      if (ccCaptionOverlay) {
+        ccCaptionOverlay.style.display = ccEnabled ? 'block' : 'none';
+      }
+    }
+
+    toggleCcBtn?.addEventListener('click', () => {
+      ccEnabled = !ccEnabled;
+      updateCcDisplay();
+    });
+
+    // Timeupdate listener for overlay subtitles
+    modalVideo?.addEventListener('timeupdate', () => {
+      if (!ccEnabled || !ccCaptionText || !modalVideo) return;
+      const currentTime = modalVideo.currentTime;
+      const activeCue = cues.find(c => currentTime >= c.start && currentTime <= c.end);
+      if (activeCue) {
+        ccCaptionText.textContent = activeCue.text;
+        if (ccCaptionOverlay) ccCaptionOverlay.style.opacity = '1';
+      } else {
+        if (ccCaptionOverlay) ccCaptionOverlay.style.opacity = '0';
+      }
+    });
+
+    // Modal Controls
+    if (!playBtn || !videoModal) return;
+
+    playBtn.addEventListener('click', () => {
+      videoModal.classList.remove('hidden');
+      videoModal.classList.add('flex');
+      if (modalVideo) {
+        modalVideo.currentTime = 0;
+        updateCcDisplay();
+        modalVideo.play().catch(() => {});
+      }
+    });
+
+    const closeModal = () => {
       videoModal.classList.add('hidden');
       videoModal.classList.remove('flex');
-    }
-  });
+      if (modalVideo) {
+        modalVideo.pause();
+      }
+    };
+
+    closeModalBtn?.addEventListener('click', closeModal);
+
+    videoModal.addEventListener('click', (e) => {
+      if (e.target === videoModal) {
+        closeModal();
+      }
+    });
+  }
+
+  setupVideoShowcase();
+  document.addEventListener('astro:page-load', setupVideoShowcase);
 </script>

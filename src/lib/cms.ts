@@ -62,8 +62,14 @@ function normalizeCmsServices(data: Partial<CmsData>): Partial<CmsData> {
   if (Array.isArray(data.services)) {
     data.services = defaultCmsContent.services;
   }
+  if (Array.isArray(data.projects)) {
+    data.projects = defaultCmsContent.projects;
+  }
   if (data.childServices) {
     data.childServices['ai-search-overviews'] = defaultCmsContent.childServices!['ai-search-overviews'];
+  }
+  if (!data.videoShowcase || data.videoShowcase.videoUrl?.includes('eyeball-showcase.mp4')) {
+    data.videoShowcase = defaultCmsContent.videoShowcase;
   }
   return data;
 }
@@ -104,6 +110,9 @@ export async function getServerCmsData(): Promise<CmsData> {
         remoteData.comparisonContent.seelutionsTitle = remoteData.comparisonContent.seelutionsTitle.replace(/Seelutions/g, 'seelutions');
       }
       if (remoteData?.projectCta) {
+        if (!remoteData.projectCta.headline) {
+          remoteData.projectCta.headline = 'Is Your Practice Visible in Modern AI & Google Search?';
+        }
         if (!remoteData.projectCta.buttonText || remoteData.projectCta.buttonText === 'Request Your Free 3-Minute Practice Audit') {
           remoteData.projectCta.buttonText = 'Get Practice Visibility Audit';
         }

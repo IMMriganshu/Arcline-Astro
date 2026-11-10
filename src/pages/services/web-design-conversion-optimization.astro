@@ -1,0 +1,348 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionLabel from "../../components/SectionLabel.astro";
+import Button from "../../components/Button.astro";
+import ProjectCTA from "../../components/ProjectCTA.astro";
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
+
+const pageTitle = "Web Design for Plastic Surgeons | seelutions";
+const pageDescription = "Websites for plastic and facial cosmetic surgeons that show your results at their best and turn visitors into booked consultations.";
+
+const faqs = [
+  {
+    q: "Will a new website hurt our Google rankings?",
+    a: "It can if a redesign is done carelessly. We carry over the pages that are working, redirect old links to the right new pages, and check everything after launch to protect the rankings you've earned."
+  },
+  {
+    q: "Can you work with our current logo and branding?",
+    a: "Yes. We can build around your current brand, refresh it, or help you create a new look that sets your practice apart."
+  },
+  {
+    q: "Is the website accessible for patients with disabilities?",
+    a: "We build to widely used accessibility guidelines (WCAG) and add an accessibility tool so visitors can adjust text size, contrast, and more. Accessibility is ongoing work, so we keep reviewing your site as it grows."
+  },
+  {
+    q: "How long does a new website take?",
+    a: "It depends on the size of your site and how many procedures you offer. We'll give you a clear timeline before we start and keep you updated along the way."
+  }
+];
+
+const faqSchemaJson = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.a
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  customSchemaData={faqSchemaJson}
+>
+  <!-- Section 1: Hero Section -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white relative overflow-hidden">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text="TURN VISITORS INTO CONSULTATIONS" />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <!-- Left Text Column -->
+        <div class="lg:col-span-7 flex flex-col justify-center">
+          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25xl] font-bold tracking-tight text-[#030303] leading-[1.12] mb-6">
+            Web Design & Conversion Optimization for Plastic and Facial Cosmetic Surgeons
+          </h1>
+
+          <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-8 max-w-2xl">
+            Patients judge your surgical work by your website before they ever meet you. We build websites that show your results at their best and make it easy to book a consultation.
+          </p>
+
+          <div data-animate="fade-up-sm" data-animate-delay="2" class="flex flex-wrap items-center gap-4">
+            <Button href="https://audit.seelutions.com/" variant="black" showIcon={true} iconType="arrow-right">
+              Get Your Free Practice Visibility Audit
+            </Button>
+            <Button href="/services" variant="outline" showIcon={false}>
+              All Services
+            </Button>
+          </div>
+        </div>
+
+        <!-- Right Graphic Column -->
+        <div class="lg:col-span-5" data-animate="scale-in">
+          <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl border border-neutral-200/80 bg-neutral-950 group">
+            <img
+              src="/images/seelutions_Web_Design_Card_Graphic.png"
+              alt="seelutions Web Design graphic showing luxury cosmetic surgery website gallery mobile UI"
+              class="w-full h-auto aspect-[4/3] object-cover object-center transition-transform duration-700 ease-out group-hover:scale-102"
+              loading="eager"
+              decoding="async"
+              width="1200"
+              height="900"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: The Shift -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-b border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center">
+      <div class="mb-3 inline-block" data-animate="fade-up-sm">
+        <SectionLabel text="THE SHIFT" />
+      </div>
+
+      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#030303] tracking-tight mb-6">
+        What do patients see before they call?
+      </h2>
+
+      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl mx-auto">
+        Before booking a consultation, patients study your before-and-after photos, read about the procedure, and compare you with other surgeons, mostly on their phones. A dated or slow website can make excellent work look ordinary. A clear, polished one helps patients feel confident choosing you.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3: How It Works & 4 Cards -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <div class="mb-3 inline-block" data-animate="fade-up-sm">
+          <SectionLabel text="HOW IT WORKS" />
+        </div>
+
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl font-bold text-[#030303] tracking-tight mb-4">
+          How do we turn more visitors into consultations?
+        </h2>
+
+        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl mx-auto">
+          Great design earns attention. A clear path to booking turns that attention into consultations. We build both.
+        </p>
+      </div>
+
+      <!-- 4 Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <!-- Card 01 -->
+        <div data-animate="fade-up" data-animate-delay="1" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                01
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Your Brand
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              A look that sets you apart
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              A refined design built around your brand, so your website feels as polished as your practice and doesn't look like every other surgeon's site.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 02 -->
+        <div data-animate="fade-up" data-animate-delay="2" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                02
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Your Results
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Before-and-after galleries
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Clean galleries organized by procedure, so patients can quickly find results like the ones they want.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 03 -->
+        <div data-animate="fade-up" data-animate-delay="3" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                03
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Your Procedures
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Procedure pages that lead to a consultation
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              A page for each procedure that answers patients' questions about recovery and results, with clear buttons and click-to-call so booking is always one step away.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 04 -->
+        <div data-animate="fade-up" data-animate-delay="4" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                04
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Every Patient
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Fast, mobile, and accessible
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Pages that load quickly on any phone, built to widely used accessibility guidelines, with an accessibility tool so visitors can adjust text size and contrast.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: AgencyGo Banner -->
+  <section id="agencygo" class="w-full bg-gradient-to-r from-[#07244c] via-[#0b3368] to-[#061e40] py-14 sm:py-16 md:py-20 relative overflow-hidden text-white border-y border-white/10">
+    <!-- Large background watermark on the right -->
+    <div class="absolute -right-12 sm:-right-16 md:-right-24 top-1/2 -translate-y-1/2 w-[320px] sm:w-[420px] md:w-[540px] lg:w-[620px] h-[320px] sm:h-[420px] md:h-[540px] lg:h-[620px] opacity-[0.14] pointer-events-none select-none">
+      <img
+        src="/images/agencygo-gold-icon.png"
+        alt=""
+        class="w-full h-full object-contain filter brightness-150 contrast-125"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="max-w-[1240px] mx-auto px-6 sm:px-10 lg:px-14 relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 lg:gap-16">
+      <!-- Left: Gold Circular AgencyGo Emblem -->
+      <a href="https://seelutions.com/#agencygo" class="shrink-0 w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 self-center md:self-start mt-1 group transition-transform hover:scale-105" aria-label="AgencyGo System Overview">
+        <img
+          src="/images/agencygo-gold-icon.png"
+          alt="AgencyGo Emblem"
+          class="w-full h-full object-contain drop-shadow-lg"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+
+      <!-- Right: Content -->
+      <div class="flex-1 text-center md:text-left">
+        <!-- Logo Wordmark: Agency in bold, Go in normal, small superscript ™ -->
+        <a href="https://seelutions.com/#agencygo" class="inline-flex items-baseline mb-1 group" aria-label="AgencyGo">
+          <span class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white font-urbanist">Agency</span>
+          <span class="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-[#c5a880] font-urbanist">Go</span>
+          <sup class="text-xs sm:text-sm text-[#c5a880] font-normal align-super ml-0.5">™</sup>
+        </a>
+
+        <!-- Subtitle -->
+        <p class="text-xs sm:text-sm md:text-base font-medium text-white/80 tracking-wider mb-4">
+          The System Behind The Growth
+        </p>
+
+        <!-- Paragraph Description -->
+        <p class="text-white/90 text-sm sm:text-base leading-relaxed max-w-2xl mb-7 font-normal">
+          <strong class="font-bold text-white">Agency</strong><span class="font-normal text-white">Go</span><sup class="text-xs text-white/90 font-normal">™</sup> is how seelutions runs every service we offer. Your content, Google profile, AI search visibility, and website are planned and built together, so each one makes the others stronger.
+        </p>
+
+        <!-- Gold Pill Button -->
+        <div>
+          <a
+            href="https://seelutions.com/#agencygo"
+            class="inline-flex items-center gap-2.5 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-[#c49a45] hover:bg-[#b38a37] text-white font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md hover:shadow-lg group"
+          >
+            <span>See how AgencyGo works</span>
+            <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Built for Surgeons / Proof -->
+  <section class="py-20 md:py-28 bg-[#050505] text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.12),transparent_70%)] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center relative z-10">
+      <div class="mb-6 flex justify-center" data-animate="fade-up-sm">
+        <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center p-2 mb-2">
+          <img src="/images/seelutions brand icon.webp" alt="seelutions logo mark" class="w-full h-full object-contain" />
+        </div>
+      </div>
+
+      <div class="mb-4" data-animate="fade-up-sm">
+        <SectionLabel text="BUILT FOR SURGEONS" variant="white" />
+      </div>
+
+      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight mb-6">
+        Your website should reflect the quality of your work.
+      </h2>
+
+      <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-300 leading-relaxed max-w-2xl mx-auto mb-10">
+        For more than a decade, seelutions has specialized in marketing for plastic and facial cosmetic surgeons. We know what patients look for before they choose a surgeon, and we design around it.
+      </p>
+
+      <div data-animate="fade-up-sm" data-animate-delay="2">
+        <Button href="/projects" variant="white" showIcon={true} iconType="arrow-right">
+          See the 10-year case study
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Questions Surgeons Ask (FAQ Accordion) -->
+  <section class="py-16 md:py-24 bg-neutral-50 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12">
+      <div class="text-center max-w-2xl mx-auto mb-16 md:mb-20 relative block">
+        <div class="mb-4 inline-block" data-animate="fade-up-sm">
+          <SectionLabel text="QUESTIONS SURGEONS ASK" />
+        </div>
+
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-[2.65rem] font-bold text-[#030303] tracking-tight leading-tight mt-2 mb-0">
+          Websites, answered
+        </h2>
+      </div>
+
+      <div class="space-y-4 pt-2 md:pt-4 relative z-10" data-animate="fade-up">
+        {faqs.map((faq, idx) => (
+          <details class="group bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-2xs hover:border-neutral-300 transition-all [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex items-center justify-between gap-4 cursor-pointer list-none text-left">
+              <h3 class="text-base sm:text-lg font-bold text-[#030303] group-hover:text-black transition-colors pr-2">
+                {faq.q}
+              </h3>
+              <span class="shrink-0 w-8 h-8 rounded-full bg-neutral-100 group-open:bg-black group-open:text-white transition-all flex items-center justify-center text-sm font-bold text-neutral-600">
+                <span class="group-open:rotate-45 transition-transform duration-300">＋</span>
+              </span>
+            </summary>
+            <div class="mt-4 pt-4 border-t border-neutral-100 text-sm sm:text-base text-neutral-600 leading-relaxed font-normal">
+              <p>{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Audit CTA Section -->
+  <ProjectCTA />
+</BaseLayout>

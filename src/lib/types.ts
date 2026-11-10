@@ -53,6 +53,7 @@ export interface Project {
   number: string;
   title: string;
   category: string;
+  href?: string;
   image: string;
   description: string;
   year: string;
@@ -190,7 +191,7 @@ export interface AboutContent {
 
 export interface VideoShowcaseContent {
   videoUrl: string;
-  titleVideoUrl: string;
+  titleVideoUrl?: string;
   posterUrl: string;
 }
 
@@ -265,6 +266,16 @@ export interface ChildServiceInfrastructureItem {
   desc: string;
 }
 
+export interface ChildServiceFaqItem {
+  q: string;
+  a: string;
+}
+
+export interface ChildServiceStatItem {
+  value: string;
+  label: string;
+}
+
 export interface ChildServiceContent {
   slug: string;
   titleTag: string;
@@ -278,6 +289,12 @@ export interface ChildServiceContent {
   surgeonValueText: string;
   ctaButtonText: string;
   image: string;
+  faqTitle?: string;
+  faqItems?: ChildServiceFaqItem[];
+  proofTitle?: string;
+  proofText?: string;
+  proofStats?: ChildServiceStatItem[];
+  proofName?: string;
 }
 
 export interface CmsData {

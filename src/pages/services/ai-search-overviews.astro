@@ -123,19 +123,9 @@ const faqSchemaJson = {
           How do we get your practice recommended by AI?
         </h2>
 
-        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-600 leading-relaxed mb-4">
-          AI tools recommend the practices they can understand, verify, and trust. Through AgencyGo™, the seelutions system behind the growth, we build all four for you.
+        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl mx-auto">
+          AI tools recommend the practices they can understand, verify, and trust. We build each of these for you.
         </p>
-
-        <!-- AgencyGo™ Badge -->
-        <div data-animate="fade-up-sm" data-animate-delay="2" class="inline-flex items-center justify-center">
-          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#C5A880]/10 border border-[#C5A880]/30 text-neutral-900 text-xs font-bold tracking-wide shadow-2xs">
-            <span class="w-5 h-5 rounded-full bg-[#C5A880] text-black flex items-center justify-center font-black text-[10px] leading-none">
-              A
-            </span>
-            <span>AgencyGo™ · The System Behind The Growth</span>
-          </div>
-        </div>
       </div>
 
       <!-- 4 Cards Grid -->
@@ -231,6 +221,64 @@ const faqSchemaJson = {
     </div>
   </section>
 
+  <!-- Section: AgencyGo Full-Width Banner -->
+  <section id="agencygo" class="w-full bg-gradient-to-r from-[#07244c] via-[#0b3368] to-[#061e40] py-14 sm:py-16 md:py-20 relative overflow-hidden text-white border-y border-white/10">
+    <!-- Large background watermark on the right -->
+    <div class="absolute -right-12 sm:-right-16 md:-right-24 top-1/2 -translate-y-1/2 w-[320px] sm:w-[420px] md:w-[540px] lg:w-[620px] h-[320px] sm:h-[420px] md:h-[540px] lg:h-[620px] opacity-[0.14] pointer-events-none select-none">
+      <img
+        src="/images/agencygo-gold-icon.png"
+        alt=""
+        class="w-full h-full object-contain filter brightness-150 contrast-125"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="max-w-[1240px] mx-auto px-6 sm:px-10 lg:px-14 relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 lg:gap-16">
+      <!-- Left: Gold Circular AgencyGo Emblem -->
+      <a href="https://seelutions.com/#agencygo" class="shrink-0 w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 self-center md:self-start mt-1 group transition-transform hover:scale-105" aria-label="AgencyGo System Overview">
+        <img
+          src="/images/agencygo-gold-icon.png"
+          alt="AgencyGo Emblem"
+          class="w-full h-full object-contain drop-shadow-lg"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+
+      <!-- Right: Content -->
+      <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
+        <!-- Brand Title: Agency in white BOLD, Go in gold NORMAL WEIGHT, small superscript ™ -->
+        <a href="https://seelutions.com/#agencygo" class="inline-flex items-baseline mb-1 group" aria-label="AgencyGo">
+          <span class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white font-urbanist">Agency</span>
+          <span class="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-[#c5a880] font-urbanist">Go</span>
+          <sup class="text-xs sm:text-sm text-[#c5a880] font-normal align-super ml-0.5">™</sup>
+        </a>
+
+        <!-- Subtitle -->
+        <p class="text-xs sm:text-sm md:text-base font-medium text-white/80 tracking-wider mb-4">
+          The System Behind The Growth
+        </p>
+
+        <!-- Paragraph Description -->
+        <p class="text-white/90 text-sm sm:text-base leading-relaxed max-w-2xl mb-7 font-normal">
+          <strong class="font-bold text-white">Agency</strong><span class="font-normal text-white">Go</span><sup class="text-xs text-white/90 font-normal">™</sup> is how seelutions runs every service we offer. Your AI visibility is built on the same content, credentials, and reviews that power your Google rankings, so each one makes the others stronger.
+        </p>
+
+        <!-- Gold Pill Button -->
+        <div>
+          <a
+            href="https://seelutions.com/#agencygo"
+            class="inline-flex items-center gap-2.5 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-[#c49a45] hover:bg-[#b38a37] text-white font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md hover:shadow-lg group"
+          >
+            <span>See how AgencyGo works</span>
+            <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Section 4: Testimonial & Practitioner Proof -->
   <section class="py-20 md:py-28 bg-[#050505] text-white relative overflow-hidden">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.12),transparent_70%)] pointer-events-none"></div>
@@ -274,18 +322,18 @@ const faqSchemaJson = {
   <!-- Section 5: Questions Surgeons Ask (FAQ Accordion) -->
   <section class="py-16 md:py-24 bg-neutral-50 border-t border-neutral-200">
     <div class="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <div class="mb-3 inline-block" data-animate="fade-up-sm">
+      <div class="text-center max-w-2xl mx-auto mb-16 md:mb-20 relative block">
+        <div class="mb-4 inline-block" data-animate="fade-up-sm">
           <SectionLabel text="QUESTIONS SURGEONS ASK" />
         </div>
 
-        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl font-bold text-[#030303] tracking-tight">
+        <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-[2.65rem] font-bold text-[#030303] tracking-tight leading-tight mt-2 mb-0">
           AI search, answered
         </h2>
       </div>
 
-      <!-- Interactive FAQ Accordion List -->
-      <div class="space-y-4" data-animate="fade-up">
+      <!-- Interactive FAQ Accordion List with ample top separation -->
+      <div class="space-y-4 pt-2 md:pt-4 relative z-10" data-animate="fade-up">
         {faqs.map((faq, idx) => (
           <details class="group bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-2xs hover:border-neutral-300 transition-all [&_summary::-webkit-details-marker]:hidden">
             <summary class="flex items-center justify-between gap-4 cursor-pointer list-none text-left">

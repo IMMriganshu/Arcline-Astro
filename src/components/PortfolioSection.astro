@@ -8,8 +8,16 @@ const portfolioProjects = await getProjects();
 <section class="recent-works" id="portfolio">
   <!-- Container with Badge Header -->
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-4 md:pt-12 pb-2 md:pb-4">
-    <div class="recent-works__badge">
-      <SectionLabel text="THE 10-YEAR CASE STUDY TIMELINE" />
+    <div class="recent-works__badge mb-3">
+      <SectionLabel text="THE 10-YEAR CASE STUDY" />
+    </div>
+    <div class="mb-4 max-w-3xl">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#030303] mb-2">
+        10 Years With Dr. Diepenbrock
+      </h2>
+      <p class="text-base sm:text-lg text-neutral-600 font-normal">
+        How one practice kept growing as the way patients search kept changing.
+      </p>
     </div>
   </div>
 
@@ -18,15 +26,15 @@ const portfolioProjects = await getProjects();
       <!-- Title text layer -->
       <div class="recent-works__title-area" data-rw-titles>
         <div class="recent-works__line-one">
-          <h2 class="recent-works__title">Case Study</h2>
+          <h2 class="recent-works__title">10 Years With</h2>
         </div>
         <div class="recent-works__line-two">
-          <h2 class="recent-works__title recent-works__title--tablet">Timeline</h2>
+          <h2 class="recent-works__title recent-works__title--tablet">Dr. Diepenbrock</h2>
           <div class="recent-works__text-left" data-rw-left>
-            <h2 class="recent-works__title">Time</h2>
+            <h2 class="recent-works__title">Dr. Diepen</h2>
           </div>
           <div class="recent-works__text-right" data-rw-right>
-            <h2 class="recent-works__title">line</h2>
+            <h2 class="recent-works__title">brock</h2>
           </div>
         </div>
       </div>
@@ -39,7 +47,7 @@ const portfolioProjects = await getProjects();
             data-rw-item={idx}
             style={`z-index: ${idx + 1};`}
           >
-            <a href="/projects" class="recent-works__project-image-link">
+            <a href={project.href || "/projects"} class="recent-works__project-image-link">
               <img
                 src={project.image}
                 alt={project.title}
@@ -56,14 +64,14 @@ const portfolioProjects = await getProjects();
                   {project.number}
                 </span>
                 <div>
-                  <a href="/projects" class="recent-works__project-name">
+                  <a href={project.href || "/projects"} class="recent-works__project-name">
                     {project.title}
                     <div class="recent-works__project-name-border"></div>
                   </a>
                   <div class="text-neutral-600 text-sm sm:text-base mt-2 max-w-2xl font-normal leading-relaxed prose prose-neutral max-w-none" set:html={project.description} />
                 </div>
               </div>
-              <a href="/projects" class="recent-works__project-category">
+              <a href={project.href || "/projects"} class="recent-works__project-category">
                 {project.category}
               </a>
             </div>
@@ -444,11 +452,14 @@ const portfolioProjects = await getProjects();
         gsap.set(metas[0], { opacity: 0, y: 15, maxHeight: 0, paddingTop: 0, paddingBottom: 0, overflow: 'hidden' });
       }
 
+      const totalPanels = items.length;
+      const endScroll = `+=${320 + (totalPanels > 4 ? (totalPanels - 4) * 80 : 0)}%`;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: wrapper,
           start: "top top",
-          end: "+=320%",
+          end: endScroll,
           pin: true,
           scrub: 0.8,
           anticipatePin: 1,
@@ -473,17 +484,11 @@ const portfolioProjects = await getProjects();
       // Pause on Project 1
       tl.to({}, { duration: 0.6 });
 
-      // Phase 4: Project 2 slides in
-      tl.to(items[1], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
-      tl.to({}, { duration: 0.6 });
-
-      // Phase 5: Project 3 slides in
-      tl.to(items[2], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
-      tl.to({}, { duration: 0.6 });
-
-      // Phase 6: Project 4 slides in
-      tl.to(items[3], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
-      tl.to({}, { duration: 0.6 });
+      // Dynamically animate remaining panels (Panel 2, 3, 4, 5...)
+      for (let i = 1; i < items.length; i++) {
+        tl.to(items[i], { opacity: 1, y: 0, ease: "power1.out", duration: 1 });
+        tl.to({}, { duration: 0.6 });
+      }
 
       window.addEventListener('scroll', () => ScrollTrigger.update(), { passive: true });
       window.addEventListener('load', () => {

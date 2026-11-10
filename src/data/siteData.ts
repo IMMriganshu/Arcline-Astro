@@ -16,6 +16,7 @@ export interface Project {
   number: string;
   title: string;
   category: string;
+  href?: string;
   image: string;
   aspect?: string;
   description: string;
@@ -34,13 +35,16 @@ export interface Testimonial {
 }
 
 export interface Article {
+  id?: string;
   slug: string;
   category: string;
   date: string;
   readTime: string;
   title: string;
   excerpt: string;
+  content?: string;
   image: string;
+  published?: boolean;
 }
 
 export const siteConfig = {
@@ -55,7 +59,7 @@ export const siteConfig = {
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/", hasDropdown: true },
-  { label: "About", href: "/#about" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/#services" },
   { label: "Pages", href: "#", hasDropdown: true },
   { label: "Blog", href: "/#blog" },
@@ -95,20 +99,20 @@ export const servicesData: Service[] = [
     number: "02",
     title: "Local SEO & Google Maps",
     description: "We optimize your Google Business Profile, local citations, and schema markup so your practice occupies the top 3 local Map Pack spots for high-value surgical searches in your metro area.",
-    image: "/images/service-local-seo.jpg",
+    image: "/images/service-local-seo-v3.jpg",
     imageAlt: "seelutions Local SEO graphic showing Google Maps 3-Pack smartphone recommendation UI for top plastic surgeon",
   },
   {
     number: "03",
     title: "Web Design & Conversion Optimization",
-    description: "Patients looking for high-ticket procedures don't fill out generic contact forms. We build procedure hubs, stunning aesthetics, and gallery layouts structured to drive long session durations and direct consultation requests.",
-    image: "/images/service-web-design.jpg",
+    description: "Patients judge your surgical work by your website before they ever meet you. We design websites that show your results at their best, answer patients' questions, and make it easy to book a consultation from any phone.",
+    image: "/images/seelutions_Web_Design_Card_Graphic.png",
     imageAlt: "seelutions Web Design graphic showing luxury cosmetic surgery website gallery mobile UI",
   },
   {
     number: "04",
     title: "Google Ads & Paid Search",
-    description: "Stop renting unprofitable $35 clicks. We deploy surgical-intent paid campaigns calibrated to capture patients actively searching for rhinoplasty, facelift, and breast augmentation in your specific geographic territory.",
+    description: "Stop paying for clicks that never turn into consultations. We run surgical-intent paid campaigns that reach patients actively searching for rhinoplasty, facelift, and breast augmentation in your area.",
     image: "/images/service-google-ads.jpg",
     imageAlt: "seelutions Google Ads graphic showing sponsored search ad result mobile UI for top plastic surgeon",
   },
@@ -117,39 +121,53 @@ export const servicesData: Service[] = [
 export const portfolioProjects: Project[] = [
   {
     number: "2016",
-    title: "Foundation ($1,000/mo)",
-    category: "Facial Procedures Strategy",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=85",
-    description: "Launched foundational search infrastructure and local organic strategy targeting core facial procedures (Facelift, Rhinoplasty).",
+    title: "Built to be found",
+    category: "Web Design",
+    href: "/services/web-design-conversion-optimization/",
+    image: "/assets/aistudio/Case_Study_1_8f4e3ed6.jpg",
+    description: "We built his website and a local search plan around his core facial procedures: facelift and rhinoplasty.",
     year: "2016",
-    location: "Metro Area",
+    location: "Fort Wayne, IN",
   },
   {
     number: "2018",
-    title: "Procedure Architecture ($1,500/mo)",
-    category: "Gallery & UX Optimization",
-    image: "https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&q=85",
-    description: "Expanded dedicated procedure hubs and optimized the before-and-after gallery user experience (UX) to increase engagement.",
+    title: "Proof on every page",
+    category: "Web Design",
+    href: "/services/web-design-conversion-optimization/",
+    image: "/assets/aistudio/Case_Study_2_ecb9b351.jpg",
+    description: "We added a dedicated page for each procedure and before-and-after galleries that patients could easily browse.",
     year: "2018",
-    location: "Metro Area",
+    location: "Fort Wayne, IN",
   },
   {
     number: "2021",
-    title: "Local Dominance ($3,000/mo)",
-    category: "Map Pack & Mobile Pathways",
-    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=85",
-    description: "Scaled Google Map Pack presence and built mobile-first conversion pathways as consult demand surged.",
+    title: "On the map",
+    category: "Local SEO & Google Maps",
+    href: "/services/local-seo-google-maps/",
+    image: "/assets/aistudio/Case_Study_3_23e0540a.jpg",
+    description: "We strengthened his Google profile, reviews, and local pages so he showed up when patients searched nearby.",
     year: "2021",
-    location: "Metro Area",
+    location: "Fort Wayne, IN",
   },
   {
     number: "2024",
-    title: "AI & Entity Search ($3,800/mo)",
-    category: "GEO / AEO Optimization",
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=85",
-    description: "Integrated modern AI Search optimization (GEO/AEO), securing top recommendation status across AI search engines while maintaining market dominance.",
-    year: "2024–Present",
-    location: "Metro Area",
+    title: "Found on ChatGPT",
+    category: "AI Search Visibility",
+    href: "/services/ai-search-overviews/",
+    image: "/assets/aistudio/Case_Study_4_dfaec931.jpg",
+    description: "We built expert content and verified credentials for AI tools. Today, new patients tell his team they found him on ChatGPT.",
+    year: "2024",
+    location: "Fort Wayne, IN",
+  },
+  {
+    number: "TODAY",
+    title: "#1 in Fort Wayne",
+    category: "See the full 10-year case study",
+    href: "/projects",
+    image: "/assets/aistudio/Case_Study_5_76c2a683.jpg",
+    description: "His practice ranks #1 on Google in Fort Wayne for searches like 'facial cosmetic surgeon,' 'facial plastic surgeon,' and 'rhinoplasty surgeon.'",
+    year: "TODAY",
+    location: "Fort Wayne, IN",
   },
 ];
 
@@ -185,30 +203,39 @@ export const testimonialsData: Testimonial[] = [
 
 export const blogArticles: Article[] = [
   {
-    slug: "how-chatgpt-perplexity-recommend-surgeons",
-    category: "AI Search Optimization",
+    id: "art-1",
+    slug: "glp-1-patients-asking-for-facelifts",
+    category: "AI SEARCH OPTIMIZATION",
     date: "Oct 2024",
     readTime: "6 Min Read",
-    title: "How ChatGPT, Perplexity, and Google AI Overviews select which plastic surgeon to recommend in your city.",
-    excerpt: "Discover how large language models parse medical entity authority, local citations, and procedural schema to rank surgical practices in zero-click generative search results.",
+    title: "GLP-1 Patients Are Asking for Facelifts. Will They Find Your Practice or the Injector Down the Street?",
+    excerpt: "How rapid weight-loss trends are driving unprecedented demand for facial rejuvenation procedures, and how board-certified plastic surgeons can capture high-intent patients searching in their territory.",
+    content: "How rapid weight-loss trends are driving unprecedented demand for facial rejuvenation procedures...",
     image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=85",
+    published: true,
   },
   {
-    slug: "structuring-facelift-rhinoplasty-galleries",
-    category: "Practice Conversion Economics",
-    date: "Oct 2024",
+    id: "art-2",
+    slug: "why-competitors-with-worse-reviews-get-recommended-in-chatgpt",
+    category: "AI SEARCH STRATEGY",
+    date: "Nov 2024",
+    readTime: "7 Min Read",
+    title: "Why Does a Competitor with Worse Reviews Get Recommended Before You in ChatGPT and Google Maps?",
+    excerpt: "Star ratings alone no longer guarantee market dominance. Discover how AI engines parse digital entity authority, procedural depth, and local schema to select recommended surgeons.",
+    content: "Star ratings alone no longer guarantee market dominance...",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=85",
+    published: true,
+  },
+  {
+    id: "art-3",
+    slug: "how-plastic-surgery-practices-split-marketing-budget",
+    category: "PRACTICE CONVERSION ECONOMICS",
+    date: "Dec 2024",
     readTime: "8 Min Read",
-    title: "Structuring facelift & rhinoplasty before/after galleries for maximum GA4 engagement and consult bookings.",
-    excerpt: "Why high-net-worth patients looking for $20,000+ procedures abandon generic contact forms, and how immersive case studies drive qualified consultation requests.",
+    title: "How Should a Plastic Surgery Practice Split Its Marketing Budget Across Its Most Profitable Procedures?",
+    excerpt: "A data-driven breakdown of allocating acquisition dollars between high-ticket surgical procedures like facelift, rhinoplasty, and breast augmentation versus short-term PPC campaigns.",
+    content: "A data-driven breakdown of allocating acquisition dollars...",
     image: "https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&q=85",
-  },
-  {
-    slug: "converting-injectable-patients-surgical-consults",
-    category: "Med Spa Pipeline Growth",
-    date: "Oct 2024",
-    readTime: "5 Min Read",
-    title: "Strategies for converting non-surgical injectable patients into high-margin surgical consults.",
-    excerpt: "The exact automated referral workflows and cross-sell patient journeys that turn routine Botox and laser clients into lifelong surgical practice advocates.",
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=85",
+    published: true,
   },
 ];

@@ -1,77 +1,315 @@
 ---
 import SectionLabel from "./SectionLabel.astro";
-import { getTestimonials } from "../lib/cms";
+import { getAboutContent } from "../lib/cms";
 
-const testimonialsData = await getTestimonials();
-const testimonial = testimonialsData[0] || {
-  quote: "I have no idea what you are doing, but just keep doing it. We are consistently hearing new patients say they found us on ChatGPT when they searched for Plastic Surgeon Near Me.",
-  author: "Dr. Ryan Diepenbrock, DDS, FAACS",
-  role: "Founder & Chief Facial Cosmetic Surgeon",
-  company: "Diepenbrock Facial Cosmetic Surgery",
-  avatar: "/assets/aistudio/Dr._Diepenbrock_162f955f.jpg",
-};
+const about = await getAboutContent();
+const videoUrl = about?.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov";
+const posterUrl = about?.image || "/images/dr-diepenbrock-thumbnail.jpg";
+const avatarUrl = "/assets/aistudio/Dr._Diepenbrock_162f955f.jpg";
 ---
 
-<section id="testimonials" class="py-10 md:py-24 relative bg-white">
+<section id="testimonials" class="py-12 md:py-24 relative bg-[#FCFCFC]">
   <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
     <!-- Header -->
-    <div class="mb-8 md:mb-14">
+    <div class="mb-8 md:mb-12">
       <div class="mb-3" data-animate="fade-up-sm">
         <SectionLabel text="CLIENT TESTIMONIAL" />
       </div>
-      <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#030303]">
-        What Our Clients Say
+      <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#030303] font-urbanist">
+        In Our Client's Words
       </h2>
     </div>
 
-    <!-- Single Featured Testimonial Layout (No Border, No Shadow) -->
-    <div data-animate="fade-up" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center bg-neutral-50/60 rounded-2xl md:rounded-3xl p-6 sm:p-10 md:p-12">
+    <!-- Featured Testimonial Card Layout -->
+    <div data-animate="fade-up" class="bg-[#F8F9FA] border border-neutral-200/80 rounded-2xl md:rounded-3xl p-6 sm:p-10 md:p-14 shadow-sm">
       
-      <!-- Left Column: 5-Star Rating, Quote, Author Info -->
-      <div class="lg:col-span-7 flex flex-col justify-between">
-        <div>
-          <!-- 5 Gold Stars Rating -->
-          <div class="flex items-center gap-1.5 text-[#D4AF37] mb-6" aria-label="5 out of 5 stars">
-            {Array.from({ length: 5 }).map(() => (
-              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-            <span class="ml-2 text-xs font-bold text-neutral-500 uppercase tracking-wider">5.0 Verified Practice Review</span>
-          </div>
-
-          <!-- Stylized Quotation Mark -->
-          <span class="text-6xl font-serif text-[#C5A880] block mb-2 leading-none" aria-hidden="true">
-            “
-          </span>
-
-          <!-- Quote text -->
-          <blockquote class="text-xl sm:text-2xl md:text-3xl font-bold text-[#030303] leading-relaxed tracking-tight mb-8 prose prose-neutral max-w-none" set:html={`"${testimonial.quote}"`} />
-
-          <!-- Author Info -->
-          <div class="pt-4 border-t border-neutral-200">
-            <h3 class="text-xl sm:text-2xl font-black text-[#030303] tracking-tight">Dr. Ryan M. Diepenbrock, DDS, FAACS</h3>
-            <p class="text-xs sm:text-sm font-semibold text-neutral-700 mt-1">Double Board-Certified Facial Cosmetic Surgeon</p>
-            <p class="text-xs font-medium text-neutral-500 mt-0.5">Past President, American Board of Facial Cosmetic Surgery</p>
-            <p class="text-sm sm:text-base font-medium text-[#737373] mt-2">{testimonial.company}</p>
-          </div>
-        </div>
+      <!-- 5 Gold Stars Rating (No "5.0 VERIFIED PRACTICE REVIEW" text) -->
+      <div class="flex items-center gap-1.5 text-[#C5A880] mb-4" aria-label="5 out of 5 stars">
+        {Array.from({ length: 5 }).map(() => (
+          <svg class="w-5 h-5 sm:w-6 sm:h-6 fill-current" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
       </div>
 
-      <!-- Right Column: Dr. Diepenbrock Portrait Image (No Border, No Shadow) -->
-      <div class="lg:col-span-5 flex justify-center">
-        <div class="relative overflow-hidden rounded-2xl md:rounded-3xl w-full max-w-[420px] bg-neutral-100 group">
-          <img
-            src={testimonial.avatar}
-            alt={`Portrait of ${testimonial.author}`}
-            class="w-full h-auto object-cover rounded-2xl md:rounded-3xl transition-transform duration-700 ease-out group-hover:scale-102"
-            loading="lazy"
-            decoding="async"
-            width="800"
-            height="800"
-          />
+      <!-- Stylized Quotation Mark -->
+      <div class="text-5xl sm:text-6xl font-serif text-[#C5A880] leading-none mb-1 select-none" aria-hidden="true">
+        “
+      </div>
+
+      <!-- Quote Text (Largest element in section, running full width of card) -->
+      <blockquote class="text-2xl sm:text-3xl md:text-4xl lg:text-[2.65rem] font-bold text-[#030303] leading-snug sm:leading-relaxed tracking-tight mb-8 sm:mb-10 w-full">
+        I have no idea what you are doing, but just keep doing it. We are consistently hearing new patients say they found us on <span class="text-[#0052CC] font-bold">ChatGPT</span> when they searched for Plastic Surgeon Near Me.
+      </blockquote>
+
+      <!-- Divider Line -->
+      <div class="border-t border-neutral-200/90 pt-8 sm:pt-10">
+        <!-- Author Info & Video Button Row -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
+          
+          <!-- Left: Small Round Headshot + Name & Professional Titles -->
+          <div class="flex items-center gap-4 sm:gap-5">
+            <!-- Small round headshot of Dr. Diepenbrock (~100px desktop) with thin gold ring -->
+            <div class="relative flex-shrink-0">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-26 md:h-26 rounded-full p-[2.5px] bg-gradient-to-r from-[#C5A880] via-[#E3D1B4] to-[#C5A880] shadow-md">
+                <img
+                  src={avatarUrl}
+                  alt="Dr. Ryan M. Diepenbrock, DDS, FAACS"
+                  class="w-full h-full object-cover rounded-full bg-white"
+                  loading="lazy"
+                  decoding="async"
+                  width="100"
+                  height="100"
+                />
+              </div>
+            </div>
+
+            <!-- Name and Credential Lines -->
+            <div>
+              <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-[#030303] tracking-tight font-urbanist">
+                Dr. Ryan M. Diepenbrock, DDS, FAACS
+              </h3>
+              <p class="text-xs sm:text-sm font-semibold text-neutral-700 mt-0.5">
+                Double Board-Certified Facial Cosmetic Surgeon
+              </p>
+              <p class="text-xs sm:text-sm font-medium text-neutral-500 mt-0.5">
+                Past President, American Board of Facial Cosmetic Surgery
+              </p>
+              <p class="text-xs sm:text-sm font-medium text-neutral-500 mt-0.5">
+                Diepenbrock Facial Cosmetic Surgery · Fort Wayne, IN
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: Video Testimonial Pill Button -->
+          <div class="flex-shrink-0 pt-2 md:pt-0">
+            <button
+              id="open-testimonial-video-btn"
+              type="button"
+              class="w-full sm:w-auto bg-[#0B1A30] hover:bg-[#162B4A] active:scale-98 text-white font-semibold text-xs sm:text-sm px-5 py-3.5 sm:px-6 sm:py-4 rounded-full inline-flex items-center justify-center gap-3 shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer focus:outline-none border border-white/10"
+              aria-label="Watch Dr. Diepenbrock's video testimonial"
+            >
+              <!-- Round Gold Play Icon -->
+              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#C5A880] text-[#0B1A30] flex items-center justify-center font-bold shadow-md flex-shrink-0">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 translate-x-0.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+              <span class="tracking-tight">Watch his video testimonial</span>
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Dr. Diepenbrock Portrait Video Testimonial Pop-Up Modal -->
+  <div
+    id="testimonial-video-modal"
+    class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-3 sm:p-6 overflow-y-auto"
+  >
+    <!-- Portrait-Optimized Video Container (max-w-[420px] fits Dr. Diepenbrock's 9:16 portrait video seamlessly without cropping) -->
+    <div class="relative w-full max-w-[420px] bg-neutral-950 rounded-3xl overflow-hidden shadow-2xl border border-[#C5A880]/40 flex flex-col my-auto max-h-[88vh]">
+      
+      <!-- Styled Modal Header Bar Overlay with CC Toggle -->
+      <div class="bg-gradient-to-b from-black/95 via-black/70 to-transparent p-4 flex items-center justify-between z-30 absolute top-0 left-0 right-0">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full p-[1.5px] bg-[#C5A880] flex-shrink-0">
+            <img
+              src={avatarUrl}
+              alt="Dr. Ryan Diepenbrock"
+              class="w-full h-full object-cover rounded-full"
+            />
+          </div>
+          <div>
+            <p class="text-xs font-bold text-white tracking-tight font-urbanist">
+              Dr. Ryan Diepenbrock
+            </p>
+            <p class="text-[10px] text-[#C5A880] font-medium tracking-wide uppercase">
+              Verified Video Testimonial
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- CC Toggle Button (Disabled by default) -->
+          <button
+            id="toggle-diepenbrock-cc-btn"
+            type="button"
+            class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-[11px] border border-white/20 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Toggle Closed Captions (CC)"
+            aria-label="Toggle Closed Captions"
+          >
+            <span class="w-2 h-2 rounded-full bg-neutral-500 transition-colors" id="diepenbrock-cc-dot"></span>
+            <span id="diepenbrock-cc-text">CC Off</span>
+          </button>
+
+          <!-- Close Button -->
+          <button
+            id="close-testimonial-video-modal"
+            type="button"
+            class="w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer border border-white/20"
+            aria-label="Close video testimonial"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Player Frame (Uses object-contain so Dr. Diepenbrock's portrait video fits completely without clipping) -->
+      <div class="relative w-full bg-black flex items-center justify-center overflow-hidden flex-1 pt-14 pb-16 min-h-[460px] sm:min-h-[520px]">
+        <video
+          id="testimonial-modal-video"
+          controls
+          playsinline
+          poster={posterUrl}
+          class="w-full h-full max-h-[72vh] object-contain mx-auto bg-black"
+        >
+          <source src={videoUrl} type="video/quicktime" />
+          <source src={videoUrl} type="video/mp4" />
+          Your browser does not support playing this video.
+        </video>
+
+        <!-- Live Subtitles Overlay for Dr. Diepenbrock's video (Hidden by default) -->
+        <div
+          id="diepenbrock-captions-overlay"
+          class="absolute bottom-16 left-4 right-4 text-center pointer-events-none transition-opacity duration-300 z-20 opacity-0"
+        >
+          <span
+            id="diepenbrock-caption-box"
+            class="inline-block bg-black/85 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-white/15 shadow-xl max-w-xs leading-snug"
+          >
+            "I have no idea what you are doing, but just keep doing it."
+          </span>
+        </div>
+      </div>
+
+      <!-- Styled Footer Caption Overlay -->
+      <div class="bg-gradient-to-t from-black/95 via-black/80 to-transparent p-4 text-left z-20 absolute bottom-0 left-0 right-0 pointer-events-none">
+        <p class="text-xs sm:text-sm font-semibold text-white/95 leading-snug">
+          “We are consistently hearing new patients say they found us on ChatGPT.”
+        </p>
+        <p class="text-[11px] text-[#C5A880] font-medium mt-1">
+          Dr. Ryan M. Diepenbrock, DDS, FAACS · Diepenbrock Facial Cosmetic Surgery
+        </p>
+      </div>
+
+    </div>
+  </div>
 </section>
+
+<script>
+  function setupTestimonialModal() {
+    const openBtn = document.getElementById('open-testimonial-video-btn');
+    const modal = document.getElementById('testimonial-video-modal');
+    const closeBtn = document.getElementById('close-testimonial-video-modal');
+    const video = document.getElementById('testimonial-modal-video') as HTMLVideoElement | null;
+    const captionOverlay = document.getElementById('diepenbrock-captions-overlay');
+    const captionBox = document.getElementById('diepenbrock-caption-box');
+    const toggleCcBtn = document.getElementById('toggle-diepenbrock-cc-btn');
+
+    let ccEnabled = false; // Disabled by default as requested!
+
+    const diepenbrockCues = [
+      { start: 0.0, end: 4.2, text: '"By my side for over 10 years."' },
+      { start: 4.5, end: 9.8, text: "How seelutions scaled Dr. Diepenbrock's practice from California to Indiana." },
+      { start: 10.0, end: 16.2, text: "In an industry where practices switch marketing agencies every six to twelve months," },
+      { start: 16.5, end: 22.8, text: "Dr. Diepenbrock has trusted our search architecture for a full decade." },
+      { start: 23.0, end: 28.5, text: '"I have no idea what you are doing, but just keep doing it."' },
+      { start: 28.8, end: 35.2, text: '"We are consistently hearing new patients say they found us on ChatGPT and AI search."' },
+      { start: 35.5, end: 41.8, text: "Scaling surgical consultations with high-converting procedure hubs." },
+      { start: 42.0, end: 48.0, text: "Monthly reinvestment grew nearly 4x, driven by compounding patient consult revenue." },
+      { start: 48.2, end: 54.0, text: "Dr. Ryan Diepenbrock, DDS, FAACS — Diepenbrock Facial Cosmetic Surgery, Fort Wayne, IN." },
+    ];
+
+    function updateCcState() {
+      const ccDot = document.getElementById('diepenbrock-cc-dot');
+      const ccText = document.getElementById('diepenbrock-cc-text');
+      if (ccDot && ccText) {
+        if (ccEnabled) {
+          ccDot.className = 'w-2 h-2 rounded-full bg-emerald-400 transition-colors';
+          ccText.textContent = 'CC On';
+        } else {
+          ccDot.className = 'w-2 h-2 rounded-full bg-neutral-500 transition-colors';
+          ccText.textContent = 'CC Off';
+        }
+      }
+      if (captionOverlay && !ccEnabled) {
+        captionOverlay.style.opacity = '0';
+      }
+    }
+
+    if (toggleCcBtn) {
+      toggleCcBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        ccEnabled = !ccEnabled;
+        updateCcState();
+      });
+    }
+
+    if (!openBtn || !modal) return;
+
+    openBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      ccEnabled = false; // Closed captions disabled by default on popup
+      updateCcState();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      if (video) {
+        video.currentTime = 0;
+        video.muted = false;
+        video.play().catch(() => {});
+      }
+    });
+
+    if (video && captionBox && captionOverlay) {
+      video.addEventListener('timeupdate', () => {
+        if (!ccEnabled) {
+          captionOverlay.style.opacity = '0';
+          return;
+        }
+        const currentTime = video.currentTime;
+        const activeCue = diepenbrockCues.find(
+          (cue) => currentTime >= cue.start && currentTime <= cue.end
+        );
+        if (activeCue) {
+          captionBox.textContent = activeCue.text;
+          captionOverlay.style.opacity = '1';
+        } else {
+          captionOverlay.style.opacity = '0';
+        }
+      });
+    }
+
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      if (video) {
+        video.pause();
+      }
+    };
+
+    closeBtn?.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // Initialize CC state to disabled
+    updateCcState();
+  }
+
+  setupTestimonialModal();
+  document.addEventListener('astro:page-load', setupTestimonialModal);
+</script>

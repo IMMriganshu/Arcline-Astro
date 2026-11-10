@@ -1397,7 +1397,7 @@ export default function AdminDashboard() {
                     setEditingProject({
                       id: `proj-${Date.now()}`,
                       number: `${new Date().getFullYear()}`,
-                      title: 'Market Expansion ($4,500/mo)',
+                      title: 'Market Expansion',
                       category: 'Multi-Location Map Pack',
                       image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=85',
                       description: 'Expanded search infrastructure into adjacent affluent suburbs.',
