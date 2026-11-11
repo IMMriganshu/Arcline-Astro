@@ -365,7 +365,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
     const base = cmsData?.servicesHero || defaultCmsContent.servicesHero || {
       badge: "SPECIALIZED SEARCH & GROWTH SERVICES",
       title: "Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons",
-      subtitle: "For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons to replace rented ad spend with compounding digital authority and high-margin surgical consults.",
+      subtitle: "For more than a decade, we have specialized in marketing for board-certified plastic and facial cosmetic surgeons, helping them earn lasting visibility on Google, Google Maps, and AI search instead of paying for every click.",
       description: "Explore our four core pillars designed to dominate local map packs, capture AI search citations, convert luxury procedure seekers, and drive profitable patient pipelines.",
       image: "/images/dr-diepenbrock-thumbnail.jpg",
       videoUrl: "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",
@@ -373,7 +373,7 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
     return {
       badge: base.badge || "SPECIALIZED SEARCH & GROWTH SERVICES",
       title: base.title || "Digital Growth & Search Services Engineered for Plastic & Cosmetic Surgeons",
-      subtitle: base.subtitle || "For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons.",
+      subtitle: base.subtitle || "For more than a decade, we have specialized in marketing for board-certified plastic and facial cosmetic surgeons, helping them earn lasting visibility on Google, Google Maps, and AI search instead of paying for every click.",
       description: base.description || "Explore our four core pillars designed to dominate local map packs and capture AI search citations.",
       image: base.image || "/images/dr-diepenbrock-thumbnail.jpg",
       videoUrl: base.videoUrl || "/videos/Dr%20Diepenbrock%20Testimonial%20Video.mov",

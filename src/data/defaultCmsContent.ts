@@ -383,7 +383,7 @@ export const defaultCmsContent: CmsData = {
   servicesHero: {
     badge: "SPECIALIZED SEARCH & GROWTH SERVICES",
     title: "Digital Growth & Search Services for Plastic & Cosmetic Surgeons",
-    subtitle: "For over a decade, we have partnered exclusively with board-certified plastic and facial cosmetic surgeons to replace rented ad spend with compounding digital authority and high-margin surgical consults.",
+    subtitle: "For more than a decade, we have specialized in marketing for board-certified plastic and facial cosmetic surgeons, helping them earn lasting visibility on Google, Google Maps, and AI search instead of paying for every click.",
     description: "",
     image: "/images/dr-diepenbrock-thumbnail.jpg",
     videoUrl: "/videos/seelutions_Video_Final.mp4",
