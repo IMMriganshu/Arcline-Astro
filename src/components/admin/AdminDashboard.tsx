@@ -49,6 +49,39 @@ function SubmissionsView({ submissions }: { submissions: Submission[] }) {
 
 const PERMANENT_VERCEL_HOOK = 'https://api.vercel.com/v1/integrations/deploy/prj_urcHfoyBHNVmdjwGAFlqsNC9va6o/6NGuRPGr1s';
 
+function normalizePagesArray(existingPages: any[]): Page[] {
+  const defaultPages = defaultCmsContent.pages || [];
+  const map = new Map<string, Page>();
+  defaultPages.forEach(p => map.set(p.slug, { ...p }));
+  if (Array.isArray(existingPages)) {
+    existingPages.forEach(p => {
+      if (p && p.slug) {
+        let slug = p.slug;
+        if (slug === 'projects') slug = 'case-study';
+        const existing = map.get(slug);
+        if (existing) {
+          map.set(slug, {
+            ...existing,
+            ...p,
+            slug,
+            title: p.title || existing.title,
+            content: p.content || existing.content,
+          });
+        } else {
+          map.set(slug, {
+            id: p.id || `page-${slug.replace(/[^a-z0-9]/g, '-')}`,
+            slug,
+            title: p.title || slug,
+            content: p.content || '',
+            sections: p.sections || [],
+          });
+        }
+      }
+    });
+  }
+  return Array.from(map.values());
+}
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<'super' | 'admin'>('admin');
@@ -62,9 +95,13 @@ export default function AdminDashboard() {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [isLoadingAdminUsers, setIsLoadingAdminUsers] = useState<boolean>(false);
 
-  // Page editing modal state
+  // Page editing modal state & Create Page modal state
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [isPageModalOpen, setIsPageModalOpen] = useState<boolean>(false);
+  const [isCreatePageModalOpen, setIsCreatePageModalOpen] = useState<boolean>(false);
+  const [newPageTitle, setNewPageTitle] = useState<string>('');
+  const [newPageSlug, setNewPageSlug] = useState<string>('');
+  const [newPageDesc, setNewPageDesc] = useState<string>('');
 
   const [cmsData, setCmsData] = useState<CmsData>(() => {
     if (typeof window !== 'undefined') {
@@ -102,7 +139,7 @@ export default function AdminDashboard() {
               projects: Array.isArray(parsed.projects) && parsed.projects.length > 0 ? parsed.projects : defaultCmsContent.projects,
               testimonials: Array.isArray(parsed.testimonials) && parsed.testimonials.length > 0 ? parsed.testimonials : defaultCmsContent.testimonials,
               media: Array.isArray(parsed.media) && parsed.media.length > 0 ? parsed.media : defaultCmsContent.media,
-              pages: Array.isArray(parsed.pages) && parsed.pages.length > 0 ? parsed.pages : defaultCmsContent.pages,
+              pages: normalizePagesArray(parsed.pages),
             });
           }
         }
@@ -120,6 +157,33 @@ export default function AdminDashboard() {
   const [isDeploying, setIsDeploying] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
+
+  const handleCreateNewPage = () => {
+    if (!newPageTitle.trim() || !newPageSlug.trim()) return;
+    const cleanSlug = newPageSlug.replace(/^\/+/, '').trim();
+    const newPageId = `page-custom-${Date.now()}`;
+    const newPage: Page = {
+      id: newPageId,
+      slug: cleanSlug,
+      title: newPageTitle.trim(),
+      content: `<h2>${newPageTitle.trim()}</h2><p>${newPageDesc.trim() || 'Custom page content & sections.'}</p>`,
+      sections: [
+        { id: 'custom-hero', name: 'Custom Page Hero', type: 'hero', title: newPageTitle.trim(), subtitle: newPageDesc.trim() },
+        { id: 'body', name: 'Page Rich Text Body', type: 'body', body: `<p>${newPageDesc.trim()}</p>` },
+        { id: 'custom-features', name: 'Key Highlights', type: 'features', items: [] },
+        { id: 'cta', name: 'Call to Action Banner', type: 'cta', title: 'Ready to Scale Your Practice?' }
+      ]
+    };
+    const updatedPages = [...cmsData.pages, newPage];
+    setCmsData({ ...cmsData, pages: updatedPages });
+    setHasChanges(true);
+    setIsCreatePageModalOpen(false);
+    setNewPageTitle('');
+    setNewPageSlug('');
+    setNewPageDesc('');
+    setEditingPage(newPage);
+    setIsPageModalOpen(true);
+  };
 
   // Blog article editing modal state
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
@@ -262,7 +326,7 @@ export default function AdminDashboard() {
             projects: Array.isArray(json.data.projects) && json.data.projects.length > 0 ? json.data.projects : defaultCmsContent.projects,
             testimonials: Array.isArray(json.data.testimonials) && json.data.testimonials.length > 0 ? json.data.testimonials : defaultCmsContent.testimonials,
             media: Array.isArray(json.data.media) && json.data.media.length > 0 ? json.data.media : defaultCmsContent.media,
-            pages: Array.isArray(json.data.pages) && json.data.pages.length > 0 ? json.data.pages : defaultCmsContent.pages,
+            pages: normalizePagesArray(json.data.pages),
           };
           const cleanedMerged = replaceSeelutionsDeep(merged);
           setCmsData(cleanedMerged);
@@ -3051,39 +3115,137 @@ export default function AdminDashboard() {
            {/* TAB: Pages Management */}
            {activeTab === 'pages' && (
              <div className="space-y-6">
-               <div>
-                 <h2 className="text-2xl font-bold font-urbanist text-white">Manage Pages &amp; Section Media</h2>
-                 <p className="text-xs text-neutral-400">Select any site page below to update its section text, prose content, and attached media assets (hero videos, banner graphics, gallery images, and avatars).</p>
+               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                 <div>
+                   <h2 className="text-2xl font-bold font-urbanist text-white">Manage Pages &amp; Section Media</h2>
+                   <p className="text-xs text-neutral-400">Select any site page below to update its section text, prose content, and attached media assets (hero videos, banner graphics, gallery images, and avatars).</p>
+                 </div>
+                 <button
+                   onClick={() => setIsCreatePageModalOpen(true)}
+                   className="px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-2 self-start"
+                 >
+                   <span>+ Create New Page</span>
+                 </button>
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                 {cmsData.pages.map((page) => (
-                   <div key={page.id} className="bg-neutral-900/60 border border-white/10 hover:border-cyan-500/40 rounded-2xl p-6 backdrop-blur-md flex flex-col justify-between transition-all group">
-                     <div>
-                       <div className="flex items-center justify-between mb-2">
-                         <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider block">Content &amp; Media</span>
-                         <span className="text-[9px] font-mono text-neutral-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
-                           🖼️ Media Attached
-                         </span>
+                 {cmsData.pages.map((page) => {
+                   const coreSlugs = ['home', 'about', 'services', 'case-study', 'projects', 'blog', 'schedule-a-call', 'contact', 'privacy-policy', 'privacy', 'services/local-seo-google-maps', 'services/ai-search-overviews', 'services/web-design-conversion-optimization', 'services/google-ads-paid-search'];
+                   const isCore = coreSlugs.includes(page.slug);
+                   return (
+                     <div key={page.id} className="bg-neutral-900/60 border border-white/10 hover:border-cyan-500/40 rounded-2xl p-6 backdrop-blur-md flex flex-col justify-between transition-all group">
+                       <div>
+                         <div className="flex items-center justify-between mb-2">
+                           <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider block">
+                             {isCore ? 'Core System Page' : 'Custom Page'}
+                           </span>
+                           <span className="text-[9px] font-mono text-neutral-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                             {page.sections?.length || 4} Sections
+                           </span>
+                         </div>
+                         <h3 className="text-lg font-bold text-white mb-2 font-urbanist">{page.title}</h3>
+                         <code className="text-xs text-neutral-400 bg-black/40 px-2 py-1 rounded-md border border-white/5">/{page.slug}</code>
                        </div>
-                       <h3 className="text-lg font-bold text-white mb-2 font-urbanist">{page.title}</h3>
-                       <code className="text-xs text-neutral-400 bg-black/40 px-2 py-1 rounded-md border border-white/5">/{page.slug}</code>
+                       <div className="mt-6 pt-4 border-t border-white/15 flex items-center justify-between">
+                         {!isCore ? (
+                           <button
+                             onClick={() => {
+                               if (confirm(`Delete custom page /${page.slug}?`)) {
+                                 setCmsData({
+                                   ...cmsData,
+                                   pages: cmsData.pages.filter(p => p.id !== page.id)
+                                 });
+                                 setHasChanges(true);
+                               }
+                             }}
+                             className="text-xs text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                           >
+                             Delete
+                           </button>
+                         ) : (
+                           <span className="text-[10px] text-neutral-500 font-mono">System</span>
+                         )}
+                         <button
+                           onClick={() => {
+                             setEditingPage(page);
+                             setIsPageModalOpen(true);
+                           }}
+                           className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-300 font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1"
+                         >
+                           <span>Edit Content &amp; Media</span>
+                           <span>&rarr;</span>
+                         </button>
+                       </div>
                      </div>
-                     <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-                       <span className="text-xs text-neutral-400">Sections, Copy &amp; Media</span>
-                       <button
-                         onClick={() => {
-                           setEditingPage(page);
-                           setIsPageModalOpen(true);
-                         }}
-                         className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-300 font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1"
-                       >
-                         <span>Edit Content &amp; Media</span>
-                         <span>&rarr;</span>
-                       </button>
+                   );
+                 })}
+               </div>
+             </div>
+           )}
+
+           {/* Create New Page Modal */}
+           {isCreatePageModalOpen && (
+             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+               <div className="bg-neutral-900 border border-white/15 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl text-white">
+                 <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                   <h3 className="text-lg font-bold font-urbanist">Create New Website Page</h3>
+                   <button onClick={() => setIsCreatePageModalOpen(false)} className="text-neutral-400 hover:text-white">✕</button>
+                 </div>
+                 <div className="space-y-3">
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-300 mb-1">Page Title</label>
+                     <input
+                       type="text"
+                       placeholder="e.g. Rhinoplasty Specialist Page"
+                       value={newPageTitle}
+                       onChange={(e) => {
+                         setNewPageTitle(e.target.value);
+                         if (!newPageSlug || newPageSlug === '') {
+                           setNewPageSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
+                         }
+                       }}
+                       className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-sm"
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-300 mb-1">URL Slug</label>
+                     <div className="flex items-center bg-black/50 border border-white/15 rounded-xl px-3 py-2">
+                       <span className="text-neutral-500 text-xs mr-1">/</span>
+                       <input
+                         type="text"
+                         placeholder="rhinoplasty-specialist"
+                         value={newPageSlug}
+                         onChange={(e) => setNewPageSlug(e.target.value)}
+                         className="w-full bg-transparent text-white text-xs font-mono focus:outline-none"
+                       />
                      </div>
                    </div>
-                 ))}
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-300 mb-1">Short Description / Subtitle</label>
+                     <textarea
+                       placeholder="Brief description for hero section..."
+                       value={newPageDesc}
+                       onChange={(e) => setNewPageDesc(e.target.value)}
+                       rows={3}
+                       className="w-full px-3 py-2 bg-black/50 border border-white/15 rounded-xl text-white text-xs"
+                     />
+                   </div>
+                 </div>
+                 <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+                   <button
+                     onClick={() => setIsCreatePageModalOpen(false)}
+                     className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 font-semibold text-xs cursor-pointer"
+                   >
+                     Cancel
+                   </button>
+                   <button
+                     onClick={handleCreateNewPage}
+                     disabled={!newPageTitle.trim() || !newPageSlug.trim()}
+                     className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs cursor-pointer disabled:opacity-50"
+                   >
+                     Create &amp; Edit Sections
+                   </button>
+                 </div>
                </div>
              </div>
            )}

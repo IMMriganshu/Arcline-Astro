@@ -41,13 +41,15 @@ const portfolioProjects = await getProjects();
 
       <!-- Projects area layer (Appears inside and expands on scroll) -->
       <div class="recent-works__projects-area" data-rw-projects>
-        {portfolioProjects.map((project, idx) => (
+        {portfolioProjects.map((project, idx) => {
+          const projectUrl = (!project.href || project.href === '/projects') ? '/case-study' : project.href;
+          return (
           <div
             class="recent-works__project-item"
             data-rw-item={idx}
             style={`z-index: ${idx + 1};`}
           >
-            <a href={project.href || "/case-study"} class="recent-works__project-image-link">
+            <a href={projectUrl} class="recent-works__project-image-link">
               <img
                 src={project.image}
                 alt={project.title}
@@ -64,19 +66,20 @@ const portfolioProjects = await getProjects();
                   {project.number}
                 </span>
                 <div>
-                  <a href={project.href || "/case-study"} class="recent-works__project-name">
+                  <a href={projectUrl} class="recent-works__project-name">
                     {project.title}
                     <div class="recent-works__project-name-border"></div>
                   </a>
                   <div class="text-neutral-600 text-sm sm:text-base mt-2 max-w-2xl font-normal leading-relaxed prose prose-neutral max-w-none" set:html={project.description} />
                 </div>
               </div>
-              <a href={project.href || "/case-study"} class="recent-works__project-category">
+              <a href={projectUrl} class="recent-works__project-category">
                 {project.category}
               </a>
             </div>
           </div>
-        ))}
+        );
+        })}
       </div>
     </div>
   </div>

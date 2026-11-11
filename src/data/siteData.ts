@@ -75,7 +75,7 @@ export const pagesDropdownData = {
   pages: [
     { label: "Case Study", href: "/case-study" },
     { label: "Team", href: "/about#team" },
-    { label: "Project Details", href: "/projects#details" },
+    { label: "Case Study Details", href: "/case-study#details" },
     { label: "Service Details", href: "/services#details" },
     { label: "Blog Details", href: "/blog#details" },
   ],

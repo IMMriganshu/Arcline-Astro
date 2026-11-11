@@ -1,3 +1,16 @@
 ---
-return Astro.redirect('/case-study', 301);
+import CaseStudyPage from "./case-study.astro";
+
+export const prerender = false;
+
+Astro.response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+Astro.response.headers.set('Clear-Site-Data', '"cache"');
 ---
+
+<CaseStudyPage />
+
+<script>
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/projects')) {
+    window.history.replaceState(null, '', '/case-study');
+  }
+</script>

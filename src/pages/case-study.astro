@@ -5,7 +5,12 @@ import Button from "../components/Button.astro";
 import ProjectCTA from "../components/ProjectCTA.astro";
 import TestimonialSection from "../components/TestimonialSection.astro";
 
-export const prerender = true;
+export const prerender = false;
+
+Astro.response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+Astro.response.headers.set('Pragma', 'no-cache');
+Astro.response.headers.set('Expires', '0');
+Astro.response.headers.set('Clear-Site-Data', '"cache"');
 
 const pageTitle = "Case Study: 10 Years With Dr. Diepenbrock | seelutions";
 const pageDescription = "How Diepenbrock Facial Cosmetic Surgery in Fort Wayne, Indiana grew to #1 on Google with seelutions: website, Google Maps, and AI search.";
@@ -68,13 +73,13 @@ const rankings = [
   <!-- Section C: Top Section (Hero) -->
   <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white relative overflow-hidden">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-      <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text="CASE STUDY" />
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left: Heading & Copy */}
         <div class="lg:col-span-7 flex flex-col justify-center">
+          <div class="mb-3.5" data-animate="fade-up-sm">
+            <SectionLabel text="CASE STUDY" />
+          </div>
+
           <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold tracking-tight text-[#030303] leading-[1.12] mb-6 font-urbanist">
             10 Years With Dr. Diepenbrock
           </h1>
@@ -85,7 +90,7 @@ const rankings = [
 
           <div data-animate="fade-up-sm" data-animate-delay="2" class="flex flex-wrap items-center gap-4">
             <Button href="https://audit.seelutions.com/" variant="black" showIcon={true} iconType="arrow-right">
-              Get Your Practice Visibility Audit
+              Get Your Free Practice Visibility Audit
             </Button>
             <Button href="/schedule-a-call" variant="outline" showIcon={false}>
               Schedule a Call
@@ -225,4 +230,18 @@ const rankings = [
 
   <!-- Section G: Bottom of the page -->
   <ProjectCTA />
+
+  <script>
+    // Safeguard: immediately reveal elements on the Case Study page
+    const revealAll = () => {
+      document.querySelectorAll('[data-animate]').forEach((el) => {
+        el.classList.add('is-visible');
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', revealAll);
+    } else {
+      revealAll();
+    }
+  </script>
 </BaseLayout>

@@ -445,10 +445,14 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
   const isHome = page.slug === 'home' || page.slug === '';
   const isAbout = page.slug === 'about';
   const isServices = page.slug === 'services';
-  const isProjects = page.slug === 'projects';
+  const isProjects = page.slug === 'projects' || page.slug === 'case-study';
   const isBlog = page.slug === 'blog';
+  const isContact = page.slug === 'contact';
+  const isScheduleCall = page.slug === 'schedule-a-call';
+  const isPrivacy = page.slug === 'privacy-policy' || page.slug === 'privacy';
+  const isCustomPage = !isHome && !isAbout && !isServices && !isProjects && !isBlog && !isChildService && !isContact && !isScheduleCall && !isPrivacy;
 
-  const defaultSection = isHome ? 'hero' : isAbout ? 'about' : isServices ? 'services' : isProjects ? 'projects' : isBlog ? 'blog' : isChildService ? 'child-hero' : 'body';
+  const defaultSection = isHome ? 'hero' : isAbout ? 'about' : isServices ? 'services' : isProjects ? 'projects' : isBlog ? 'blog' : isChildService ? 'child-hero' : isContact ? 'contact-header' : isScheduleCall ? 'schedule-hero' : isPrivacy ? 'privacy-header' : isCustomPage ? 'custom-hero' : 'body';
   const [activeSectionId, setActiveSectionId] = useState<string>(defaultSection);
   const [activeViewMode, setActiveViewMode] = useState<'editor' | 'preview'>('editor');
   const [hasChanges, setHasChanges] = useState<boolean>(false);
@@ -496,6 +500,24 @@ export function PageSectionBuilder({ page, cmsData, onSave, onClose }: PageSecti
       { id: 'blog-header', name: 'Publication Header', icon: '📰', description: 'Patient Grower publication intro and positioning' },
       { id: 'blog', name: 'Intelligence Articles', icon: '✍️', description: 'Editorial case studies and AI search articles' },
       { id: 'cta', name: 'Consultation CTA Banner', icon: '🎯', description: 'Digital audit call to action' },
+    ] : []),
+    ...(isContact ? [
+      { id: 'contact-header', name: 'Contact Header & Intro', icon: '📬', description: 'Get in touch headline and subtitle' },
+      { id: 'cta', name: 'Audit CTA Banner', icon: '🎯', description: 'Consultation digital audit call to action' },
+    ] : []),
+    ...(isScheduleCall ? [
+      { id: 'schedule-hero', name: 'Schedule Call Header & Host', icon: '📅', description: 'Discovery call booking header and host info' },
+      { id: 'cta', name: 'Audit CTA Banner', icon: '🎯', description: 'Consultation digital audit call to action' },
+    ] : []),
+    ...(isPrivacy ? [
+      { id: 'privacy-header', name: 'Privacy Policy Header', icon: '🔒', description: 'Privacy and compliance header' },
+      { id: 'body', name: 'Policy Content & Terms', icon: '📝', description: 'Full privacy policy rich text & legal copy' },
+    ] : []),
+    ...(isCustomPage ? [
+      { id: 'custom-hero', name: 'Custom Page Hero', icon: '⚡', description: 'Headline, badge, and intro copy for this page' },
+      { id: 'custom-features', name: 'Key Highlights / Features', icon: '✨', description: 'Key highlights or points grid' },
+      { id: 'body', name: 'Page Rich Text Body', icon: '📝', description: 'Semantic HTML prose and media embeds' },
+      { id: 'cta', name: 'Call to Action Banner', icon: '🎯', description: 'Page conversion CTA banner' },
     ] : []),
     { id: 'body', name: 'Custom Page Body (Rich Text & Media)', icon: '📝', description: 'Semantic HTML, headers, images, captions and media prose block' },
   ];

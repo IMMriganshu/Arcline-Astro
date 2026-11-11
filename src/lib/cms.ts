@@ -120,6 +120,22 @@ export async function getServerCmsData(): Promise<CmsData> {
             return true;
           });
         }
+        // Normalize pages to guarantee all standard and custom pages are present
+        if (Array.isArray(remoteData.pages)) {
+          const pageMap = new Map<string, any>();
+          defaultCmsContent.pages.forEach(p => pageMap.set(p.slug, { ...p }));
+          remoteData.pages.forEach(p => {
+            const slug = (p.slug === 'projects' || p.id === 'page-projects') ? 'case-study' : p.slug;
+            const title = (p.slug === 'projects' || p.id === 'page-projects') ? 'Case Study Page Content' : p.title;
+            const current = pageMap.get(slug);
+            if (current) {
+              pageMap.set(slug, { ...current, ...p, slug, title });
+            } else {
+              pageMap.set(slug, { ...p, slug, title });
+            }
+          });
+          remoteData.pages = Array.from(pageMap.values());
+        }
       }
     }
   } catch (err) {
@@ -211,7 +227,16 @@ export async function getPageBySlug(slug: string) {
  */
 export async function getNavigation() {
   const data = await getCmsData();
-  return (data.navigation && data.navigation.length > 0) ? data.navigation : defaultCmsContent.navigation;
+  const nav = (data.navigation && data.navigation.length > 0) ? data.navigation : defaultCmsContent.navigation;
+  return nav.map((item) => {
+    if (item.id === 'nav-4' || item.label === 'Case Studies' || item.href === '/projects') {
+      return { ...item, id: 'nav-4', label: 'Case Study', href: '/case-study' };
+    }
+    if (item.label === 'Blog') {
+      return { ...item, label: 'Patient Grower' };
+    }
+    return item;
+  });
 }
 
 /**
@@ -278,7 +303,10 @@ export async function getPageSeo(key: string) {
  */
 export async function getRedirects() {
   const data = await getCmsData();
-  return data.redirects || defaultCmsContent.redirects || [];
+  const list = data.redirects || defaultCmsContent.redirects || [];
+  return list.filter(
+    (r) => r.fromPath !== '/case-study' && r.fromPath !== '/case-study/' && r.fromPath !== '/case-studies'
+  );
 }
 
 /**
@@ -428,6 +456,22 @@ export function getClientCmsData(): CmsData {
           }
           return true;
         });
+      }
+      // Normalize pages to guarantee all standard and custom pages are present
+      if (Array.isArray(normalized.pages)) {
+        const pageMap = new Map<string, any>();
+        defaultCmsContent.pages.forEach(p => pageMap.set(p.slug, { ...p }));
+        normalized.pages.forEach(p => {
+          const slug = (p.slug === 'projects' || p.id === 'page-projects') ? 'case-study' : p.slug;
+          const title = (p.slug === 'projects' || p.id === 'page-projects') ? 'Case Study Page Content' : p.title;
+          const current = pageMap.get(slug);
+          if (current) {
+            pageMap.set(slug, { ...current, ...p, slug, title });
+          } else {
+            pageMap.set(slug, { ...p, slug, title });
+          }
+        });
+        normalized.pages = Array.from(pageMap.values());
       }
       return replaceSeelutionsDeep(deepMerge(defaultCmsContent, normalized));
     }

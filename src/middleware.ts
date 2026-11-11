@@ -15,6 +15,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
+  // Absolute safety: never redirect /case-study or /projects
+  if (
+    pathname === '/case-study' ||
+    pathname === '/case-study/' ||
+    pathname === '/projects' ||
+    pathname === '/projects/'
+  ) {
+    return next();
+  }
+
   try {
     const redirects = await getRedirects();
     const activeRule = redirects.find(
@@ -22,11 +32,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
     );
 
     if (activeRule && activeRule.toPath) {
+      if (activeRule.toPath === pathname || activeRule.toPath === pathname + '/') {
+        return next();
+      }
       return context.redirect(activeRule.toPath, activeRule.type || 301);
     }
   } catch (e) {
     console.error('Error in redirects middleware:', e);
   }
 
-  return next();
+  const response = await next();
+  response.headers.set('Clear-Site-Data', '"cache"');
+  return response;
 });

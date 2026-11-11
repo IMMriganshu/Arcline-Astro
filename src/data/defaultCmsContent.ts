@@ -287,8 +287,14 @@ export const defaultCmsContent: CmsData = {
     {
       id: "page-contact",
       slug: "contact",
-      title: "Contact Page",
+      title: "Contact Page Content",
       content: "<h2>Let's Scale Your Surgical Practice</h2><p>Request a customized Practice Visibility Audit and strategy consultation.</p>",
+    },
+    {
+      id: "page-privacy",
+      slug: "privacy-policy",
+      title: "Privacy Policy Page",
+      content: "<h2>Privacy Policy & Patient Confidentiality</h2><p>Our commitment to patient privacy, HIPAA compliance, and data security.</p>",
     },
   ],
   comparison: [
@@ -657,14 +663,6 @@ export const defaultCmsContent: CmsData = {
       id: "red-1",
       fromPath: "/old-services",
       toPath: "/services",
-      type: 301,
-      active: true,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "red-2",
-      fromPath: "/projects",
-      toPath: "/case-study",
       type: 301,
       active: true,
       createdAt: new Date().toISOString(),
