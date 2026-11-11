@@ -56,18 +56,6 @@ export function replaceSeelutionsDeep<T>(obj: T): T {
 
 function normalizeCmsServices(data: Partial<CmsData>): Partial<CmsData> {
   if (!data) return data;
-  if (Array.isArray(data.navigation)) {
-    data.navigation = defaultCmsContent.navigation;
-  }
-  if (Array.isArray(data.services)) {
-    data.services = defaultCmsContent.services;
-  }
-  if (Array.isArray(data.projects)) {
-    data.projects = defaultCmsContent.projects;
-  }
-  if (data.childServices) {
-    data.childServices['ai-search-overviews'] = defaultCmsContent.childServices!['ai-search-overviews'];
-  }
   if (!data.videoShowcase || data.videoShowcase.videoUrl?.includes('eyeball-showcase.mp4')) {
     data.videoShowcase = defaultCmsContent.videoShowcase;
   }
@@ -122,6 +110,16 @@ export async function getServerCmsData(): Promise<CmsData> {
       }
       if (remoteData) {
         remoteData = normalizeCmsServices(remoteData);
+        // Sanitize redirects to prevent loops (especially /case-study -> /projects)
+        if (Array.isArray(remoteData.redirects)) {
+          remoteData.redirects = remoteData.redirects.filter(r => {
+            // Block any redirect FROM /case-study or /case-studies
+            if (r.fromPath === '/case-study' || r.fromPath === '/case-study/' || r.fromPath === '/case-studies') {
+              return false;
+            }
+            return true;
+          });
+        }
       }
     }
   } catch (err) {
@@ -422,6 +420,15 @@ export function getClientCmsData(): CmsData {
         parsed.comparisonContent = defaultCmsContent.comparisonContent;
       }
       const normalized = normalizeCmsServices(parsed);
+      // Sanitize redirects to prevent loops
+      if (Array.isArray(normalized.redirects)) {
+        normalized.redirects = normalized.redirects.filter(r => {
+          if (r.fromPath === '/case-study' || r.fromPath === '/case-study/' || r.fromPath === '/case-studies') {
+            return false;
+          }
+          return true;
+        });
+      }
       return replaceSeelutionsDeep(deepMerge(defaultCmsContent, normalized));
     }
   } catch (e) {

@@ -105,7 +105,7 @@ export function SeoManagerView({
         { key: 'home', name: 'Home Page (/)' },
         { key: 'about', name: 'About Page (/#about)' },
         { key: 'services', name: 'Services Page (/services)' },
-        { key: 'projects', name: 'Case Studies (/projects)' },
+        { key: 'projects', name: 'Case Study (/case-study)' },
         { key: 'blog', name: 'Blog Journal (/blog)' },
       ];
 
@@ -153,7 +153,7 @@ export function SeoManagerView({
       });
 
       // Scan Internal & External Links for potential broken targets
-      const knownRoutes = ['/', '/#about', '/services', '/projects', '/blog', '/style-guide', '/404', '#contact', '#services', '#case-studies'];
+      const knownRoutes = ['/', '/#about', '/services', '/case-study', '/blog', '/style-guide', '/404', '#contact', '#services', '#case-studies'];
       (cmsData.articles || []).forEach((a) => knownRoutes.push(`/blog/${a.slug}`));
       (cmsData.pages || []).forEach((pg) => knownRoutes.push(`/pages/${pg.slug}`));
 
@@ -267,7 +267,7 @@ export function SeoManagerView({
               { id: 'home', label: 'Home Page', route: '/' },
               { id: 'about', label: 'About Us', route: '/#about' },
               { id: 'services', label: 'Surgical Services', route: '/services' },
-              { id: 'projects', label: 'Case Studies', route: '/projects' },
+              { id: 'projects', label: 'Case Study', route: '/case-study' },
               { id: 'blog', label: 'Patient Grower Journal', route: '/blog' },
             ].map((pg) => {
               const pSeo = getSeoForPage(pg.id);
@@ -650,7 +650,7 @@ export function SeoManagerView({
               <option value="home">Home Page (/)</option>
               <option value="about">About Us (/#about)</option>
               <option value="services">Services (/services)</option>
-              <option value="projects">Case Studies (/projects)</option>
+              <option value="projects">Case Study (/case-study)</option>
               <option value="blog">Blog Journal (/blog)</option>
             </select>
           </div>
@@ -943,7 +943,7 @@ export function SeoManagerView({
               </div>
 
               <div className="pt-2 border-t border-white/10 space-y-1 text-xs text-neutral-300">
-                <p>✅ Automatically indexes 5 system pages (`/`, `/#about`, `/services`, `/projects`, `/blog`)</p>
+                <p>✅ Automatically indexes 5 system pages (`/`, `/#about`, `/services`, `/case-study`, `/blog`)</p>
                 <p>✅ Indexes {(cmsData.articles || []).filter((a) => a.published).length} published blog articles</p>
                 <p>✅ Dynamic XML headers with `application/xml` content-type</p>
               </div>

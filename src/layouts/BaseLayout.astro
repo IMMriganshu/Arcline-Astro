@@ -48,7 +48,7 @@ if (!key) {
 const pageSeo = cmsData.pageSeoMap?.[key || 'home'];
 
 const pageTitle = propTitle || pageSeo?.title || globalSeo?.defaultTitle || siteConfig.title || siteConfig.name || "seelutions — Patient Acquisition & Digital Authority Studio";
-const pageDescription = propDescription || pageSeo?.description || globalSeo?.defaultDescription || siteConfig.description || "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.";
+const pageDescription = propDescription || pageSeo?.description || globalSeo?.defaultDescription || siteConfig.description || "Specialized patient acquisition for plastic & facial cosmetic surgeons. We engineer long-term search authority.";
 const ogTitle = pageSeo?.ogTitle || pageTitle;
 const ogDescription = pageSeo?.ogDescription || pageDescription;
 const ogImage = propOgImage || pageSeo?.ogImage || globalSeo?.defaultOgImage || siteConfig.ogImage || "/images/home-hero-image.webp";
@@ -90,13 +90,13 @@ if (!schemaJsonObj) {
         "email": siteConfig.email || "hello@seelutions.com",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": siteConfig.address || "567 Jac Spruce Crescent",
-          "addressLocality": "Montreal",
-          "addressRegion": "QC",
-          "postalCode": "H1A 2K3",
-          "addressCountry": "CA"
+          "streetAddress": siteConfig.address || "5806 Grove Ave, Ste 157",
+          "addressLocality": "Richmond",
+          "addressRegion": "VA",
+          "postalCode": "23226",
+          "addressCountry": "US"
         },
-        "priceRange": "$$$$",
+        "priceRange": "",
         "medicalSpecialty": ["PlasticSurgery", "FacialCosmeticSurgery"]
       };
     } else if (schemaType === "MedicalProcedure") {

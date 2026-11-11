@@ -50,10 +50,10 @@ export interface Article {
 export const siteConfig = {
   name: "seelutions",
   title: "seelutions — Patient Acquisition & Digital Authority Studio",
-  description: "Specialized patient acquisition for plastic & facial cosmetic surgeons. Stop renting $35 clicks. We engineer long-term search authority.",
+  description: "Specialized patient acquisition for plastic & facial cosmetic surgeons. We engineer long-term search authority.",
   email: "hello@seelutions.com",
-  phone: "(555) 345-6789",
-  address: "567 Jac Spruce Crescent, Montreal, QC H1A 2K3",
+  phone: "(804) 707-5821",
+  address: "5806 Grove Ave, Ste 157, Richmond, VA 23226",
   estYear: "EST. 2010",
 };
 
@@ -62,7 +62,8 @@ export const navItems: NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Services", href: "/#services" },
   { label: "Pages", href: "#", hasDropdown: true },
-  { label: "Blog", href: "/#blog" },
+  { label: "Case Study", href: "/case-study" },
+  { label: "Patient Grower", href: "/#blog" },
 ];
 
 export const homeDropdownItems = [
@@ -72,7 +73,7 @@ export const homeDropdownItems = [
 
 export const pagesDropdownData = {
   pages: [
-    { label: "Projects", href: "/projects" },
+    { label: "Case Study", href: "/case-study" },
     { label: "Team", href: "/about#team" },
     { label: "Project Details", href: "/projects#details" },
     { label: "Service Details", href: "/services#details" },
@@ -163,7 +164,7 @@ export const portfolioProjects: Project[] = [
     number: "TODAY",
     title: "#1 in Fort Wayne",
     category: "See the full 10-year case study",
-    href: "/projects",
+    href: "/case-study",
     image: "/assets/aistudio/Case_Study_5_76c2a683.jpg",
     description: "His practice ranks #1 on Google in Fort Wayne for searches like 'facial cosmetic surgeon,' 'facial plastic surgeon,' and 'rhinoplasty surgeon.'",
     year: "TODAY",
@@ -174,29 +175,11 @@ export const portfolioProjects: Project[] = [
 export const testimonialsData: Testimonial[] = [
   {
     id: "01",
-    quote: "Arcline transformed our vision into a living space that exceeds every expectation. Their approach to blending natural light with sustainable materials created a home that feels both luxurious and deeply connected to the environment. An extraordinary team that truly listens.",
-    author: "Richard Jackson",
-    role: "CEO",
-    company: "Luxories",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
-    rating: 5,
-  },
-  {
-    id: "02",
-    quote: "From concept to completion, the Arcline team brought unmatched precision and creativity to our urban development. The result is a community space that residents genuinely love — functional, beautiful, and built to stand the test of time.",
-    author: "Emma Thompson",
-    role: "CEO",
-    company: "Urban Nest",
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85",
-    rating: 5,
-  },
-  {
-    id: "03",
-    quote: "What sets Arcline apart is their ability to listen and then exceed. They understood exactly what we needed — a landmark tower that speaks to innovation without losing human scale. The Skyline Tower has become a true icon of the city.",
-    author: "David Lee",
-    role: "CEO",
-    company: "Arch Vista",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85",
+    quote: "I have no idea what you are doing, but just keep doing it. We are consistently hearing new patients say they found us on ChatGPT when they searched for Plastic Surgeon Near Me.",
+    author: "Dr. Ryan Diepenbrock, DDS, FAACS",
+    role: "Founder & Chief Facial Cosmetic Surgeon",
+    company: "Diepenbrock Facial Cosmetic Surgery",
+    avatar: "/assets/aistudio/Dr._Diepenbrock_162f955f.jpg",
     rating: 5,
   },
 ];

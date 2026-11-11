@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionLabel from "../components/SectionLabel.astro";
 import Button from "../components/Button.astro";
 import ProjectCTA from "../components/ProjectCTA.astro";
+import { getServices, getServicesHeroContent } from "../lib/cms";
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
@@ -10,43 +11,32 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3153600
 const pageTitle = "Marketing Services for Plastic & Cosmetic Surgeons | seelutions";
 const pageDescription = "AI search visibility, local SEO and Google Maps, web design, and Google Ads for board-certified plastic and facial cosmetic surgeons.";
 
-const thumbnailImage = "/assets/aistudio/Owner_Video_Thumbnail_b026f920.jpg";
-const videoSource = "/videos/seelutions_Video_Final.mp4";
+const servicesHero = await getServicesHeroContent();
+const services = await getServices();
 
-const coreServices = [
-  {
-    title: "AI Search Visibility",
-    description: "Get recommended when patients ask ChatGPT, Google's AI answers, and other AI tools which surgeon to see.",
-    linkText: "Learn about AI search →",
-    href: "/services/ai-search-overviews/",
-    number: "01",
-    image: "/images/seelutions_AI_Search_Card_Graphic.png",
-  },
-  {
-    title: "Local SEO & Google Maps",
-    description: "Show up on Google Maps and in local search when patients look for a surgeon near them.",
-    linkText: "Learn about Local SEO →",
-    href: "/services/local-seo-google-maps/",
-    number: "02",
-    image: "/images/service-local-seo.jpg",
-  },
-  {
-    title: "Web Design & Conversion Optimization",
-    description: "A fast, polished website that turns the patients who find you into booked consultations.",
-    linkText: "Learn about Web Design →",
-    href: "/services/web-design-conversion-optimization/",
-    number: "03",
-    image: "/images/seelutions_Web_Design_Card_Graphic.png",
-  },
-  {
-    title: "Google Ads & Paid Search",
-    description: "Targeted ads for the procedures that matter most to your practice, so your budget goes to the right patients.",
-    linkText: "Learn about Google Ads →",
-    href: "/services/google-ads-paid-search/",
-    number: "04",
-    image: "/images/service-google-ads.jpg",
-  },
-];
+const thumbnailImage = servicesHero.image || "/assets/aistudio/Owner_Video_Thumbnail_b026f920.jpg";
+const videoSource = servicesHero.videoUrl || "/videos/seelutions_Video_Final.mp4";
+
+// Map CMS services to include the correct link text for this page
+const coreServices = services.map(srv => {
+  let linkText = "Learn about AI search →";
+  if (srv.number === "02") linkText = "Learn about Local SEO →";
+  if (srv.number === "03") linkText = "Learn about Web Design →";
+  if (srv.number === "04") linkText = "Learn about Google Ads →";
+  
+  // Map internal slugs if they don't exist
+  let href = srv.href || "/services/";
+  if (srv.number === "01") href = "/services/ai-search-overviews/";
+  if (srv.number === "02") href = "/services/local-seo-google-maps/";
+  if (srv.number === "03") href = "/services/web-design-conversion-optimization/";
+  if (srv.number === "04") href = "/services/google-ads-paid-search/";
+
+  return {
+    ...srv,
+    linkText,
+    href
+  };
+});
 ---
 
 <BaseLayout

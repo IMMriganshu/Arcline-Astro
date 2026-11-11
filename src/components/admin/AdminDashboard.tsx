@@ -950,7 +950,7 @@ export default function AdminDashboard() {
                 : []),
               { id: 'hero', label: 'Hero & Branding', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
               { id: 'services', label: 'Services (01–05)', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
-              { id: 'projects', label: 'Case Studies (10-Yr)', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+              { id: 'projects', label: 'Case Study (10-Yr)', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
               { id: 'blog', label: 'Blog & Articles', icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' },
               { id: 'pages', label: 'Manage Pages', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
               { id: 'testimonials', label: 'Surgeon Testimonials', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
@@ -1388,7 +1388,7 @@ export default function AdminDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold font-urbanist text-white">10-Year Practice Case Studies</h2>
+                  <h2 className="text-2xl font-bold font-urbanist text-white">10-Year Practice Case Study</h2>
                   <p className="text-xs text-neutral-400">Milestone timeline tracking budget vs organic consult yield.</p>
                 </div>
 
@@ -1894,7 +1894,7 @@ export default function AdminDashboard() {
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g. Case Studies, Pricing, About"
+                        placeholder="e.g. Case Study, About"
                         value={newMenuLabel}
                         onChange={(e) => setNewMenuLabel(e.target.value)}
                         className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-lg text-white text-xs focus:outline-none focus:border-cyan-400"
@@ -2186,7 +2186,7 @@ export default function AdminDashboard() {
                 <RichTextEditor
                   label="Section Paragraph / Value Proposition"
                   value={cmsData.projectCta?.description || ''}
-                  placeholder="Claim a customized, 3-minute video analysis of your practice's digital footprint..."
+                  placeholder="Claim a customized Practice Visibility Audit of your practice's digital footprint..."
                   onChange={(val) => {
                     setCmsData({
                       ...cmsData,
@@ -2326,7 +2326,7 @@ export default function AdminDashboard() {
                   <RichTextEditor
                     label="Section Paragraph / Value Proposition"
                     value={ctaContent.description || ''}
-                    placeholder="Claim a customized, 3-minute video analysis of your practice's digital footprint..."
+                    placeholder="Claim a customized Practice Visibility Audit of your practice's digital footprint..."
                     onChange={(val) => {
                       setCmsData({
                         ...cmsData,
