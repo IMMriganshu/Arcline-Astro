@@ -3,19 +3,36 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import SectionLabel from "../../components/SectionLabel.astro";
 import Button from "../../components/Button.astro";
 import ProjectCTA from "../../components/ProjectCTA.astro";
-import { getChildServiceContent } from "../../lib/cms";
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400');
 
-const service = await getChildServiceContent('local-seo-google-maps');
+const pageTitle = "Local SEO & Google Maps for Plastic Surgeons | seelutions";
+const pageDescription = "When patients search for a surgeon near them, Google shows a few practices on the map. We help make your practice one of them.";
 
-const faqs = service.faqItems || [];
+const faqs = [
+  {
+    q: "How long does it take to show up in the top spots on Google Maps?",
+    a: "It depends on your market and your competition. Most practices see steady improvement over several months. Google rewards consistent work, so results build over time and keep working long after ads would have stopped."
+  },
+  {
+    q: "Can you guarantee a top-3 spot on Google Maps?",
+    a: "No one honestly can, and be wary of anyone who promises it. Google decides the rankings, and the distance from the person searching always plays a part. We don't use tricks or try to game the system. We build your relevance, reputation, and trust so your practice shows up for more of the searches that matter."
+  },
+  {
+    q: "We have more than one location. Can you help with each?",
+    a: "Yes. Each location gets its own Google profile, its own local pages, and its own plan, so every office can show up in its own area."
+  },
+  {
+    q: "Do patient reviews really matter that much?",
+    a: "Yes. Reviews are one of the strongest signals for patients and for Google. We help you earn more of them and respond the right way, without ever revealing patient information."
+  }
+];
 
 const faqSchemaJson = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": faqs.map((faq: any) => ({
+  "mainEntity": faqs.map(faq => ({
     "@type": "Question",
     "name": faq.q,
     "acceptedAnswer": {
@@ -27,31 +44,31 @@ const faqSchemaJson = {
 ---
 
 <BaseLayout
-  title={service.titleTag}
-  description={service.metaDescription}
+  title={pageTitle}
+  description={pageDescription}
   customSchemaData={faqSchemaJson}
 >
   <!-- Section 1: Hero Section -->
   <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-white relative overflow-hidden">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
       <div class="mb-4" data-animate="fade-up-sm">
-        <SectionLabel text={service.badge} />
+        <SectionLabel text="GET FOUND ON GOOGLE MAPS" />
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         <!-- Left Text Column -->
         <div class="lg:col-span-7 flex flex-col justify-center">
-          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25xl] font-bold tracking-tight text-[#030303] leading-[1.12] mb-6">
-            {service.h1}
+          <h1 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold tracking-tight text-[#030303] leading-[1.12] mb-6 font-urbanist">
+            Local SEO & Google Maps for Plastic and Facial Cosmetic Surgeons
           </h1>
 
           <p data-animate="fade-up-sm" data-animate-delay="1" class="text-lg sm:text-xl font-medium text-neutral-800 leading-relaxed mb-8 max-w-2xl">
-            {service.surgeonValueText}
+            When patients search for a surgeon near them, Google shows a few practices on the map. We help make your practice one of them.
           </p>
 
           <div data-animate="fade-up-sm" data-animate-delay="2" class="flex flex-wrap items-center gap-4">
             <Button href="https://audit.seelutions.com/" variant="black" showIcon={true} iconType="arrow-right">
-              {service.ctaButtonText}
+              Get Your Free Practice Visibility Audit
             </Button>
             <Button href="/services" variant="outline" showIcon={false}>
               All Services
@@ -63,8 +80,8 @@ const faqSchemaJson = {
         <div class="lg:col-span-5" data-animate="scale-in">
           <div class="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl border border-neutral-200/80 bg-neutral-950 group">
             <img
-              src={service.image}
-              alt={service.h1}
+              src="/assets/aistudio/img-1794370861212-local-seo-google-map_8ced0f5a.webp"
+              alt="Local SEO & Google Maps for Plastic and Facial Cosmetic Surgeons"
               class="w-full h-auto aspect-[4/3] object-cover object-center transition-transform duration-700 ease-out group-hover:scale-102"
               loading="eager"
               decoding="async"
@@ -84,17 +101,17 @@ const faqSchemaJson = {
         <SectionLabel text="THE SHIFT" />
       </div>
 
-      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#030303] tracking-tight mb-6">
-        {service.problemTitle}
+      <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#030303] tracking-tight mb-6 lg:whitespace-nowrap">
+        What happens in a "near me" search?
       </h2>
 
       <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl mx-auto">
-        {service.problemText}
+        Patients looking for a facelift, rhinoplasty, or eyelid surgery often start with a search like "facelift surgeon near me." Google answers with a map and a short list of local practices, and most patients call one of those first. If your practice isn't on that short list, it doesn't matter how skilled you are. That patient may never find you.
       </p>
     </div>
   </section>
 
-  <!-- Section 3: How It Works & Cards -->
+  <!-- Section 3: How It Works & 4 Cards -->
   <section class="py-16 md:py-24 bg-white">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
       <div class="text-center max-w-3xl mx-auto mb-12">
@@ -103,31 +120,103 @@ const faqSchemaJson = {
         </div>
 
         <h2 data-animate="fade-up" class="text-3xl sm:text-4xl font-bold text-[#030303] tracking-tight mb-4">
-          {service.infrastructureTitle}
+          How do we get your practice found on Google Maps?
         </h2>
+
+        <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl mx-auto">
+          Google ranks local practices on three things: how relevant you are to the search, how close you are, and how prominent and trusted you are. We strengthen everything we can influence.
+        </p>
       </div>
 
       <!-- 4 Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
-        {service.infrastructureItems.map((item: any, idx: number) => (
-          <div data-animate="fade-up" data-animate-delay={String(idx + 1)} class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
-            <div>
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
-              </div>
-
-              <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
-                {item.title}
-              </h3>
-
-              <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
-                {item.desc}
-              </p>
+        <!-- Card 01 -->
+        <div data-animate="fade-up" data-animate-delay="1" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                01
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Your Profile
+              </span>
             </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              A complete, polished Google profile
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Your Google Business Profile set up the way Google rewards: the right categories, every procedure listed, accurate hours, and professional photos that show your practice at its best.
+            </p>
           </div>
-        ))}
+        </div>
+
+        <!-- Card 02 -->
+        <div data-animate="fade-up" data-animate-delay="2" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                02
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Local Relevance
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Pages for every procedure and city
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Dedicated pages for each procedure and the communities you serve, so Google connects your practice to searches like "rhinoplasty in [your city]."
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 03 -->
+        <div data-animate="fade-up" data-animate-delay="3" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                03
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Consistency
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              The same details everywhere
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              Your practice name, address, and phone number listed accurately across the directories patients and Google trust, such as Healthgrades, Vitals, and RealSelf.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 04 -->
+        <div data-animate="fade-up" data-animate-delay="4" class="bg-neutral-50/70 border border-neutral-200 rounded-2xl md:rounded-3xl p-8 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-xs font-bold tracking-widest px-3 py-1 rounded-full bg-[#C5A880]/20 text-neutral-900">
+                04
+              </span>
+              <span class="text-xs font-semibold text-[#C5A880]">
+                Reputation
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-[#030303] tracking-tight mb-3">
+              Reviews that build trust
+            </h3>
+
+            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
+              A simple process for earning more patient reviews and responding to them professionally, because reviews are one of the first things patients and Google look at.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -195,31 +284,37 @@ const faqSchemaJson = {
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.12),transparent_70%)] pointer-events-none"></div>
 
     <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center relative z-10">
-      <div class="mb-8 flex justify-center" data-animate="fade-up-sm">
+      <div class="mb-6 flex justify-center" data-animate="fade-up-sm">
         <SectionLabel text="PROOF" variant="white" />
       </div>
 
       <h2 data-animate="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight mb-6">
-        {service.proofTitle}
+        Results for Diepenbrock Facial Cosmetic Surgery
       </h2>
 
       <p data-animate="fade-up-sm" data-animate-delay="1" class="text-base sm:text-lg text-neutral-300 leading-relaxed max-w-2xl mx-auto mb-10">
-        {service.proofText}
+        Today the practice ranks #1 on Google in Fort Wayne for searches like "facial cosmetic surgeon," "rhinoplasty surgeon," and "facelift surgeon."
       </p>
 
-      <!-- Stats Grid -->
+      <!-- Three Numbers Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-        {service.proofStats.map((stat: any) => (
-            <div class="p-4 border border-white/10 rounded-2xl bg-white/5">
-                <div class="text-3xl font-bold text-[#C5A880] mb-1">{stat.value}</div>
-                <div class="text-xs text-neutral-400">{stat.label}</div>
-            </div>
-        ))}
+        <div class="p-6 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-xs">
+          <div class="text-3xl sm:text-4xl font-bold text-[#C5A880] mb-2">+158%</div>
+          <div class="text-xs sm:text-sm text-neutral-300 font-medium">Google Maps views</div>
+        </div>
+        <div class="p-6 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-xs">
+          <div class="text-3xl sm:text-4xl font-bold text-[#C5A880] mb-2">+43%</div>
+          <div class="text-xs sm:text-sm text-neutral-300 font-medium">Phone calls from Google</div>
+        </div>
+        <div class="p-6 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-xs">
+          <div class="text-3xl sm:text-4xl font-bold text-[#C5A880] mb-2">+48%</div>
+          <div class="text-xs sm:text-sm text-neutral-300 font-medium">Direction requests</div>
+        </div>
       </div>
 
       <div data-animate="fade-up-sm" data-animate-delay="1" class="mb-10">
-        <p class="text-sm text-neutral-300 font-medium italic">
-          {service.proofName}
+        <p class="text-sm sm:text-base text-neutral-300 font-medium">
+          Dr. Ryan M. Diepenbrock, DDS, FAACS · Past President, American Board of Facial Cosmetic Surgery
         </p>
       </div>
 
@@ -240,12 +335,13 @@ const faqSchemaJson = {
         </div>
 
         <h2 data-animate="fade-up" class="text-3xl sm:text-4xl md:text-[2.65rem] font-bold text-[#030303] tracking-tight leading-tight mt-2 mb-0">
-          {service.faqTitle}
+          Google Maps, answered
         </h2>
       </div>
 
+      <!-- FAQ Accordion -->
       <div class="space-y-4 pt-2 md:pt-4 relative z-10" data-animate="fade-up">
-        {service.faqItems.map((faq: any, idx: number) => (
+        {faqs.map((faq) => (
           <details class="group bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-2xs hover:border-neutral-300 transition-all [&_summary::-webkit-details-marker]:hidden">
             <summary class="flex items-center justify-between gap-4 cursor-pointer list-none text-left">
               <h3 class="text-base sm:text-lg font-bold text-[#030303] group-hover:text-black transition-colors pr-2">

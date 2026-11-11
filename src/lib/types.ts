@@ -262,6 +262,8 @@ export interface ServicesHeroContent {
 }
 
 export interface ChildServiceInfrastructureItem {
+  label?: string;
+  badge?: string;
   title: string;
   desc: string;
 }
@@ -285,6 +287,7 @@ export interface ChildServiceContent {
   problemTitle: string;
   problemText: string;
   infrastructureTitle: string;
+  infrastructureSubtitle?: string;
   infrastructureItems: ChildServiceInfrastructureItem[];
   surgeonValueText: string;
   ctaButtonText: string;

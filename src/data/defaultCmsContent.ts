@@ -398,20 +398,25 @@ export const defaultCmsContent: CmsData = {
       problemTitle: "What happens in a \"near me\" search?",
       problemText: "Patients looking for a facelift, rhinoplasty, or eyelid surgery often start with a search like \"facelift surgeon near me.\" Google answers with a map and a short list of local practices, and most patients call one of those first. If your practice isn't on that short list, it doesn't matter how skilled you are. That patient may never find you.",
       infrastructureTitle: "How do we get your practice found on Google Maps?",
+      infrastructureSubtitle: "Google ranks local practices on three things: how relevant you are to the search, how close you are, and how prominent and trusted you are. We strengthen everything we can influence.",
       infrastructureItems: [
         {
+          label: "Your Profile",
           title: "A complete, polished Google profile",
           desc: "Your Google Business Profile set up the way Google rewards: the right categories, every procedure listed, accurate hours, and professional photos that show your practice at its best."
         },
         {
+          label: "Local Relevance",
           title: "Pages for every procedure and city",
           desc: "Dedicated pages for each procedure and the communities you serve, so Google connects your practice to searches like \"rhinoplasty in [your city].\""
         },
         {
+          label: "Consistency",
           title: "The same details everywhere",
           desc: "Your practice name, address, and phone number listed accurately across the directories patients and Google trust, such as Healthgrades, Vitals, and RealSelf."
         },
         {
+          label: "Reputation",
           title: "Reviews that build trust",
           desc: "A simple process for earning more patient reviews and responding to them professionally, because reviews are one of the first things patients and Google look at."
         }
