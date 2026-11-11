@@ -69,7 +69,7 @@ export const defaultCmsContent: CmsData = {
       badge: "GET FOUND ON GOOGLE MAPS",
       title: "Local SEO & Google Maps",
       description: "When patients search \"facelift surgeon near me,\" Google shows a few practices on the map. We build your authority and relevance in your area so your practice is one of them, with the reviews, photos, and details that turn a search into a call.",
-      image: "/images/service-local-seo-v3.jpg",
+      image: "/assets/aistudio/img-1794370861212-local-seo-google-map_8ced0f5a.webp",
       imageAlt: "seelutions Local SEO graphic showing Google Maps 3-Pack smartphone recommendation UI for top plastic surgeon",
       href: "/services/local-seo-google-maps/",
       buttonText: "Learn about Local SEO",
@@ -418,7 +418,7 @@ export const defaultCmsContent: CmsData = {
       ],
       surgeonValueText: "When patients search for a surgeon near them, Google shows a few practices on the map. We help make your practice one of them.",
       ctaButtonText: "Get Your Free Practice Visibility Audit",
-      image: "/images/seelutions_Local_SEO_Maps_Card_Graphic_v3.png",
+      image: "/assets/aistudio/img-1794370861212-local-seo-google-map_8ced0f5a.webp",
       faqTitle: "Google Maps, answered",
       faqItems: [
         {

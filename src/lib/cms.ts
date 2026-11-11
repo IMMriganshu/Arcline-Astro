@@ -59,6 +59,18 @@ function normalizeCmsServices(data: Partial<CmsData>): Partial<CmsData> {
   if (!data.videoShowcase || data.videoShowcase.videoUrl?.includes('eyeball-showcase.mp4')) {
     data.videoShowcase = defaultCmsContent.videoShowcase;
   }
+  if (!data.childServices) data.childServices = {};
+  if (!data.childServices["local-seo-google-maps"]) {
+    data.childServices["local-seo-google-maps"] = { ...(defaultCmsContent.childServices?.["local-seo-google-maps"] || {}) } as any;
+  }
+  data.childServices["local-seo-google-maps"].image = "/assets/aistudio/img-1794370861212-local-seo-google-map_8ced0f5a.webp";
+
+  if (Array.isArray(data.services)) {
+    const srv2 = data.services.find(s => s.id === 'srv-2' || s.title?.includes('Local SEO'));
+    if (srv2) {
+      srv2.image = "/assets/aistudio/img-1794370861212-local-seo-google-map_8ced0f5a.webp";
+    }
+  }
   return data;
 }
 

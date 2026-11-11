@@ -100,7 +100,7 @@ export const servicesData: Service[] = [
     number: "02",
     title: "Local SEO & Google Maps",
     description: "We optimize your Google Business Profile, local citations, and schema markup so your practice occupies the top 3 local Map Pack spots for high-value surgical searches in your metro area.",
-    image: "/images/service-local-seo-v3.jpg",
+    image: "/assets/aistudio/img-1794370861212-local-seo-google-map_8ced0f5a.webp",
     imageAlt: "seelutions Local SEO graphic showing Google Maps 3-Pack smartphone recommendation UI for top plastic surgeon",
   },
   {
